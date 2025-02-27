@@ -4,12 +4,13 @@
 ## 🚀 Overview:
 This is a full-stack Learning Management System (LMS) built from scratch by a team of five developers. The platform allows instructors to create courses, students to enroll and track their progress, and admins to manage users and analytics. It supports video lectures, assignments, quizzes, real-time discussions, and certifications.
 
-🔧 Tech Stack:
+## 🔧 Tech Stack:
 
-Frontend: React.js (or Next.js), Tailwind CSS, React Router, Redux Toolkit
-Backend: Node.js, Express.js, MongoDB/PostgreSQL, JWT Authentication
-Storage & Hosting: AWS S3/Firebase for media storage, DigitalOcean/AWS/Vercel for deployment
-Other Services: WebSockets (real-time messaging), Stripe/Razorpay (payments), Zoom/WebRTC (live classes)
+### Frontend: React.js (or Next.js), Tailwind CSS, React Router, Redux Toolkit
+### Backend: Node.js, Express.js, MongoDB/PostgreSQL, JWT Authentication
+### Storage & Hosting: AWS S3/Firebase for media storage, DigitalOcean/AWS/Vercel for deployment
+### Other Services: WebSockets (real-time messaging), Stripe/Razorpay (payments), Zoom/WebRTC (live classes)
+
 📌 Core Features:
 ✅ User authentication (Admin, Instructor, Student)
 ✅ Course creation with video lectures, PDFs, and quizzes
