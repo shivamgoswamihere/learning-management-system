@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Slider from "../components/Slider";
 import Carousel from "./../components/Carousel";
 import CourseCard from "../components/CourseCard";
+import Footer from "../components/Footer";
 
 const Home = () => {
   const data = [
@@ -63,6 +64,7 @@ const Home = () => {
           ))}
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };
