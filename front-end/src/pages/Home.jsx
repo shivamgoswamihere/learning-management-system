@@ -58,7 +58,7 @@ const Home = () => {
         <Carousel />
         <Slider />
         <h1 className="text-5xl font-bold my-4">Explore Courses</h1>
-        <div className="grid grid-cols-3 gap-10">
+        <div className="max-md:grid-cols-2 max-sm:grid-cols-1 grid grid-cols-3 gap-10">
           {data.map((item, index) => (
             <CourseCard key={index} {...item} />
           ))}
