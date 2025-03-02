@@ -1,11 +1,11 @@
 import React from "react";
 
-function Login({ isOpen, onClose }) {
+function Login({ isOpen, onClose, onRegisterClick }) {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-transparent backdrop-blur-md z-50">
-      <div className="bg-white bg-opacity-90 w-full max-w-md p-6 rounded-lg shadow-lg transform transition-all scale-100">
+      <div className="bg-white bg-opacity-90 w-full max-w-md p-6 rounded-lg shadow-lg">
         
         {/* Modal Header */}
         <div className="flex justify-between items-center mb-4">
@@ -33,9 +33,10 @@ function Login({ isOpen, onClose }) {
           </button>
         </form>
 
-        {/* Footer */}
+        {/* Footer - Switch to Register */}
         <p className="text-sm text-center mt-3">
-          Don't have an account? <span className="text-blue-600 cursor-pointer">Sign Up</span>
+          Don't have an account? 
+          <span onClick={onRegisterClick} className="text-blue-600 cursor-pointer hover:underline"> Register</span>
         </p>
       </div>
     </div>
