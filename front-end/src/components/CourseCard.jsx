@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function CourseCard({ image, heading, description }) {
   return (
@@ -8,9 +9,9 @@ function CourseCard({ image, heading, description }) {
       </div>
       <div className="text-2xl font-bold">{heading}</div>
       <div className="text-lg line-clamp-2 overflow-hidden">{description}</div>
-      <div className="text-sm font-semibold bg-[#6d28d2] hover:cursor-pointer text-white w-fit px-4 py-2 my-4 rounded-sm hover:bg-[#6d28af]">
+      <Link to='/CourseDetails' className="text-sm font-semibold bg-[#6d28d2] hover:cursor-pointer text-white w-fit px-4 py-2 my-4 rounded-sm hover:bg-[#6d28af]">
         Buy Now
-      </div>
+      </Link>
     </div>
   );
 }
