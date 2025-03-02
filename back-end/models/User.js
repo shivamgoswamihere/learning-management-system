@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, enum: ["learner", "trainer", "examiner", "admin"], required: true },
-    profilePicture: { type: String }, // Cloudinary URL
+    // profilePicture: { type: String }, // Cloudinary URL
 
     // Common fields
     phoneNumber: { type: String },

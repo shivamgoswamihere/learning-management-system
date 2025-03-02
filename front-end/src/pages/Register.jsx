@@ -4,15 +4,36 @@ import { registerUser, resetAuthState } from "../redux/authSlice";
 import { motion, AnimatePresence } from "framer-motion";
 
 function Register({ isOpen, onClose, onLoginClick }) {
+  const dispatch = useDispatch();
+  const { loading, error, success } = useSelector((state) => state.auth);
+
   const [formData, setFormData] = useState({
+    fullName: "",
     username: "",
     email: "",
     password: "",
-    role: "learner",
+    role: "learner", // Default role
+    phoneNumber: "",
+    gender: "",
+    dateOfBirth: "",
+    qualification: "",
+    degree: "",
+    qualificationStatus: "",
+    profession: "",
+    organization: "",
+    interests: "",
+    professionalTitle: "",
+    totalExperience: "",
+    socialLinks: {
+      linkedIn: "",
+      github: "",
+      youtube: "",
+      twitter: "",
+    },
+    careerDescription: "",
+    accessLevel: "",
+    canEnrollCourses: false,
   });
-
-  const dispatch = useDispatch();
-  const { loading, error, success } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (success) {
@@ -25,7 +46,16 @@ function Register({ isOpen, onClose, onLoginClick }) {
   }, [success, dispatch, onClose]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name.includes("socialLinks")) {
+      setFormData((prev) => ({
+        ...prev,
+        socialLinks: { ...prev.socialLinks, [name.split(".")[1]]: value },
+      }));
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -59,12 +89,27 @@ function Register({ isOpen, onClose, onLoginClick }) {
             {error && <p className="text-red-500">{error.message}</p>}
 
             <form onSubmit={handleSubmit}>
+              {/* Full Name */}
+              <div className="mb-3">
+                <label className="block text-sm font-medium">Full Name</label>
+                <input
+                  type="text"
+                  name="fullName"
+                  className="w-full p-2 border rounded-md"
+                  placeholder="Enter your full name"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              {/* Username */}
               <div className="mb-3">
                 <label className="block text-sm font-medium">Username</label>
                 <input
                   type="text"
                   name="username"
-                  className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                  className="w-full p-2 border rounded-md"
                   placeholder="Enter your username"
                   value={formData.username}
                   onChange={handleChange}
@@ -72,12 +117,13 @@ function Register({ isOpen, onClose, onLoginClick }) {
                 />
               </div>
 
+              {/* Email */}
               <div className="mb-3">
                 <label className="block text-sm font-medium">Email</label>
                 <input
                   type="email"
                   name="email"
-                  className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                  className="w-full p-2 border rounded-md"
                   placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleChange}
@@ -85,12 +131,13 @@ function Register({ isOpen, onClose, onLoginClick }) {
                 />
               </div>
 
+              {/* Password */}
               <div className="mb-3">
                 <label className="block text-sm font-medium">Password</label>
                 <input
                   type="password"
                   name="password"
-                  className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                  className="w-full p-2 border rounded-md"
                   placeholder="Enter password"
                   value={formData.password}
                   onChange={handleChange}
@@ -98,11 +145,12 @@ function Register({ isOpen, onClose, onLoginClick }) {
                 />
               </div>
 
+              {/* Role Selection */}
               <div className="mb-3">
                 <label className="block text-sm font-medium">Role</label>
                 <select
                   name="role"
-                  className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                  className="w-full p-2 border rounded-md"
                   value={formData.role}
                   onChange={handleChange}
                 >
@@ -113,7 +161,85 @@ function Register({ isOpen, onClose, onLoginClick }) {
                 </select>
               </div>
 
-              <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">
+              {/* Role-Specific Fields */}
+              {formData.role === "learner" && (
+                <>
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">Qualification</label>
+                    <input
+                      type="text"
+                      name="qualification"
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter your qualification"
+                      value={formData.qualification}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">Degree</label>
+                    <input
+                      type="text"
+                      name="degree"
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter your degree"
+                      value={formData.degree}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </>
+              )}
+
+              {formData.role === "trainer" && (
+                <>
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">Professional Title</label>
+                    <input
+                      type="text"
+                      name="professionalTitle"
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter your title"
+                      value={formData.professionalTitle}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </>
+              )}
+
+              {formData.role === "admin" && (
+                <div className="mb-3">
+                  <label className="block text-sm font-medium">Access Level</label>
+                  <select
+                    name="accessLevel"
+                    className="w-full p-2 border rounded-md"
+                    value={formData.accessLevel}
+                    onChange={handleChange}
+                  >
+                    <option value="Full Admin">Full Admin</option>
+                    <option value="Content Manager">Content Manager</option>
+                    <option value="Finance Manager">Finance Manager</option>
+                  </select>
+                </div>
+              )}
+
+              {formData.role === "examinee" && (
+                <div className="mb-3">
+                  <label className="block text-sm font-medium">Can Enroll Courses</label>
+                  <input
+                    type="checkbox"
+                    name="canEnrollCourses"
+                    checked={formData.canEnrollCourses}
+                    onChange={(e) =>
+                      setFormData({ ...formData, canEnrollCourses: e.target.checked })
+                    }
+                  />
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
+              >
                 {loading ? "Registering..." : "Register"}
               </button>
             </form>

@@ -33,12 +33,19 @@ const registerUser = async (req, res) => {
     try {
         console.log("Incoming Request:", req.body);
 
-        const { fullName, username, email, password, role, phoneNumber, gender, dateOfBirth, qualification, degree, qualificationStatus, profession, organization, interests, professionalTitle, totalExperience, socialLinks, careerDescription, accessLevel } = req.body;
+        const {
+            fullName, username, email, password, role, phoneNumber, gender, dateOfBirth,
+            qualification, degree, qualificationStatus, profession, organization, interests,
+            professionalTitle, totalExperience, socialLinks, careerDescription, accessLevel,address
+            // profilePicture, 
+        } = req.body;
 
+        // Required Fields Validation
         if (!fullName || !username || !email || !password || !role) {
             return res.status(400).json({ error: "All required fields must be provided." });
         }
 
+        // Hash Password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const userData = {
@@ -47,48 +54,56 @@ const registerUser = async (req, res) => {
             email,
             password: hashedPassword,
             role,
+            // profilePicture,
+            phoneNumber,
+            gender: gender || "Other", // Default value if empty
+            dateOfBirth,
+            address, // Include address field
+            isDeleted: false,
+            deletedAt: null
         };
 
-        // Role-specific data
+        // Role-specific fields
         if (role === "learner") {
             Object.assign(userData, {
-                phoneNumber,
-                gender,
-                dateOfBirth,
                 qualification,
                 degree,
-                qualificationStatus,
+                qualificationStatus: qualificationStatus || "Pursuing", // Default value
                 profession,
-                organization,
-                interests,
+                organization: organization ? { name: organization, address: "" } : null, // Ensure correct structure
+                interests
             });
         }
 
         if (role === "trainer") {
             Object.assign(userData, {
-                phoneNumber,
-                gender,
                 professionalTitle,
                 totalExperience,
                 socialLinks,
-                careerDescription,
+                careerDescription
             });
+        }
+
+        if (role === "examiner") {
+            Object.assign(userData, { canEnrollCourses: false }); // Default for examiners
         }
 
         if (role === "admin") {
             Object.assign(userData, { accessLevel });
         }
 
+        // Create and Save User
         const user = new User(userData);
         await user.save();
 
-        res.status(201).json({ message: "User registered successfully" });
+        res.status(201).json({ message: "User registered successfully", user });
 
     } catch (error) {
         console.error("Registration Error:", error);
         res.status(500).json({ error: error.message || "Server Error" });
     }
 };
+
 
 // ✅ Login User
 const loginUser = async (req, res) => {
