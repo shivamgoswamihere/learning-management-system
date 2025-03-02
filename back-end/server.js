@@ -33,7 +33,7 @@ const connectDB = async () => {
 
 const userRoutes = require("./routes/userRoutes");
 
-app.use("/api", userRoutes);
+app.use("/api/users", userRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
