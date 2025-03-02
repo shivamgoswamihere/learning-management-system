@@ -1,13 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, resetAuthState } from "../redux/authSlice";
 
-function Login({ isOpen, onClose }) {
-  if (!isOpen) return null;
+function Login({ isOpen, onClose, onRegisterClick }) {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+
+  const dispatch = useDispatch();
+  const { loading, error, success } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (success) {
+      alert("Login successful!");
+      onClose(); // ✅ Close modal
+      dispatch(resetAuthState()); // ✅ Reset auth state
+    }
+  }, [success, dispatch, onClose]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(loginUser(formData));
+  };
+
+  if (!isOpen) return null; // ✅ Ensure modal doesn't render when `isOpen` is false
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-transparent backdrop-blur-md z-50">
-      <div className="bg-white bg-opacity-90 w-full max-w-md p-6 rounded-lg shadow-lg transform transition-all scale-100">
-        
-        {/* Modal Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -50 }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+        className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg"
+      >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">Login</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-xl">
@@ -15,29 +44,54 @@ function Login({ isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Form Fields */}
-        <form>
+        {error && <p className="text-red-500">{error.message}</p>}
+
+        <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="block text-sm font-medium">Email</label>
-            <input type="email" className="w-full p-2 border rounded-md focus:outline-blue-500" placeholder="Enter your email" />
+            <input
+              type="email"
+              name="email"
+              className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="mb-3">
             <label className="block text-sm font-medium">Password</label>
-            <input type="password" className="w-full p-2 border rounded-md focus:outline-blue-500" placeholder="Enter password" />
+            <input
+              type="password"
+              name="password"
+              className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+              placeholder="Enter password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
           </div>
 
-          {/* Submit Button */}
-          <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition">
-            Login
+          <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
-        {/* Footer */}
-        <p className="text-sm text-center mt-3">
-          Don't have an account? <span className="text-blue-600 cursor-pointer">Sign Up</span>
-        </p>
-      </div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+          className="mt-4 text-center text-sm"
+        >
+          <p>
+            Don't have an account?{" "}
+            <button onClick={onRegisterClick} className="text-blue-600 underline">
+              Register
+            </button>
+          </p>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

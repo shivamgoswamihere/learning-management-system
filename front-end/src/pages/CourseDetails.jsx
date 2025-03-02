@@ -1,11 +1,8 @@
 import React from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 
 const CourseDeatils = () => {
   return (
     <div>
-      <Navbar />
       <div className="max-w-[1350px] mx-auto px-4">
         <div className="hero grid grid-cols-2 gap-2 my-2">
           <div className="image bg-amber-600 w-full h-full rounded-sm"></div>
@@ -35,7 +32,6 @@ const CourseDeatils = () => {
           <div className="videoplayer"></div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
