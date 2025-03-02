@@ -4,14 +4,18 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 
 function Footer() {
     return (
-        <footer className="bg-gray-200 text-black py-6 px-4 mt-10">
+        <footer className="bg-gray-200 text-black py-6 px-4 mt-10 ">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left">
 
                 {/* Logo & Description */}
                 <div>
-                    <div className="logo ">
-                        <img className="w-20 " src="https://frontends.udemycdn.com/frontends-homepage/staticx/udemy/images/v7/logo-udemy.svg" />
-                    </div>
+                    <Link to='/' className="logo">
+                        <img
+                            className="w-20"
+                            src="https://frontends.udemycdn.com/frontends-homepage/staticx/udemy/images/v7/logo-udemy.svg"
+                            alt="Logo"
+                        />
+                    </Link>
                     <p className="text-sm mt-2">Empowering learners with quality education anytime, anywhere.</p>
                 </div>
 
@@ -39,7 +43,7 @@ function Footer() {
             </div>
 
             {/* Copyright */}
-            <div className="text-center text-sm mt-6 border-t border-gray-700 pt-4">
+            <div className=" text-center text-sm mt-6 border-t border-gray-700 pt-4">
                 &copy; {new Date().getFullYear()} Udemy. All rights reserved.
             </div>
         </footer>

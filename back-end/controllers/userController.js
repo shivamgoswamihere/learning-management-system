@@ -1,51 +1,84 @@
-const express = require("express");
 const User = require("../models/User");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
-
-exports.register = async (req,res) => {
-  try{
-    const {name, email, password, role} = req.body;
-     
-    const exsistingUser = await User.findOne({email});
-    if(exsistingUser){
-      return res.status(401).json({message: "this email is already exsist"})
+// ✅ Get all users (Admin only)
+const getUsers = async (req, res) => {
+    try {
+        const users = await User.find().select("-password"); // Exclude password
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
     }
-    const hashPassword = await bcrypt.hash(password,10)
+};
 
-    const newUser = new User ({
-      name,
-      email,
-      password:hashPassword,
-      role:role
-    })
-    await newUser.save();
-    res.status(201).json({ message: "User registered successfully." });
-  }
-  catch(error){
-    return res.status(500).json({message: "server error"})
-  }
-}
+// ✅ Get user by ID (Admin & User themselves)
+const getUserById = async (req, res) => {
+    try {
+        const { id } = req.params;
 
-exports.login = async (req,res) =>{
-  const {email, password} = req.body;
-  try {
-    const user = await User.findOne({email});
-    if (!user) return res.status(404).json({message: "user not found"})
+        if (req.user.role !== "admin" && req.user.id !== id) {
+            return res.status(403).json({ message: "Access denied" });
+        }
 
-  
-  const isMatch = await bcrypt.compare(password,user.password);
-  if(!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+        const user = await User.findById(id).select("-password");
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-  const token = jwt.sign({id:user._id,role:user.role},JWT_SECRET,{expiresIn:"1hr"});
-  res.status(200).json({
-    token,
-    role: user.role,  
-  });
-}
-  catch (error) {
-  res.status(500).json({ message: error.message });
-}
-}
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+// ✅ Update user profile (User themselves)
+const updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (req.user.id !== id && req.user.role !== "admin") {
+            return res.status(403).json({ message: "Access denied" });
+        }
+
+        const updates = req.body;
+        const user = await User.findByIdAndUpdate(id, updates, { new: true }).select("-password");
+
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        res.status(200).json({ message: "User updated successfully", user });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+// ✅ Partially update user (PATCH request)
+const partialUpdateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (req.user.id !== id && req.user.role !== "admin") {
+            return res.status(403).json({ message: "Access denied" });
+        }
+
+        const updates = req.body;
+        const user = await User.findByIdAndUpdate(id, { $set: updates }, { new: true }).select("-password");
+
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        res.status(200).json({ message: "User updated successfully", user });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+// ✅ Delete user (Admin & User themselves)
+const deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (req.user.id !== id && req.user.role !== "admin") {
+            return res.status(403).json({ message: "Access denied" });
+        }
+
+        await User.findByIdAndDelete(id);
+        res.status(200).json({ message: "User deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+module.exports = { getUsers, getUserById, updateUser, partialUpdateUser, deleteUser };

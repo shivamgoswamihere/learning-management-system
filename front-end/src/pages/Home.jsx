@@ -1,9 +1,7 @@
 import React from "react";
-import Navbar from "../components/Navbar";
 import Slider from "../components/Slider";
 import Carousel from "./../components/Carousel";
 import CourseCard from "../components/CourseCard";
-import Footer from "../components/Footer";
 
 const Home = () => {
   const data = [
@@ -53,7 +51,6 @@ const Home = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="max-w-[1350px] mx-auto px-4">
         <Carousel />
         <Slider />
@@ -64,7 +61,6 @@ const Home = () => {
           ))}
         </div>
       </div>
-      <Footer/>
     </div>
   );
 };
