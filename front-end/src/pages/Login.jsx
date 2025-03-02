@@ -29,7 +29,7 @@ function Login({ isOpen, onClose, onRegisterClick }) {
   if (!isOpen) return null; // ✅ Ensure modal doesn't render when `isOpen` is false
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-transparent backdrop-blur-md z-50">
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -52,7 +52,7 @@ function Login({ isOpen, onClose, onRegisterClick }) {
             <input
               type="email"
               name="email"
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
@@ -65,7 +65,7 @@ function Login({ isOpen, onClose, onRegisterClick }) {
             <input
               type="password"
               name="password"
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
               placeholder="Enter password"
               value={formData.password}
               onChange={handleChange}

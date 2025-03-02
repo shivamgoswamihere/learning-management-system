@@ -14,16 +14,13 @@ function Register({ isOpen, onClose, onLoginClick }) {
   const dispatch = useDispatch();
   const { loading, error, success } = useSelector((state) => state.auth);
 
-  // 🔍 Debugging: Log success changes
   useEffect(() => {
-    console.log("🔍 Success state:", success);
-
     if (success) {
-      alert("User registered successfully!"); // ✅ Alert user
+      alert("User registered successfully!");
       setTimeout(() => {
-        onClose(); // ✅ Close modal
-        dispatch(resetAuthState()); // ✅ Reset auth state
-      }, 300); // 🛠 Small delay for smooth transition
+        onClose();
+        dispatch(resetAuthState());
+      }, 300);
     }
   }, [success, dispatch, onClose]);
 
@@ -40,7 +37,7 @@ function Register({ isOpen, onClose, onLoginClick }) {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 z-50"
+          className="fixed inset-0 flex items-center justify-center bg-transparent backdrop-blur-md z-50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -64,25 +61,51 @@ function Register({ isOpen, onClose, onLoginClick }) {
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label className="block text-sm font-medium">Username</label>
-                <input type="text" name="username" className="w-full p-2 border rounded-md" 
-                  placeholder="Enter your username" value={formData.username} onChange={handleChange} required />
+                <input
+                  type="text"
+                  name="username"
+                  className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                  placeholder="Enter your username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <div className="mb-3">
                 <label className="block text-sm font-medium">Email</label>
-                <input type="email" name="email" className="w-full p-2 border rounded-md" 
-                  placeholder="Enter your email" value={formData.email} onChange={handleChange} required />
+                <input
+                  type="email"
+                  name="email"
+                  className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <div className="mb-3">
                 <label className="block text-sm font-medium">Password</label>
-                <input type="password" name="password" className="w-full p-2 border rounded-md" 
-                  placeholder="Enter password" value={formData.password} onChange={handleChange} required />
+                <input
+                  type="password"
+                  name="password"
+                  className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                  placeholder="Enter password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <div className="mb-3">
                 <label className="block text-sm font-medium">Role</label>
-                <select name="role" className="w-full p-2 border rounded-md" value={formData.role} onChange={handleChange}>
+                <select
+                  name="role"
+                  className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                  value={formData.role}
+                  onChange={handleChange}
+                >
                   <option value="learner">Learner</option>
                   <option value="trainer">Trainer</option>
                   <option value="admin">Admin</option>
