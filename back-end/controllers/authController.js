@@ -3,32 +3,92 @@ const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
 
 // ✅ Register User
+// const registerUser = async (req, res) => {
+//     try {
+//         console.log("Incoming Request:", req.body); // ✅ Debugging step
+
+//         const { username, email, password, role } = req.body;
+
+//         if (!username || !email || !password) {
+//             return res.status(400).json({ error: "All fields are required" });
+//         }
+
+//         const hashedPassword = await bcrypt.hash(password, 10);
+//         const user = new User({
+//             username,   // ✅ Ensure this matches frontend
+//             email,
+//             password: hashedPassword,
+//             role: role || "learner",
+//         });
+
+//         await user.save();
+//         res.status(201).json({ message: "User registered successfully" });
+//     } catch (error) {
+//         console.error("Registration Error:", error);
+//         res.status(500).json({ error: error.message || "Server Error" });
+//     }
+// };
+
 const registerUser = async (req, res) => {
     try {
-        console.log("Incoming Request:", req.body); // ✅ Debugging step
+        console.log("Incoming Request:", req.body);
 
-        const { username, email, password, role } = req.body;
+        const { fullName, username, email, password, role, phoneNumber, gender, dateOfBirth, qualification, degree, qualificationStatus, profession, organization, interests, professionalTitle, totalExperience, socialLinks, careerDescription, accessLevel } = req.body;
 
-        if (!username || !email || !password) {
-            return res.status(400).json({ error: "All fields are required" });
+        if (!fullName || !username || !email || !password || !role) {
+            return res.status(400).json({ error: "All required fields must be provided." });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({
-            username,   // ✅ Ensure this matches frontend
+
+        const userData = {
+            fullName,
+            username,
             email,
             password: hashedPassword,
-            role: role || "learner",
-        });
+            role,
+        };
 
+        // Role-specific data
+        if (role === "learner") {
+            Object.assign(userData, {
+                phoneNumber,
+                gender,
+                dateOfBirth,
+                qualification,
+                degree,
+                qualificationStatus,
+                profession,
+                organization,
+                interests,
+            });
+        }
+
+        if (role === "trainer") {
+            Object.assign(userData, {
+                phoneNumber,
+                gender,
+                professionalTitle,
+                totalExperience,
+                socialLinks,
+                careerDescription,
+            });
+        }
+
+        if (role === "admin") {
+            Object.assign(userData, { accessLevel });
+        }
+
+        const user = new User(userData);
         await user.save();
+
         res.status(201).json({ message: "User registered successfully" });
+
     } catch (error) {
         console.error("Registration Error:", error);
         res.status(500).json({ error: error.message || "Server Error" });
     }
 };
-
 
 // ✅ Login User
 const loginUser = async (req, res) => {
