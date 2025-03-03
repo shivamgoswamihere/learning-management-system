@@ -36,8 +36,7 @@ const registerUser = async (req, res) => {
         const {
             fullName, username, email, password, role, phoneNumber, gender, dateOfBirth,
             qualification, degree, qualificationStatus, profession, organization, interests,
-            professionalTitle, totalExperience, socialLinks, careerDescription, accessLevel,address
-            // profilePicture, 
+            professionalTitle, totalExperience, socialLinks, careerDescription, accessLevel,address,profilePicture
         } = req.body;
 
         // Required Fields Validation
@@ -54,7 +53,7 @@ const registerUser = async (req, res) => {
             email,
             password: hashedPassword,
             role,
-            // profilePicture,
+            profilePicture,
             phoneNumber,
             gender: gender || "Other", // Default value if empty
             dateOfBirth,

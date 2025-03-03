@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 function Register({ isOpen, onClose, onLoginClick }) {
   const dispatch = useDispatch();
   const { loading, error, success } = useSelector((state) => state.auth);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -33,6 +34,7 @@ function Register({ isOpen, onClose, onLoginClick }) {
     careerDescription: "",
     accessLevel: "",
     canEnrollCourses: false,
+    profilePicture: null,
   });
 
   useEffect(() => {
@@ -57,6 +59,13 @@ function Register({ isOpen, onClose, onLoginClick }) {
       setFormData({ ...formData, [name]: value });
     }
   };
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({ ...prev, profilePicture: file }));
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -72,13 +81,14 @@ function Register({ isOpen, onClose, onLoginClick }) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <motion.div
-            className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg"
-            initial={{ y: -50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -50, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
+         <motion.div
+  className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg max-h-[80vh] overflow-y-auto"
+  initial={{ y: -50, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  exit={{ y: -50, opacity: 0 }}
+  transition={{ duration: 0.3 }}
+>
+
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold">Register</h2>
               <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-xl">
@@ -89,6 +99,16 @@ function Register({ isOpen, onClose, onLoginClick }) {
             {error && <p className="text-red-500">{error.message}</p>}
 
             <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+                <label className="block text-sm font-medium">Profile Picture</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="w-full p-2 border rounded-md"
+                />
+                {imagePreview && <img src={imagePreview} alt="Profile Preview" className="mt-2 w-24 h-24 rounded-full object-cover" />}
+              </div>
               {/* Full Name */}
               <div className="mb-3">
                 <label className="block text-sm font-medium">Full Name</label>
