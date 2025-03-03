@@ -36,7 +36,7 @@ const registerUser = async (req, res) => {
         const {
             fullName, username, email, password, role, phoneNumber, gender, dateOfBirth,
             qualification, degree, qualificationStatus, profession, organization, interests,
-            professionalTitle, totalExperience, socialLinks, careerDescription, accessLevel,address,profilePicture
+            professionalTitle, totalExperience, socialLinks, careerDescription, accessLevel,address
         } = req.body;
 
         // Required Fields Validation
@@ -46,6 +46,8 @@ const registerUser = async (req, res) => {
 
         // Hash Password
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        const profilePicture = req.file ? req.file.path : "";
 
         const userData = {
             fullName,
