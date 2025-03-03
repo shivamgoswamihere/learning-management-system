@@ -6,23 +6,22 @@ const authRoutes = require("./routes/authRoutes");
 const connectDB = require("./config/db"); 
 
 
-dotenv.config(); // Load environment variables
+dotenv.config(); 
 
 const app = express();
 
 // Middleware
-app.use(express.json()); // ✅ Correctly using express.json()
-app.use(express.urlencoded({ extended: true })); // ✅ Helps parse form data
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
 
 
 app.use(cors({
-    origin: "http://localhost:5173", // ✅ Allow only your frontend origin
-    credentials: true,               // ✅ Allow credentials (cookies, tokens)
+    origin: "http://localhost:5173", 
+    credentials: true,              
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// ✅ Connect to MongoDB (Only once)
 connectDB();
 
 // Routes

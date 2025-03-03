@@ -3,31 +3,6 @@ const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
 
 // ✅ Register User
-// const registerUser = async (req, res) => {
-//     try {
-//         console.log("Incoming Request:", req.body); // ✅ Debugging step
-
-//         const { username, email, password, role } = req.body;
-
-//         if (!username || !email || !password) {
-//             return res.status(400).json({ error: "All fields are required" });
-//         }
-
-//         const hashedPassword = await bcrypt.hash(password, 10);
-//         const user = new User({
-//             username,   // ✅ Ensure this matches frontend
-//             email,
-//             password: hashedPassword,
-//             role: role || "learner",
-//         });
-
-//         await user.save();
-//         res.status(201).json({ message: "User registered successfully" });
-//     } catch (error) {
-//         console.error("Registration Error:", error);
-//         res.status(500).json({ error: error.message || "Server Error" });
-//     }
-// };
 
 const registerUser = async (req, res) => {
     try {
