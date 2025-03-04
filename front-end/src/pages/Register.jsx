@@ -180,115 +180,120 @@ function Register({ isOpen, onClose, onLoginClick }) {
             )}
             {step === 2 && (
               <>
-              {/* Role Selection */}
-              <div className="mb-3">
-                <label className="block text-sm font-medium">Role</label>
-                <select
-                  name="role"
-                  className="w-full p-2 border rounded-md"
-                  value={formData.role}
-                  onChange={handleChange}
-                >
-                  <option value="learner">Learner</option>
-                  <option value="trainer">Trainer</option>
-                  <option value="admin">Admin</option>
-                  <option value="examinee">Examinee</option>
-                </select>
-              </div>
+  {/* Role Selection */}
+  <div className="mb-3">
+    <label className="block text-sm font-medium">Role</label>
+    <select
+      name="role"
+      className="w-full p-2 border rounded-md"
+      value={formData.role}
+      onChange={handleChange}
+    >
+      <option value="learner">Learner</option>
+      <option value="trainer">Trainer</option>
+      <option value="admin">Admin</option>
+      <option value="examinee">Examinee</option>
+    </select>
+  </div>
 
-              {/* Role-Specific Fields */}
-              {formData.role === "learner" && (
-                <>
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">
-                      Qualification
-                    </label>
-                    <input
-                      type="text"
-                      name="qualification"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter your qualification"
-                      value={formData.qualification}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">Degree</label>
-                    <input
-                      type="text"
-                      name="degree"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter your degree"
-                      value={formData.degree}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </>
-              )}
+  {/* Role-Specific Fields */}
+  {formData.role === "learner" && (
+    <>
+      <div className="mb-3">
+        <label className="block text-sm font-medium">Qualification</label>
+        <select
+          name="qualification"
+          className="w-full p-2 border rounded-md"
+          value={formData.qualification}
+          onChange={handleChange}
+        >
+          <option value="">Select Qualification</option>
+          <option value="High School">High School</option>
+          <option value="Diploma">Diploma</option>
+          <option value="Bachelor's Degree">Bachelor's Degree</option>
+          <option value="Master's Degree">Master's Degree</option>
+          <option value="PhD">PhD</option>
+        </select>
+      </div>
+      <div className="mb-3">
+        <label className="block text-sm font-medium">Degree</label>
+        <select
+          name="degree"
+          className="w-full p-2 border rounded-md"
+          value={formData.degree}
+          onChange={handleChange}
+        >
+          <option value="">Select Degree</option>
+          <option value="B.Tech">B.Tech</option>
+          <option value="B.Sc">B.Sc</option>
+          <option value="B.A">B.A</option>
+          <option value="M.Tech">M.Tech</option>
+          <option value="M.Sc">M.Sc</option>
+          <option value="M.A">M.A</option>
+        </select>
+      </div>
+    </>
+  )}
 
-              {formData.role === "trainer" && (
-                <>
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">
-                      Professional Title
-                    </label>
-                    <input
-                      type="text"
-                      name="professionalTitle"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter your title"
-                      value={formData.professionalTitle}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </>
-              )}
+  {formData.role === "trainer" && (
+    <>
+      <div className="mb-3">
+        <label className="block text-sm font-medium">Professional Title</label>
+        <input
+          type="text"
+          name="professionalTitle"
+          className="w-full p-2 border rounded-md"
+          placeholder="Enter your title"
+          value={formData.professionalTitle}
+          onChange={handleChange}
+        />
+      </div>
+    </>
+  )}
 
-              {formData.role === "admin" && (
-                <div className="mb-3">
-                  <label className="block text-sm font-medium">
-                    Access Level
-                  </label>
-                  <select
-                    name="accessLevel"
-                    className="w-full p-2 border rounded-md"
-                    value={formData.accessLevel}
-                    onChange={handleChange}
-                  >
-                    <option value="Full Admin">Full Admin</option>
-                    <option value="Content Manager">Content Manager</option>
-                    <option value="Finance Manager">Finance Manager</option>
-                  </select>
-                </div>
-              )}
+  {formData.role === "admin" && (
+    <div className="mb-3">
+      <label className="block text-sm font-medium">Access Level</label>
+      <select
+        name="accessLevel"
+        className="w-full p-2 border rounded-md"
+        value={formData.accessLevel}
+        onChange={handleChange}
+      >
+        <option value="Full Admin">Full Admin</option>
+        <option value="Content Manager">Content Manager</option>
+        <option value="Finance Manager">Finance Manager</option>
+      </select>
+    </div>
+  )}
 
-              {formData.role === "examinee" && (
-                <div className="mb-3">
-                  <label className="block text-sm font-medium">
-                    Can Enroll Courses
-                  </label>
-                  <input
-                    type="checkbox"
-                    name="canEnrollCourses"
-                    checked={formData.canEnrollCourses}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        canEnrollCourses: e.target.checked,
-                      })
-                    }
-                  />
-                </div>
-              )}
-              <div className="flex justify-between">
-                     <button type="button" className="bg-gray-600 text-white p-2 rounded-md" onClick={() => setStep(1)}>
-                       Back
-                     </button>
-                     <button type="submit" className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">
-                       {loading ? "Registering..." : "Register"}
-                    </button>
-                  </div>
-                </>
+  {formData.role === "examinee" && (
+    <div className="mb-3">
+      <label className="block text-sm font-medium">Can Enroll Courses</label>
+      <input
+        type="checkbox"
+        name="canEnrollCourses"
+        checked={formData.canEnrollCourses}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            canEnrollCourses: e.target.checked,
+          })
+        }
+      />
+    </div>
+  )}
+
+  <div className="flex justify-between">
+    <button type="button" className="bg-gray-600 text-white p-2 rounded-md" onClick={() => setStep(1)}>
+      Back
+    </button>
+    <button type="submit" className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">
+      {loading ? "Registering..." : "Register"}
+    </button>
+  </div>
+</>
+
               )}
 
             
