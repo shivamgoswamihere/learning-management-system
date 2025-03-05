@@ -189,110 +189,9 @@ function Register({ isOpen, onClose, onLoginClick }) {
                     />
                   </div>
 
-                  {/* Phone Number */}
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      name="phoneNumber"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter your phone number"
-                      value={formData.phoneNumber}
-                      onChange={handleChange}
-                    />
-                  </div>
+                 
 
-                  {/* Gender */}
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">Gender</label>
-                    <select
-                      name="gender"
-                      className="w-full p-2 border rounded-md"
-                      value={formData.gender}
-                      onChange={handleChange}
-                    >
-                      <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-
-                  {/* Date of Birth */}
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">
-                      Date of Birth
-                    </label>
-                    <input
-                      type="date"
-                      name="dateOfBirth"
-                      className="w-full p-2 border rounded-md"
-                      value={formData.dateOfBirth}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  {/* Qualification Status */}
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">
-                      Qualification Status
-                    </label>
-                    <input
-                      type="text"
-                      name="qualificationStatus"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter your qualification status"
-                      value={formData.qualificationStatus}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  {/* Profession */}
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">
-                      Profession
-                    </label>
-                    <input
-                      type="text"
-                      name="profession"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter your profession"
-                      value={formData.profession}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  {/* Organization */}
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">
-                      Organization
-                    </label>
-                    <input
-                      type="text"
-                      name="organization"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter your organization"
-                      value={formData.organization}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  {/* Interests */}
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">
-                      Interests
-                    </label>
-                    <input
-                      type="text"
-                      name="interests"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter your interests"
-                      value={formData.interests}
-                      onChange={handleChange}
-                    />
-                  </div>
+                  
 
                   {/* Professional Title */}
                   <div className="mb-3">
@@ -309,71 +208,7 @@ function Register({ isOpen, onClose, onLoginClick }) {
                     />
                   </div>
 
-                  {/* Total Experience */}
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">
-                      Total Experience (in years)
-                    </label>
-                    <input
-                      type="number"
-                      name="totalExperience"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter your total experience"
-                      value={formData.totalExperience}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  {/* Social Links */}
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">
-                      LinkedIn
-                    </label>
-                    <input
-                      type="url"
-                      name="socialLinks.linkedIn"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter LinkedIn URL"
-                      value={formData.socialLinks.linkedIn}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">GitHub</label>
-                    <input
-                      type="url"
-                      name="socialLinks.github"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter GitHub URL"
-                      value={formData.socialLinks.github}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">YouTube</label>
-                    <input
-                      type="url"
-                      name="socialLinks.youtube"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter YouTube URL"
-                      value={formData.socialLinks.youtube}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">Twitter</label>
-                    <input
-                      type="url"
-                      name="socialLinks.twitter"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter Twitter URL"
-                      value={formData.socialLinks.twitter}
-                      onChange={handleChange}
-                    />
-                  </div>
+              
 
                   <button
                     type="button"
@@ -448,6 +283,63 @@ function Register({ isOpen, onClose, onLoginClick }) {
                           <option value="Others">Others</option>
                         </select>
                       </div>
+                      <div className="mb-3">
+                    <label className="block text-sm font-medium">
+                      Qualification Status
+                    </label>
+                    <input
+                      type="text"
+                      name="qualificationStatus"
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter your qualification status"
+                      value={formData.qualificationStatus}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  {/* Profession */}
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">
+                      Profession
+                    </label>
+                    <input
+                      type="text"
+                      name="profession"
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter your profession"
+                      value={formData.profession}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  {/* Organization */}
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">
+                      Organization
+                    </label>
+                    <input
+                      type="text"
+                      name="organization"
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter your organization"
+                      value={formData.organization}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  {/* Interests */}
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">
+                      Interests
+                    </label>
+                    <input
+                      type="text"
+                      name="interests"
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter your interests"
+                      value={formData.interests}
+                      onChange={handleChange}
+                    />
+                  </div>
                     </>
                   )}
 
@@ -466,6 +358,71 @@ function Register({ isOpen, onClose, onLoginClick }) {
                           onChange={handleChange}
                         />
                       </div>
+                       {/* Total Experience */}
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">
+                      Total Experience (in years)
+                    </label>
+                    <input
+                      type="number"
+                      name="totalExperience"
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter your total experience"
+                      value={formData.totalExperience}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  {/* Social Links */}
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">
+                      LinkedIn
+                    </label>
+                    <input
+                      type="url"
+                      name="socialLinks.linkedIn"
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter LinkedIn URL"
+                      value={formData.socialLinks.linkedIn}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">GitHub</label>
+                    <input
+                      type="url"
+                      name="socialLinks.github"
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter GitHub URL"
+                      value={formData.socialLinks.github}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">YouTube</label>
+                    <input
+                      type="url"
+                      name="socialLinks.youtube"
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter YouTube URL"
+                      value={formData.socialLinks.youtube}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">Twitter</label>
+                    <input
+                      type="url"
+                      name="socialLinks.twitter"
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter Twitter URL"
+                      value={formData.socialLinks.twitter}
+                      onChange={handleChange}
+                    />
+                  </div>
                     </>
                   )}
 
@@ -505,6 +462,50 @@ function Register({ isOpen, onClose, onLoginClick }) {
                       />
                     </div>
                   )}
+                   {/* Phone Number */}
+                   <div className="mb-3">
+                    <label className="block text-sm font-medium">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="phoneNumber"
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Enter your phone number"
+                      value={formData.phoneNumber}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  {/* Gender */}
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">Gender</label>
+                    <select
+                      name="gender"
+                      className="w-full p-2 border rounded-md"
+                      value={formData.gender}
+                      onChange={handleChange}
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+
+                  {/* Date of Birth */}
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">
+                      Date of Birth
+                    </label>
+                    <input
+                      type="date"
+                      name="dateOfBirth"
+                      className="w-full p-2 border rounded-md"
+                      value={formData.dateOfBirth}
+                      onChange={handleChange}
+                    />
+                  </div>
 
                   <div className="flex justify-between">
                     <button
