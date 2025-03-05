@@ -189,27 +189,6 @@ function Register({ isOpen, onClose, onLoginClick }) {
                     />
                   </div>
 
-                 
-
-                  
-
-                  {/* Professional Title */}
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">
-                      Professional Title
-                    </label>
-                    <input
-                      type="text"
-                      name="professionalTitle"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter your professional title"
-                      value={formData.professionalTitle}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-              
-
                   <button
                     type="button"
                     className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
@@ -462,8 +441,31 @@ function Register({ isOpen, onClose, onLoginClick }) {
                       />
                     </div>
                   )}
-                   {/* Phone Number */}
-                   <div className="mb-3">
+                  
+
+                  <div className="flex justify-between">
+                    <button
+                      type="button"
+                      className="bg-gray-600 text-white p-2 rounded-md"
+                      onClick={() => setStep(1)}
+                    >
+                      Back
+                    </button>
+                    <button
+                    type="button"
+                    className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
+                    onClick={() => setStep(3)}
+                  >
+                    Next
+                  </button>
+                   
+                  </div>
+                </>
+              )}
+              {step === 3 && (
+                <>
+                 {/* Phone Number */}
+                 <div className="mb-3">
                     <label className="block text-sm font-medium">
                       Phone Number
                     </label>
@@ -506,24 +508,24 @@ function Register({ isOpen, onClose, onLoginClick }) {
                       onChange={handleChange}
                     />
                   </div>
-
                   <div className="flex justify-between">
-                    <button
+                  <button
                       type="button"
                       className="bg-gray-600 text-white p-2 rounded-md"
-                      onClick={() => setStep(1)}
+                      onClick={() => setStep(2)}
                     >
                       Back
                     </button>
-                    <button
+                  <button
                       type="submit"
                       className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
                     >
                       {loading ? "Registering..." : "Register"}
                     </button>
-                  </div>
+                    </div>
                 </>
               )}
+
             </form>
 
             <p className="text-center text-sm mt-3">
