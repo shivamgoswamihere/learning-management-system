@@ -35,7 +35,7 @@ function Register({ isOpen, onClose, onLoginClick }) {
     careerDescription: "",
     accessLevel: "",
     canEnrollCourses: false,
-    profilePicture: typeof profilePicture === "string" ? profilePicture : "",
+    profilePicture: "",
   });
 
   useEffect(() => {
@@ -60,13 +60,32 @@ function Register({ isOpen, onClose, onLoginClick }) {
       setFormData({ ...formData, [name]: value });
     }
   };
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData((prev) => ({ ...prev, profilePicture: file }));
-      setImagePreview(URL.createObjectURL(file));
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "my_preset"); // Use your Cloudinary preset name
+      console.log("Uploading:", formData.get("file"));
+      console.log("Upload preset:", formData.get("upload_preset"));
+      
+      
+  
+      try {
+        const res = await fetch("https://api.cloudinary.com/v1_1/drhk6uycr/image/upload", {
+          method: "POST",
+          body: formData,
+        });
+  
+        const data = await res.json();
+        setFormData((prev) => ({ ...prev, profilePicture: data.secure_url })); // Cloudinary image URL
+        setImagePreview(data.secure_url);
+      } catch (error) {
+        console.error("Image upload error:", error);
+      }
     }
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -262,7 +281,7 @@ function Register({ isOpen, onClose, onLoginClick }) {
                           <option value="Others">Others</option>
                         </select>
                       </div>
-                      <div className="mb-3">
+                      {/* <div className="mb-3">
                     <label className="block text-sm font-medium">
                       Qualification Status
                     </label>
@@ -274,7 +293,7 @@ function Register({ isOpen, onClose, onLoginClick }) {
                       value={formData.qualificationStatus}
                       onChange={handleChange}
                     />
-                  </div>
+                  </div> */}
 
                   {/* Profession */}
                   <div className="mb-3">
@@ -489,9 +508,9 @@ function Register({ isOpen, onClose, onLoginClick }) {
                       onChange={handleChange}
                     >
                       <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
                     </select>
                   </div>
 
