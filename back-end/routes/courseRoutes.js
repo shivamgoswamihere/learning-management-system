@@ -1,21 +1,11 @@
 const express = require("express");
+const { createCourse, getCourses, approveCourse } = require("../controllers/courseController");
+// const { verifyAdmin } = require("../middlewares/authMiddleware");
+
 const router = express.Router();
-const authMiddleware = require("../middlewares/auth");
-const roleAuth = require("../middlewares/roleAuth");
 
-// Only trainers & admins can create courses
-router.post("/create", authMiddleware, roleAuth(["trainer", "admin"]), (req, res) => {
-  res.json({ message: "Course created successfully" });
-});
-
-// Only registered users & examinees can enroll in courses
-router.post("/enroll", authMiddleware, roleAuth(["registered_user", "examinee"]), (req, res) => {
-  res.json({ message: "Enrolled successfully" });
-});
-
-// Only admin can delete a course
-router.delete("/:id", authMiddleware, roleAuth(["admin"]), (req, res) => {
-  res.json({ message: "Course deleted" });
-});
+router.post("/create", createCourse); // Trainer creates course
+router.get("/", getCourses); // Get all courses
+// router.put("/approve/:id", verifyAdmin, approveCourse); // Admin approves course
 
 module.exports = router;
