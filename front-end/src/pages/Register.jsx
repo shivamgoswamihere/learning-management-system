@@ -65,12 +65,8 @@ function Register({ isOpen, onClose, onLoginClick }) {
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", "my_preset"); // Use your Cloudinary preset name
-      console.log("Uploading:", formData.get("file"));
-      console.log("Upload preset:", formData.get("upload_preset"));
-      
-      
-  
+      formData.append("upload_preset", "my_preset"); 
+   
       try {
         const res = await fetch("https://api.cloudinary.com/v1_1/drhk6uycr/image/upload", {
           method: "POST",
