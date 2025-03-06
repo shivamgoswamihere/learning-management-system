@@ -99,14 +99,22 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Upload Profile Picture to Cloudinary
-        let profilePicture = "";
+        let profilePicture = req.body.profilePicture || ""; // Get from body
+
         if (req.file) {
+            console.log("File received:", req.file); // Debugging
             const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
                 folder: "user_profiles",
                 transformation: [{ width: 500, height: 500, crop: "limit" }],
             });
-            profilePicture = uploadedImage.secure_url; // Store Cloudinary URL
+            console.log("Cloudinary Response:", uploadedImage); // Debugging
+            profilePicture = uploadedImage.secure_url;
         }
+        
+        console.log("Final Profile Picture:", profilePicture); // Debugging
+        
+        console.log("Uploaded File:", req.file); 
+
 
         const userData = {
             fullName,
@@ -114,7 +122,7 @@ const registerUser = async (req, res) => {
             email,
             password: hashedPassword,
             role,
-            profilePicture,
+            profilePicture: profilePicture || "",
             phoneNumber,
             gender: gender || "Other", // Default value
             dateOfBirth,
@@ -122,6 +130,7 @@ const registerUser = async (req, res) => {
             isDeleted: false,
             deletedAt: null
         };
+        console.log("Final User Data:", userData);
 
         // Role-specific fields
         if (role === "learner") {
@@ -151,11 +160,15 @@ const registerUser = async (req, res) => {
         if (role === "admin") {
             Object.assign(userData, { accessLevel });
         }
+        console.log("Before saving, profilePicture:", profilePicture);
 
         // Create and Save User
         const user = new User(userData);
         await user.save();
 
+        const savedUser = await User.findOne({ username });
+        console.log("Saved User in DB:", savedUser);
+        
         res.status(201).json({ message: "User registered successfully", user });
 
     } catch (error) {
