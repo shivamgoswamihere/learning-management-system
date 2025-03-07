@@ -3,13 +3,18 @@ const Course = require("../models/Course");
 // Create Course
 exports.createCourse = async (req, res) => {
     try {
-        const { title, description, category, thumbnail, bannerImage, price, duration, prerequisites, certificationAvailable } = req.body;
+        const { title, description, category, price, duration, prerequisites, certificationAvailable } = req.body;
+
+        // Extract uploaded images from req.files
+        const thumbnail = req.files["thumbnail"] ? req.files["thumbnail"][0].path : "";
+        const bannerImage = req.files["bannerImage"] ? req.files["bannerImage"][0].path : "";
+
         const course = new Course({
             title,
             description,
             category,
-            thumbnail,
-            bannerImage,
+            thumbnail,      // Save Cloudinary URL in DB
+            bannerImage,    // Save Cloudinary URL in DB
             price,
             duration,
             prerequisites,
@@ -23,6 +28,7 @@ exports.createCourse = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
 
 // Get all Courses
 exports.getCourses = async (req, res) => {
