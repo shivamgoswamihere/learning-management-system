@@ -117,7 +117,7 @@ const loginUser = async (req, res) => {
         const token = generateToken({ id: user._id, role: user.role });
 
         // ✅ Save token to user document
-        user.token = token;
+        user.tokens.push({ token });
         await user.save();
         res.json({ 
             message: "Login successful", 
