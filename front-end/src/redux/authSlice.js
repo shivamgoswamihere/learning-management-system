@@ -23,6 +23,8 @@ export const loginUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/login`, userData);
+       // Save the token to localStorage
+       localStorage.setItem("token", response.data.token);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -32,7 +34,7 @@ export const loginUser = createAsyncThunk(
 
 // ✅ Logout User
 export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
-  // Here, you could also make an API request to invalidate the session
+  localStorage.removeItem("token"); // Clear token on logout
   return null; // Returning null will reset the user state
 });
 
@@ -60,7 +62,7 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        // state.user = action.payload; // Store user data
+        state.user = action.payload; // Store user data
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -74,6 +76,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.user = action.payload;
+        state.token = action.payload.token; // Store token in Redux
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -81,6 +84,7 @@ const authSlice = createSlice({
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null; // Clears user state on logout
+        state.token = null; // Clear token on logout
         state.success = false;
       });
   },

@@ -85,11 +85,7 @@ function Register({ isOpen, onClose, onLoginClick }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(registerUser(formData)).then((res) => {
-      if (res.meta.requestStatus === "fulfilled") {
-        // login modal to be opened here
-      }
-    });
+    dispatch(registerUser(formData))
   };
 
   return (

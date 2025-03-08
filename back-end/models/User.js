@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     role: { type: String, enum: ["learner", "trainer", "examiner", "admin"], required: true },
     profilePicture: { type: String, default: "" },
+    token: { type: String }, // ✅ Store JWT token here
 
     // Common fields
     phoneNumber: { type: String },

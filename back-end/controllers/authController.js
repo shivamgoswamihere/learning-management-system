@@ -76,9 +76,14 @@ const registerUser = async (req, res) => {
             Object.assign(userData, { canEnrollCourses: false });
         }
 
-        if (role === "admin") {
-            Object.assign(userData, { accessLevel });
+        if (userData.role === "admin") {
+            if (!userData.accessLevel) {
+                userData.accessLevel = "Full Admin"; // Set a valid default
+            } else if (!["Full Admin", "Content Manager", "Finance Manager"].includes(userData.accessLevel)) {
+                return res.status(400).json({ error: "Invalid access level provided." });
+            }
         }
+        
         console.log("Before saving, profilePicture:", profilePicture);
 
         // Create and Save User
@@ -111,6 +116,9 @@ const loginUser = async (req, res) => {
         // Generate token with user role
         const token = generateToken({ id: user._id, role: user.role });
 
+        // ✅ Save token to user document
+        user.token = token;
+        await user.save();
         res.json({ 
             message: "Login successful", 
             token, 
