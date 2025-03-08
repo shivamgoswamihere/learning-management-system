@@ -17,11 +17,20 @@ const Profile = () => {
   return (
     <div className="p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-2xl font-bold mb-4">User Profile</h2>
-      <div className="border p-4 rounded-md">
-        <p><strong>ID:</strong> {currentUser._id}</p>
-        <p><strong>Name:</strong> {currentUser.username}</p>
-        <p><strong>Email:</strong> {currentUser.email}</p>
-        <p><strong>Role:</strong> {currentUser.role}</p>
+      <div className="border p-4 rounded-md flex items-center space-x-6">
+        {/* Profile Picture */}
+        <img
+          src={currentUser.profilePicture || "/default-avatar.png"} 
+          alt="Profile"
+          className="w-24 h-24 rounded-full border"
+        />
+
+        <div>
+          <p><strong>ID:</strong> {currentUser._id}</p>
+          <p><strong>Name:</strong> {currentUser.username}</p>
+          <p><strong>Email:</strong> {currentUser.email}</p>
+          <p><strong>Role:</strong> {currentUser.role}</p>
+        </div>
       </div>
     </div>
   );
