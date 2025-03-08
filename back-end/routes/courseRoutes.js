@@ -1,15 +1,18 @@
-// const express = require("express");
-// const { createCourse, getCourses, approveCourse } = require("../controllers/courseController");
-// const { uploadCourseImage } = require("../middlewares/multer");
-// const router = express.Router();
+const express = require("express");
+const { createCourse } = require("../controllers/courseController");
+const protect = require("../middlewares/authMiddleware");
+const upload = require("../middlewares/multerConfig");
 
-// router.post("/upload-course", uploadCourseImage.fields([{ name: "thumbnail" }, { name: "bannerImage" }]), (req, res) => {
-//     res.json({
-//         thumbnail: req.files["thumbnail"] ? req.files["thumbnail"][0].path : "",
-//         bannerImage: req.files["bannerImage"] ? req.files["bannerImage"][0].path : "",
-//     });
-//     router.get("/", getCourses); // Get all courses
-// router.put("/approve/:id", verifyAdmin, approveCourse); // Admin approves course
-// });
+const router = express.Router();
 
-// module.exports = router;
+router.post(
+    "/create-course",
+    protect(["trainer"]),
+    upload.fields([
+        { name: "thumbnail", maxCount: 1 },
+        { name: "bannerImage", maxCount: 1 }
+    ]),
+    createCourse
+);
+
+module.exports = router;
