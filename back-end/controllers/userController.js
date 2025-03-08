@@ -1,7 +1,6 @@
 const User = require("../models/User");
 const mongoose = require("mongoose");
 
-
 // ✅ Get all users (Admin only)
 const getUsers = async (req, res) => {
     try {
@@ -18,7 +17,6 @@ const getUserById = async (req, res) => {
         const { id } = req.params;
         console.log("🔹 Requested User ID:", id);
         console.log("🔹 Authenticated User:", req.user);
-        
 
         if (req.user.role !== "admin" && req.user._id.toString() !== id) {
             return res.status(403).json({ message: "Access denied" });
@@ -41,6 +39,18 @@ const getUserById = async (req, res) => {
     }
 };
 
+// ✅ Get current logged-in user
+const getCurrentUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select("-password"); // Exclude password
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
 
 // ✅ Update user profile (User themselves)
 const updateUser = async (req, res) => {
@@ -98,5 +108,4 @@ const deleteUser = async (req, res) => {
     }
 };
 
-
-module.exports = { getUsers, getUserById, updateUser, partialUpdateUser, deleteUser };
+module.exports = { getUsers, getUserById, getCurrentUser, updateUser, partialUpdateUser, deleteUser };

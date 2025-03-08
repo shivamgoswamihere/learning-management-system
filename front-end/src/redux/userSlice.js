@@ -23,15 +23,31 @@ export const fetchAllUsers = createAsyncThunk(
 // ✅ Thunk: Fetch user by ID
 export const fetchUserById = createAsyncThunk(
     "users/fetchUserById",
-    async (id, { rejectWithValue }) => {
+    async (_id, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${API_URL}/${id}`, {
+            const response = await axios.get(`${API_URL}/${_id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Failed to fetch user.");
+        }
+    }
+);
+
+// ✅ Thunk: Fetch current logged-in user
+export const fetchCurrentUser = createAsyncThunk(
+    "users/fetchCurrentUser",
+    async (_, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${API_URL}/me`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to fetch current user.");
         }
     }
 );
@@ -42,6 +58,7 @@ const userSlice = createSlice({
     initialState: {
         users: [],
         user: null,
+        currentUser: null, // ✅ Add current user state
         loading: false,
         error: null
     },
@@ -74,8 +91,23 @@ const userSlice = createSlice({
             .addCase(fetchUserById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+
+            // ✅ Handle fetchCurrentUser
+            .addCase(fetchCurrentUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchCurrentUser.fulfilled, (state, action) => {
+                state.loading = false;
+                state.currentUser = action.payload;
+            })
+            .addCase(fetchCurrentUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     }
 });
 
 export default userSlice.reducer;
+
