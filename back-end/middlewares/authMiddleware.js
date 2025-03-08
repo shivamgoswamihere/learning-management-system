@@ -20,6 +20,12 @@ const protect = (roles = []) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             console.log("✅ Token decoded:", decoded);
 
+            // Ensure token contains a valid ID
+            if (!decoded.id) {
+                console.log("❌ Token missing user ID");
+                return res.status(401).json({ message: "Invalid token structure." });
+            }
+
             req.user = decoded;
 
             // 🔹 Fetch user from DB to ensure they exist

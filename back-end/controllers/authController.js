@@ -1,6 +1,8 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
+const cloudinary = require("../config/cloudinary");
+
 
 // ✅ Register User
 
@@ -113,21 +115,23 @@ const loginUser = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
-        // Generate token with user role
-        const token = generateToken({ id: user._id, role: user.role });
+        // ✅ Generate token using the entire `user` object
+        const token = generateToken(user);  // 🔹 Fix this line
 
         // ✅ Save token to user document
-        user.tokens.push({ token });
+        user.tokens = [{ token }];
         await user.save();
+
         res.json({ 
             message: "Login successful", 
             token, 
-            user: { id: user._id, name: user.name, email: user.email, role: user.role } 
+            user: { id: user._id, name: user.fullName, email: user.email, role: user.role } 
         });
 
     } catch (error) {
         res.status(500).json({ message: "Server Error", error: error.message });
     }
 };
+
 
 module.exports = { registerUser, loginUser };

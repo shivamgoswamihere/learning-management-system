@@ -3,7 +3,6 @@ const { getUsers, getUserById, updateUser, partialUpdateUser, deleteUser } = req
 const protect = require("../middlewares/authMiddleware");
 
 const router = express.Router();
-
 router.get("/", protect(["admin"]), getUsers);       // Admin only
 router.get("/:id", protect(["admin", "learner", "trainer", "examinee"]), getUserById);  // Admin & user themselves
 router.put("/:id", protect(["admin", "learner", "trainer", "examinee"]), updateUser);   // Admin & user themselves
