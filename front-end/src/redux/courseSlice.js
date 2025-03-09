@@ -21,8 +21,12 @@ export const fetchCourseById = createAsyncThunk("courses/fetchById", async (cour
             headers: { Authorization: `Bearer ${token}` }
         };
         const response = await axios.get(`${API_URL}/${courseId}`, config);
-        return response.data;
+
+        console.log("Fetched course:", response.data); // ✅ Debugging
+
+        return response.data.course; // Ensure returning `course` field
     } catch (error) {
+        console.error("Fetch error:", error.response?.data); // ✅ Debugging
         return rejectWithValue(error.response?.data?.message || "Failed to fetch course");
     }
 });

@@ -1,5 +1,6 @@
 const Course = require("../models/Course");
 const User = require("../models/User");
+const mongoose = require("mongoose");
 
 // ✅ Create Course
 const createCourse = async (req, res) => {
@@ -47,21 +48,15 @@ const createCourse = async (req, res) => {
 // ✅ Get Single Course by ID
 const getCourse = async (req, res) => {
     try {
-        const { id } = req.params;
+        const courseId = req.params.id;
 
-        // ✅ Debug: Log the received ID
-        console.log("Received Course ID:", id);
-
-        // ✅ Validate ID
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        // ✅ Validate ObjectId
+        if (!mongoose.Types.ObjectId.isValid(courseId)) {
             return res.status(400).json({ success: false, message: "Invalid course ID" });
         }
 
-        // ✅ Fetch Course
-        const course = await Course.findById(id).populate("trainer", "name email");
-
-        // ✅ Debug: Log fetched course
-        console.log("Fetched Course:", course);
+        // ✅ Find Course by _id
+        const course = await Course.findById(courseId).populate("trainer", "name email");
 
         if (!course) {
             return res.status(404).json({ success: false, message: "Course not found" });
@@ -71,7 +66,7 @@ const getCourse = async (req, res) => {
 
     } catch (error) {
         console.error("Error fetching course:", error);
-        return res.status(500).json({ success: false, message: "Internal server error" });
+        return res.status(500).json({ success: false, message: "Server error" });
     }
 };
 

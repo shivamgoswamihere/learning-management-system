@@ -32,9 +32,11 @@ const CoursesList = () => {
                                 <span className="text-green-600 font-semibold">
                                     {course.price === 0 ? "Free" : `$${course.price}`}
                                 </span>
-                                <Link to="/CourseDetails"><button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                                    View Course
-                                </button></Link>
+                                <Link to={`/CourseDetails/${course._id}`}> {/* ✅ Correct Route */}
+                                    <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                        View Course
+                                    </button>
+                                </Link>
                             </div>
                         </div>
                     </div>

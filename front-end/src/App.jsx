@@ -6,7 +6,7 @@ import Footer from "./components/Footer.jsx";
 import "./App.css";
 import CourseDetails from "./pages/CourseDetails.jsx";
 import Profile from "./pages/Profile.jsx";
-import CreateCourseForm from "./components/CreateCourseForm.jsx";
+import CourseForm from "./pages/CourseForm.jsx";
 import CoursesList from "./pages/Courses.jsx";
 
 function App() {
@@ -18,9 +18,9 @@ function App() {
       <Navbar/>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/CourseDetails" element={<CourseDetails />} />
+          <Route path="/CourseDetails/:id" element={<CourseDetails />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/courseForm" element={<CreateCourseForm />} />
+          <Route path="/courseForm" element={<CourseForm />} />
           <Route path="/courses" element={<CoursesList />} />
         </Routes>
         <Footer/>
