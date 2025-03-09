@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../redux/authSlice";
 import Register from "../pages/Register";
@@ -9,6 +9,7 @@ function Navbar() {
   const [modalType, setModalType] = useState(null); // "login" or "register"
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth); // Get user state from Redux
+  const navigate = useNavigate()
 
   // Functions to toggle modals
   const openLogin = () => setModalType("login");
@@ -17,7 +18,8 @@ function Navbar() {
 
   // Logout Handler
   const handleLogout = () => {
-    dispatch(logoutUser()); // Dispatch logout action
+    dispatch(logoutUser());
+    navigate("/") // Dispatch logout action
   };
 
   return (
