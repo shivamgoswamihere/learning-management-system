@@ -6,6 +6,8 @@ import Footer from "./components/Footer.jsx";
 import "./App.css";
 import CourseDetails from "./pages/CourseDetails.jsx";
 import Profile from "./pages/Profile.jsx";
+import CreateCourseForm from "./components/CreateCourseForm.jsx";
+import CoursesList from "./pages/Courses.jsx";
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -18,6 +20,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/CourseDetails" element={<CourseDetails />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/courseForm" element={<CreateCourseForm />} />
+          <Route path="/courses" element={<CoursesList />} />
         </Routes>
         <Footer/>
       </Router>

@@ -31,7 +31,7 @@ function Navbar() {
           />
         </Link>
         <div className="searchbar">Search something</div>
-        <div>Courses</div>
+        <Link to="/courses"><div>Courses</div></Link>
 
         {/* Show Profile & Logout if user is logged in */}
         <div className="buttons">

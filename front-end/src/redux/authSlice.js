@@ -41,10 +41,14 @@ export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
 });
 
 // Auth Slice
+const storedUser = localStorage.getItem("user");
+const storedToken = localStorage.getItem("token");
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: null,
+    user: storedUser ? JSON.parse(storedUser) : null,
+    token: storedToken || null,
     loading: false,
     error: null,
     success: false,
@@ -64,7 +68,10 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        state.user = action.payload; // Store user data
+        state.user = action.payload;
+        state.token = action.payload.token;
+        localStorage.setItem("user", JSON.stringify(action.payload)); // ✅ Persist user
+        localStorage.setItem("token", action.payload.token); // ✅ Persist token
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -77,20 +84,26 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        state.user = action.payload;
-        state.token = action.payload.token; // Store token in Redux
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        localStorage.setItem("user", JSON.stringify(action.payload.user)); // ✅ Store user
+        localStorage.setItem("token", action.payload.token); // ✅ Store token
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
       .addCase(logoutUser.fulfilled, (state) => {
-        state.user = null; // Clears user state on logout
-        state.token = null; // Clear token on logout
+        state.user = null;
+        state.token = null;
         state.success = false;
+        localStorage.removeItem("user"); // ✅ Clear on logout
+        localStorage.removeItem("token"); // ✅ Clear on logout
       });
   },
 });
+
+
 
 export const { resetAuthState } = authSlice.actions;
 export default authSlice.reducer;
