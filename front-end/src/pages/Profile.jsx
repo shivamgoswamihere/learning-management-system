@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCurrentUser } from "../redux/userSlice";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -59,6 +60,7 @@ const Profile = () => {
       {currentUser.role === "trainer" && (
         <div className="mt-6 bg-yellow-100 p-4 rounded-lg">
           <h3 className="text-xl font-semibold mb-2">Trainer Details</h3>
+          <Link to="/courseForm"><button className="bg-black text-white">Add Course</button></Link>
           <p><strong>Professional Title:</strong> {currentUser.professionalTitle || "Not provided"}</p>
           <p><strong>Total Experience:</strong> {currentUser.totalExperience} years</p>
           <p><strong>Career Description:</strong> {currentUser.careerDescription || "Not provided"}</p>
