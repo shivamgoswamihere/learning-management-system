@@ -1,5 +1,6 @@
 import { useState } from "react";
 import React from "react";
+
 export default function CourseCategories() {
   const courses = {
     HTML: {
@@ -111,12 +112,13 @@ export default function CourseCategories() {
   return (
     <div className="px-10 py-16">
       {/* Course Categories */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Explore Our Courses</h2>
+      <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 text-center">
         {Object.keys(courses).map((category, index) => (
           <div
             key={index}
             onClick={() => setSelectedCourse(category)}
-            className="p-6 bg-gray-100 rounded-lg shadow-md cursor-pointer hover:bg-gray-200 transition"
+            className="p-6 bg-white border rounded-xl shadow-md cursor-pointer hover:bg-blue-600 hover:text-white transition duration-300"
           >
             <h3 className="text-xl font-semibold">{category}</h3>
           </div>
@@ -125,18 +127,18 @@ export default function CourseCategories() {
 
       {/* Course Details & Syllabus */}
       {selectedCourse && (
-        <div className="mt-10 p-6 bg-white rounded-lg shadow-md border">
-          <h2 className="text-2xl font-semibold">{selectedCourse} Course</h2>
-          <p className="mt-2 text-gray-700">{courses[selectedCourse].description}</p>
+        <div className="mt-10 p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+          <h2 className="text-3xl font-semibold text-blue-600">{selectedCourse} Course</h2>
+          <p className="mt-3 text-lg text-gray-700">{courses[selectedCourse].description}</p>
 
           {/* Syllabus Modules */}
-          <div className="mt-4">
+          <div className="mt-6 space-y-6">
             {courses[selectedCourse].modules.map((module, index) => (
-              <div key={index} className="mt-4 p-4 border rounded-lg bg-gray-50">
-                <h3 className="text-lg font-semibold">{module.name}</h3>
-                <ul className="list-disc ml-6 mt-2 text-gray-700">
+              <div key={index} className="p-5 border rounded-lg bg-gray-50 hover:bg-gray-100 transition">
+                <h3 className="text-xl font-semibold text-gray-800">{module.name}</h3>
+                <ul className="list-disc ml-6 mt-3 text-gray-700">
                   {module.chapters.map((chapter, idx) => (
-                    <li key={idx}>{chapter}</li>
+                    <li key={idx} className="text-lg">{chapter}</li>
                   ))}
                 </ul>
               </div>
