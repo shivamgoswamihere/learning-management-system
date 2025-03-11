@@ -16,6 +16,8 @@ import python from "../assets/python.svg";
 import react from "../assets/react.svg";
 import vue from "../assets/vuejs.svg";
 import angular from "../assets/angular.svg";
+import CourseCategories from "../components/CourseCategories";
+
 
 const Home = () => {
 
@@ -184,14 +186,9 @@ const Home = () => {
       </section>
 
 
-      {/* Course Categories */}
-      <section className="py-16 px-10 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-        {['HTML', 'CSS', 'JavaScript', 'React', 'Node.js', 'Vue.js'].map((category, index) => (
-          <div key={index} className="p-6 bg-gray-100 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold">{category}</h3>
-          </div>
-        ))}
-      </section>
+  {/* Course Categories */}
+<CourseCategories />
+
 
       {/* Testimonials */}
       <section className="bg-gray-100 py-16 px-10 text-center">
