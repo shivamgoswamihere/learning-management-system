@@ -1,22 +1,40 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { FaClock } from "react-icons/fa";
 
-function CourseCard({ image, heading, description, link }) {
+function CourseCard({ image, category, heading, level, duration, link }) {
   return (
-    <Link to={link}>
-      <div className="flex flex-col gap-2 w-full h-fit bg-white shadow-xl p-2 rounded-md">
-        <div className="bg-blue-200 text-center object-cover h-[200px] ">
+    <Link to={link} className="group">
+      <div className="bg-white shadow-lg rounded-xl overflow-hidden transition-all group-hover:shadow-2xl p-4">
+        {/* Course Image */}
+        <div className="h-[180px] w-full overflow-hidden rounded-lg">
           <img
             src={image}
             alt="Course"
-            className="w-full h-full object-cover rounded-md"
+            className="w-full h-full object-cover transform group-hover:scale-105 transition-all"
           />
         </div>
-        <div className="text-2xl font-bold">{heading}</div>
-        <div className="text-lg line-clamp-2 overflow-hidden">{description}</div>
-        <button className="text-sm font-semibold bg-[#6d28d2] hover:cursor-pointer text-white w-fit px-4 py-2 my-4 rounded-sm hover:bg-[#6d28af]">
-          Buy Now
-        </button>
+
+        {/* Course Info */}
+        <div className="mt-4 space-y-2">
+          {/* Category */}
+          <span className="text-sm font-semibold uppercase text-blue-500">
+            {category}
+          </span>
+
+          {/* Title */}
+          <h2 className="text-lg font-bold text-gray-900">{heading}</h2>
+
+          {/* Level & Duration */}
+          <div className="flex items-center justify-between text-gray-600 text-sm">
+            <span className="flex items-center">
+              🏅 {level}
+            </span>
+            <span className="flex items-center">
+              <FaClock className="mr-1" /> {duration}
+            </span>
+          </div>
+        </div>
       </div>
     </Link>
   );
