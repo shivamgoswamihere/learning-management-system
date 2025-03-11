@@ -8,6 +8,14 @@ import fetchbg from "../assets/example.jpg"
 import reviewbg from "../assets/reviewbg.png"
 import { useEffect, useState } from "react";
 import CourseCard from "../components/CourseCard";
+import html5 from "../assets/html5.svg";
+import css3 from "../assets/css3.svg";
+import javascript from "../assets/js.svg";
+import nodejs from "../assets/node-js.svg";
+import python from "../assets/python.svg";
+import react from "../assets/react.svg";
+import vue from "../assets/vuejs.svg";
+import angular from "../assets/angular.svg";
 
 const Home = () => {
 
@@ -27,6 +35,18 @@ const Home = () => {
       setAdditionalCourses(courses.slice(1, 4)); // Get 3 additional courses
     }
   }, [courses]);
+
+  const icons = [
+    { src: html5, alt: "HTML5" },
+    { src: css3, alt: "CSS3" },
+    { src: javascript, alt: "JavaScript", bg: true },
+    { src: nodejs, alt: "Node.js" },
+    { src: python, alt: "Python" },
+    { src: react, alt: "React" },
+    { src: vue, alt: "Vue.js" },
+    { src: angular, alt: "Angular" },
+  ];
+
   return (
     <div className="font-sans bg-white">
       {/* Hero Section with Slider */}
@@ -75,6 +95,17 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <div className="mt-5 flex flex-wrap justify-center items-center gap-4 md:gap-8 lg:gap-10 py-6 bg-white max-w-screen-lg mx-auto">
+        {icons.map((icon, index) => (
+          <img
+            key={index}
+            src={icon.src}
+            alt={icon.alt}
+            className="w-12 sm:w-14 md:w-16 lg:w-20 h-12 filter grayscale opacity-80 transition hover:opacity-100"
+          />
+        ))}
+      </div>
+
       {/* Review Section */}
       <section className="py-16 px-6 md:px-16 relative flex flex-col md:flex-row items-center gap-10 max-w-6xl mx-auto">
         <div className="w-full md:w-1/2 relative">
@@ -140,14 +171,14 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {additionalCourses.map((course) => (
             <CourseCard
-            key={course._id}
-            image={course.thumbnail || "https://via.placeholder.com/300"}
-            category={course.category || "General"}
-            heading={course.title || "Untitled Course"}
-            level={course.level || "Beginner"}
-            duration={course.duration || "N/A"}
-            link={`/CourseDetails/${course._id}`} // ✅ Dynamic Link
-        />
+              key={course._id}
+              image={course.thumbnail || "https://via.placeholder.com/300"}
+              category={course.category || "General"}
+              heading={course.title || "Untitled Course"}
+              level={course.level || "Beginner"}
+              duration={course.duration || "N/A"}
+              link={`/CourseDetails/${course._id}`} // ✅ Dynamic Link
+            />
           ))}
         </div>
       </section>
