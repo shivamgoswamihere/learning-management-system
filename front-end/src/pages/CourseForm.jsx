@@ -64,26 +64,31 @@ const CourseForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const courseData = new FormData();
-    
+
+        // ✅ Append all form fields except lessons
         for (const key in formData) {
             if (formData[key]) {
-                courseData.append(key, formData[key]);
+                if (key === "certificationAvailable") {
+                    courseData.append(key, formData[key] ? "true" : "false");
+                } else {
+                    courseData.append(key, formData[key]);
+                }
             }
         }
-    
-        // ✅ Append Lesson Data
-        courseData.append("lessons", JSON.stringify(lessons));
-    
-        // ✅ Append Lesson Videos
+
+        // ✅ Append Lesson Details
         lessons.forEach((lesson, index) => {
+            courseData.append(`lessons[${index}][title]`, lesson.title);
+            courseData.append(`lessons[${index}][description]`, lesson.description);
+            courseData.append(`lessons[${index}][order]`, lesson.order);
             if (lesson.video) {
-                courseData.append(`lessonVideos`, lesson.video);
+                courseData.append(`lessonVideos`, lesson.video); // ✅ FIX: Keep same key for all videos
             }
         });
-    
+
+        // ✅ Dispatch Course Creation
         dispatch(createCourse(courseData));
     };
-    
 
     return (
         <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">

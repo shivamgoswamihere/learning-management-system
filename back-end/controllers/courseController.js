@@ -2,11 +2,16 @@ const Course = require("../models/Course");
 const Lesson = require("../models/Lesson");
 const User = require("../models/User");
 
-// ✅ Create Course with Lessons
 const createCourse = async (req, res) => {
     try {
-        const { title, description, category, price, duration, prerequisites, certificationAvailable } = req.body;
-        const lessons = JSON.parse(req.body.lessons);
+        const { 
+            title, description, category, 
+            price, duration, prerequisites, certificationAvailable 
+        } = req.body;
+        
+        const lessons = Array.isArray(req.body.lessons) 
+            ? req.body.lessons 
+            : JSON.parse(req.body.lessons || "[]");
 
         // ✅ Check if user is a trainer
         const trainer = await User.findById(req.user.id);
@@ -15,8 +20,8 @@ const createCourse = async (req, res) => {
         }
 
         // ✅ Upload Files (Multer)
-        const thumbnail = req.files["thumbnail"] ? req.files["thumbnail"][0].path : null;
-        const bannerImage = req.files["bannerImage"] ? req.files["bannerImage"][0].path : null;
+        const thumbnail = req.files?.thumbnail?.[0]?.path || null;
+        const bannerImage = req.files?.bannerImage?.[0]?.path || null;
 
         // ✅ Validate Files
         if (!thumbnail || !bannerImage) {
@@ -39,21 +44,26 @@ const createCourse = async (req, res) => {
 
         await course.save();
 
-        // ✅ Handle Lessons
-        const lessonPromises = lessons.map(async (lesson, index) => {
-            const videoPath = req.files["lessonVideos"][index].path;
-            const newLesson = new Lesson({
-                title: lesson.title,
-                description: lesson.description,
-                videoUrl: videoPath,
-                course: course._id,
-                order: lesson.order
+        // ✅ Handle Lessons (Only if videos exist)
+        if (Array.isArray(lessons) && lessons.length > 0) {
+            const lessonPromises = lessons.map(async (lesson, index) => {
+                const videoPath = req.files["lessonVideos"]?.[index]?.path || null;
+
+                const newLesson = new Lesson({
+                    title: lesson.title,
+                    description: lesson.description,
+                    videoUrl: videoPath,
+                    course: course._id,
+                    order: lesson.order
+                });
+
+                await newLesson.save();
+                course.lessons.push(newLesson._id);
             });
 
-            await newLesson.save();
-        });
-
-        await Promise.all(lessonPromises);
+            await Promise.all(lessonPromises);
+            await course.save();
+        }
 
         return res.status(201).json({
             success: true,
@@ -66,6 +76,7 @@ const createCourse = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
+
 
 // ✅ Get All Courses
 const getAllCourses = async (req, res) => {
@@ -87,31 +98,52 @@ const getAllCourses = async (req, res) => {
 };
 
 // ✅ Get Single Course by ID
+// const getCourse = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const course = await Course.findById(id)
+//             .populate("trainer", "name email")
+//             .populate({
+//                 path: "lessons",
+//                 options: { sort: { order: 1 } }
+//             });
+
+//         if (!course) {
+//             return res.status(404).json({ success: false, message: "Course not found" });
+//         }
+
+//         return res.status(200).json({
+//             success: true,
+//             message: "Course fetched successfully",
+//             course
+//         });
+
+//     } catch (error) {
+//         console.error("Error fetching course:", error);
+//         return res.status(500).json({ success: false, message: error.message });
+//     }
+// };
 const getCourse = async (req, res) => {
     try {
-        const { id } = req.params;
-        const course = await Course.findById(id)
-            .populate("trainer", "name email")
-            .populate({
-                path: "lessons",
-                options: { sort: { order: 1 } }
-            });
+        const course = await Course.findById(req.params.id)
+            .populate("lessons") // ✅ This will bring all lessons linked to the course
+            .populate("trainer", "name email"); // ✅ This will bring trainer info
 
         if (!course) {
             return res.status(404).json({ success: false, message: "Course not found" });
         }
 
-        return res.status(200).json({
+        res.status(200).json({
             success: true,
-            message: "Course fetched successfully",
             course
         });
-
     } catch (error) {
         console.error("Error fetching course:", error);
-        return res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
+
+
 
 module.exports = {
     createCourse,
