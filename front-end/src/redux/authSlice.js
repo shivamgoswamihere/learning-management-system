@@ -34,7 +34,6 @@ export const loginUser = createAsyncThunk(
       const response = await axios.post(`${API_URL}/login`, userData);
       const { token, user } = response.data;
 
-      // ✅ Store in cookies instead of localStorage
       Cookies.set("token", token, { expires: 7, secure: true });
       Cookies.set("user", JSON.stringify(user), { expires: 7, secure: true });
 
@@ -48,7 +47,7 @@ export const loginUser = createAsyncThunk(
 
 // ✅ Logout User
 export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
-  // ✅ Remove cookies instead of localStorage
+
   Cookies.remove("token");
   Cookies.remove("user");
 

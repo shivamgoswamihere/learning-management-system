@@ -10,7 +10,7 @@ export const fetchAllUsers = createAsyncThunk(
     "users/fetchAllUsers",
     async (_, { rejectWithValue }) => {
       try {
-        const token = Cookies.get("token"); // ✅ Use cookies instead of localStorage
+        const token = Cookies.get("token"); 
         if (!token) return rejectWithValue("No authentication token found.");
   
         const response = await axios.get(API_URL, {
