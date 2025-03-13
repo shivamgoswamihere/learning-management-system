@@ -4,6 +4,7 @@ const cors = require("cors");
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 const courseRoutes = require("./routes/courseRoutes");
+const examRoutes = require('./routes/examRoutes');
 const connectDB = require("./config/db"); 
 
 
@@ -29,6 +30,7 @@ connectDB();
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/courses",courseRoutes);
+app.use('/api/exams', examRoutes);
 
 
 // Start Server
