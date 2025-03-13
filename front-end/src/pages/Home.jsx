@@ -49,6 +49,33 @@ const Home = () => {
     { src: angular, alt: "Angular" },
   ];
 
+  const testimonials = [
+    {
+      id: 1,
+      name: "Emma Hart",
+      text: "Massa amet, at dolor tellus pellentesque aenean in eget massa tincidunt habitasse volutpat adipiscing sed id sit auctor eu vivamus nulla.",
+      image: "/images/emma.jpg",
+    },
+    {
+      id: 2,
+      name: "Eddie Johnson",
+      text: "Ut morbi felis, felis massa quam sit massa, amet, bibendum pulvinar elit in adipiscing amet imperdiet ac felis congue enim, elementum orci.",
+      image: "/images/eddie.jpg",
+    },
+    {
+      id: 3,
+      name: "Jonathan Doe",
+      text: "Donec in varius facilisis justo, curabitur aliquet sit justo sed sit interdum diam dolor ornare quis a felis adipiscing hendrerit quisque enim.",
+      image: "/images/jonathan.jpg",
+    },
+    {
+      id: 4,
+      name: "Mike Edward",
+      text: "Pulvinar dui vitae enim, diam et nulla elit nam leo lacinia et, a, pulvinar gravida enim in blandit mauris vitae volutpat urna, sed justo hendrerit.",
+      image: "/images/mike.jpg",
+    },
+  ];
+
   return (
     <div className="font-sans bg-white">
       {/* Hero Section with Slider */}
@@ -192,16 +219,27 @@ const Home = () => {
 
       {/* Testimonials */}
       <section className="bg-gray-100 py-16 px-10 text-center">
-        <h2 className="text-3xl font-bold">What Our Happy Students Say</h2>
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[1, 2].map((id) => (
-            <div key={id} className="p-6 bg-white rounded-lg shadow-md">
-              <p className="text-gray-700 italic">"This course changed my career!"</p>
-              <p className="mt-4 text-gray-900 font-semibold">- Student {id}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <h2 className="text-4xl font-bold text-gray-900">Trusted by Thousands of Students and Tutors</h2>
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+        {testimonials.map((testimonial) => (
+          <div
+            key={testimonial.id}
+            className="p-6 bg-white rounded-lg shadow-lg flex flex-col items-start relative"
+          >
+            <img
+              src={testimonial.image}
+              alt={testimonial.name}
+              className="w-14 h-14 rounded-full absolute -top-6 left-6 border-4 border-white shadow-md"
+            />
+            <p className="text-gray-700 italic mt-10">"{testimonial.text}"</p>
+            <p className="mt-4 text-gray-900 font-semibold">{testimonial.name}</p>
+          </div>
+        ))}
+      </div>
+      <button className="mt-8 px-6 py-3 border border-blue-500 text-blue-500 rounded-full hover:bg-blue-500 hover:text-white transition">
+        Start Learning
+      </button>
+    </section>
 
       {/* Membership Section */}
       <section className="py-16 px-10 text-center">
