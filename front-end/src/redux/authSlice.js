@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import Cookies from "js-cookie";
+
 
 // API Base URL
 const API_URL = "http://localhost:5000/api/auth";
@@ -10,12 +12,19 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/register`, userData);
-      return response.data;
+      const { token, user } = response.data;
+
+      // ✅ Store in cookies
+      Cookies.set("token", token, { expires: 7, secure: true });
+      Cookies.set("user", JSON.stringify(user), { expires: 7, secure: true });
+
+      return { token, user };
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
+
 
 // ✅ Login User
 export const loginUser = createAsyncThunk(
@@ -24,9 +33,11 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await axios.post(`${API_URL}/login`, userData);
       const { token, user } = response.data;
-      // ✅ Store token and user details securely
-      localStorage.setItem("token", token);
-      localStorage.setItem("userId", user._id); // Store user ID for quick access
+
+      // ✅ Store in cookies instead of localStorage
+      Cookies.set("token", token, { expires: 7, secure: true });
+      Cookies.set("user", JSON.stringify(user), { expires: 7, secure: true });
+
       return { token, user };
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -34,21 +45,26 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+
 // ✅ Logout User
 export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
-  localStorage.removeItem("token"); // Clear token on logout
-  return null; // Returning null will reset the user state
+  // ✅ Remove cookies instead of localStorage
+  Cookies.remove("token");
+  Cookies.remove("user");
+
+  return null; // Reset auth state
 });
 
+
 // Auth Slice
-const storedUser = localStorage.getItem("user");
-const storedToken = localStorage.getItem("token");
+const storedUser = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+const storedToken = Cookies.get("token") || null;
 
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: storedUser ? JSON.parse(storedUser) : null,
-    token: storedToken || null,
+    user: storedUser,
+    token: storedToken,
     loading: false,
     error: null,
     success: false,
@@ -68,10 +84,8 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        state.user = action.payload;
+        state.user = action.payload.user;
         state.token = action.payload.token;
-        localStorage.setItem("user", JSON.stringify(action.payload)); // ✅ Persist user
-        localStorage.setItem("token", action.payload.token); // ✅ Persist token
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -86,8 +100,6 @@ const authSlice = createSlice({
         state.success = true;
         state.user = action.payload.user;
         state.token = action.payload.token;
-        localStorage.setItem("user", JSON.stringify(action.payload.user)); // ✅ Store user
-        localStorage.setItem("token", action.payload.token); // ✅ Store token
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -97,12 +109,9 @@ const authSlice = createSlice({
         state.user = null;
         state.token = null;
         state.success = false;
-        localStorage.removeItem("user"); // ✅ Clear on logout
-        localStorage.removeItem("token"); // ✅ Clear on logout
       });
   },
 });
-
 
 
 export const { resetAuthState } = authSlice.actions;

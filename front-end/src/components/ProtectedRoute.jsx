@@ -1,9 +1,10 @@
-import React,{ Navigate, Outlet } from "react-router-dom";
+import React, { Navigate, Outlet } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const ProtectedRoute = () => {
-    const token = localStorage.getItem("token"); // Check if user is logged in
+  const token = Cookies.getItem("token"); // Check if user is logged in
 
-    return token ? <Outlet /> : <Navigate to="/" />;
+  return token ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default ProtectedRoute;
