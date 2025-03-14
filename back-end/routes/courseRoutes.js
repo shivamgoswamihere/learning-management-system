@@ -17,6 +17,6 @@ router.post(
 router.get("/all-courses", getAllCourses);
 
 // ✅ Get Single Course by ID (Logged-in Users Only)
-router.get("/:id", protect(), getCourse);
+router.get("/:id", getCourse);
 
 module.exports = router;
