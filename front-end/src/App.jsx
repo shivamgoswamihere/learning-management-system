@@ -8,6 +8,7 @@ import CourseDetails from "./pages/CourseDetails.jsx";
 import Profile from "./pages/Profile.jsx";
 import CourseForm from "./pages/CourseForm.jsx";
 import CoursesList from "./pages/Courses.jsx";
+import Settings from "./components/Settings.jsx";
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -22,6 +23,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/courseForm" element={<CourseForm />} />
           <Route path="/courses" element={<CoursesList />} />
+          <Route path="/updateUser" element={<Settings />} />
         </Routes>
         <Footer/>
       </Router>

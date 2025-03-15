@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCurrentUser } from "../redux/userSlice";
 import { Link } from "react-router-dom";
 import TrainerCourses from "../components/TrainerCourses";
-
+import set from "../assets/settings.svg"
 const Profile = () => {
   const dispatch = useDispatch();
   const { currentUser, loading, error } = useSelector((state) => state.users);
@@ -20,7 +20,7 @@ const Profile = () => {
   return (
     <div className="max-w-5xl mx-auto p-8 bg-white shadow-lg mt-5 rounded-lg border border-gray-200">
       {/* Profile Header */}
-      <div className="flex flex-col md:flex-row items-center md:items-start md:space-x-6 border-b pb-6">
+      <div className="flex flex-col md:flex-row items-center md:items-start md:space-x-6 border-b pb-6 relative">
         {/* Profile Picture */}
         <div className="relative">
           <img
@@ -34,10 +34,18 @@ const Profile = () => {
         </div>
 
         {/* User Info */}
-        <div className="mt-4 md:mt-0 text-center md:text-left">
+        <div className="mt-4 md:mt-0 text-center md:text-left flex-grow">
           <h2 className="text-3xl font-bold text-gray-800">{currentUser.fullName}</h2>
           <p className="text-gray-600 text-lg">@{currentUser.username}</p>
         </div>
+
+        {/* Settings Icon */}
+        <Link to="/updateUser" className="absolute top-2 right-2 md:top-4 md:right-4 text-gray-600 hover:text-gray-800 transition">
+          <img
+            src={set}
+            className="h-6 w-6 md:h-7 md:w-7"
+          />
+        </Link>
       </div>
 
       {/* General Information */}
