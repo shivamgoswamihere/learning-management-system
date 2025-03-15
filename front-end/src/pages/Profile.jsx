@@ -158,6 +158,11 @@ const Profile = () => {
           <p><strong>Professional Title:</strong> {currentUser.professionalTitle || "Not provided"}</p>
           <p><strong>Total Experience:</strong> {currentUser.totalExperience} years</p>
           <p><strong>Career Description:</strong> {currentUser.careerDescription || "Not provided"}</p>
+          <Link to="/courseForm">
+        <button className="mt-4 px-5 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-900">
+          Add Course
+        </button>
+      </Link>
           <TrainerCourses />
         </div>
       )}

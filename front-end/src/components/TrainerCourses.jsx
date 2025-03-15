@@ -38,11 +38,6 @@ const TrainerCourses = () => {
           </div>
         ))}
       </div>
-      <Link to="/courseForm">
-        <button className="mt-4 px-5 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-900">
-          Add Course
-        </button>
-      </Link>
     </div>
   );
 };

@@ -24,7 +24,12 @@ const UserSchema = new mongoose.Schema({
     // Learner-Specific Fields
     qualification: { type: String }, // Graduate, Post Graduate, etc.
     degree: { type: String }, // Engineering, Arts, etc.
-    qualificationStatus: { type: String, enum: ["Pursuing", "Completed"] },
+    qualificationStatus: { 
+        type: String, 
+        enum: ["Pursuing", "Completed"], 
+        default: "Pursuing", // ✅ Set a default value
+        required: function() { return this.role === "learner"; } // Required only for learners
+    },
     profession: { type: String }, // Student, Working Professional, etc.
     organization: { name: String, address: String },
     interests: { type: String },
@@ -44,8 +49,12 @@ const UserSchema = new mongoose.Schema({
     careerDescription: { type: String },
 
     // Admin-Specific Fields
-    accessLevel: { type: String, enum: ["Full Admin", "Content Manager", "Finance Manager"] },
-
+    accessLevel: { 
+        type: String, 
+        enum: ["Full Admin", "Content Manager", "Finance Manager"], 
+        default: "Full Admin", // ✅ Set a default value
+        required: function() { return this.role === "admin"; } // Required only for admins
+    },
     // Privacy Settings
     privacySettings: {
         showEmail: { type: Boolean, default: true },
