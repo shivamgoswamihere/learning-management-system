@@ -14,10 +14,18 @@ const Settings = () => {
     phoneNumber: "",
     gender: "",
     dateOfBirth: "",
-    address: { city: "", state: "", country: "", pincode: "" },
+    address: { local: "", city: "", state: "", country: "", pincode: "" },
     profession: "",
     organization: { name: "", address: "" },
-    socialLinks: { linkedIn: "", github: "", twitter: "" },
+    qualification: "",
+    degree: "",
+    qualificationStatus: "",
+    interests: "",
+    professionalTitle: "",
+    totalExperience: "",
+    socialLinks: { linkedIn: "", github: "", youtube: "", twitter: "" },
+    careerDescription: "",
+    accessLevel: "",
   });
 
   useEffect(() => {
@@ -32,22 +40,30 @@ const Settings = () => {
         phoneNumber: currentUser.phoneNumber || "",
         gender: currentUser.gender || "",
         dateOfBirth: currentUser.dateOfBirth ? currentUser.dateOfBirth.split("T")[0] : "",
-        address: currentUser.address || { city: "", state: "", country: "", pincode: "" },
+        address: currentUser.address || { local: "", city: "", state: "", country: "", pincode: "" },
         profession: currentUser.profession || "",
         organization: currentUser.organization || { name: "", address: "" },
-        socialLinks: currentUser.socialLinks || { linkedIn: "", github: "", twitter: "" },
+        qualification: currentUser.qualification || "",
+        degree: currentUser.degree || "",
+        qualificationStatus: currentUser.qualificationStatus || "",
+        interests: currentUser.interests || "",
+        professionalTitle: currentUser.professionalTitle || "",
+        totalExperience: currentUser.totalExperience || "",
+        socialLinks: currentUser.socialLinks || { linkedIn: "", github: "", youtube: "", twitter: "" },
+        careerDescription: currentUser.careerDescription || "",
+        accessLevel: currentUser.accessLevel || "",
       });
     }
   }, [currentUser]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name.includes("address.")) {
-      const key = name.split(".")[1];
-      setFormData((prev) => ({ ...prev, address: { ...prev.address, [key]: value } }));
-    } else if (name.includes("socialLinks.")) {
-      const key = name.split(".")[1];
-      setFormData((prev) => ({ ...prev, socialLinks: { ...prev.socialLinks, [key]: value } }));
+    const keys = name.split(".");
+    if (keys.length > 1) {
+      setFormData((prev) => ({
+        ...prev,
+        [keys[0]]: { ...prev[keys[0]], [keys[1]]: value },
+      }));
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -57,10 +73,10 @@ const Settings = () => {
     e.preventDefault();
     try {
       await dispatch(updateUser({ id: currentUser._id, updates: formData })).unwrap();
-      alert("Profile updated successfully!"); // Show success alert
-      navigate("/profile"); // Redirect to profile page
+      alert("Profile updated successfully!");
+      navigate("/profile");
     } catch (error) {
-      alert("Failed to update profile!"); // Show error alert
+      alert("Failed to update profile!");
     }
   };
 
@@ -89,8 +105,8 @@ const Settings = () => {
             type="email"
             name="email"
             value={formData.email}
-            disabled
-            className="w-full p-2 border rounded-md bg-gray-200"
+            onChange={handleChange}
+            className="w-full p-2 border rounded-md"
           />
         </div>
 
@@ -105,6 +121,7 @@ const Settings = () => {
           />
         </div>
 
+        {/* Common Address Fields */}
         <div>
           <label className="block text-sm font-medium">City</label>
           <input
@@ -127,71 +144,82 @@ const Settings = () => {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium">Country</label>
-          <input
-            type="text"
-            name="address.country"
-            value={formData.address.country}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-          />
-        </div>
+        {currentUser?.role === "learner" && (
+          <>
+            <div>
+              <label className="block text-sm font-medium">Qualification</label>
+              <input
+                type="text"
+                name="qualification"
+                value={formData.qualification}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
 
-        {currentUser?.role === "trainer" && (
-          <div>
-            <label className="block text-sm font-medium">Professional Title</label>
-            <input
-              type="text"
-              name="profession"
-              value={formData.profession}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-md"
-            />
-          </div>
+            <div>
+              <label className="block text-sm font-medium">Degree</label>
+              <input
+                type="text"
+                name="degree"
+                value={formData.degree}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
+          </>
         )}
 
         {currentUser?.role === "trainer" && (
+          <>
+            <div>
+              <label className="block text-sm font-medium">Professional Title</label>
+              <input
+                type="text"
+                name="professionalTitle"
+                value={formData.professionalTitle}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium">Total Experience (Years)</label>
+              <input
+                type="number"
+                name="totalExperience"
+                value={formData.totalExperience}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
+          </>
+        )}
+
+        {currentUser?.role === "admin" && (
           <div>
-            <label className="block text-sm font-medium">Organization Name</label>
-            <input
-              type="text"
-              name="organization.name"
-              value={formData.organization.name}
+            <label className="block text-sm font-medium">Access Level</label>
+            <select
+              name="accessLevel"
+              value={formData.accessLevel}
               onChange={handleChange}
               className="w-full p-2 border rounded-md"
-            />
+            >
+              <option value="">Select Access Level</option>
+              <option value="Full Admin">Full Admin</option>
+              <option value="Content Manager">Content Manager</option>
+              <option value="Finance Manager">Finance Manager</option>
+            </select>
           </div>
         )}
 
+        {/* Social Links */}
         <div>
           <label className="block text-sm font-medium">LinkedIn</label>
           <input
             type="text"
             name="socialLinks.linkedIn"
             value={formData.socialLinks.linkedIn}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">GitHub</label>
-          <input
-            type="text"
-            name="socialLinks.github"
-            value={formData.socialLinks.github}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Twitter</label>
-          <input
-            type="text"
-            name="socialLinks.twitter"
-            value={formData.socialLinks.twitter}
             onChange={handleChange}
             className="w-full p-2 border rounded-md"
           />

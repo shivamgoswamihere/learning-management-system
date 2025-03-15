@@ -5,16 +5,16 @@ import Cookies from "js-cookie";
 // Base API URL
 const API_URL = "http://localhost:5000/api/users";
 
-// ✅ Thunk: Fetch all users (Admin only)
+// ✅ Fetch all users (Admin only)
 export const fetchAllUsers = createAsyncThunk(
   "users/fetchAllUsers",
   async (_, { rejectWithValue }) => {
     try {
-      const token = Cookies.get("token");
+      const token = Cookies.get("token"); 
       if (!token) return rejectWithValue("No authentication token found.");
 
       const response = await axios.get(API_URL, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
       return response.data;
     } catch (error) {
@@ -23,7 +23,7 @@ export const fetchAllUsers = createAsyncThunk(
   }
 );
 
-// ✅ Thunk: Fetch user by ID
+// ✅ Fetch user by ID
 export const fetchUserById = createAsyncThunk(
   "users/fetchUserById",
   async (_id, { rejectWithValue }) => {
@@ -32,7 +32,7 @@ export const fetchUserById = createAsyncThunk(
       if (!token) return rejectWithValue("No authentication token found.");
 
       const response = await axios.get(`${API_URL}/${_id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
       return response.data;
     } catch (error) {
@@ -41,7 +41,7 @@ export const fetchUserById = createAsyncThunk(
   }
 );
 
-// ✅ Thunk: Fetch current logged-in user
+// ✅ Fetch current logged-in user
 export const fetchCurrentUser = createAsyncThunk(
   "users/fetchCurrentUser",
   async (_, { rejectWithValue }) => {
@@ -50,7 +50,7 @@ export const fetchCurrentUser = createAsyncThunk(
       if (!token) return rejectWithValue("No authentication token found.");
 
       const response = await axios.get(`${API_URL}/me`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
       return response.data;
     } catch (error) {
@@ -59,55 +59,37 @@ export const fetchCurrentUser = createAsyncThunk(
   }
 );
 
-// ✅ Thunk: Update user profile (Partial Update)
+// ✅ Update user profile (Handles Profile Picture Upload)
 export const updateUser = createAsyncThunk(
   "users/updateUser",
-  async ({ id, updates }, { rejectWithValue }) => {
+  async ({ id, updates, profilePicture }, { rejectWithValue }) => {
     try {
       const token = Cookies.get("token");
       if (!token) return rejectWithValue("No authentication token found.");
 
-      const response = await axios.patch(`${API_URL}/${id}`, updates, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": updates instanceof FormData ? "multipart/form-data" : "application/json",
-        },
-      });
+      let formData;
+      const headers = { Authorization: `Bearer ${token}` };
 
-      const updatedUser = response.data.user;
-      Cookies.set("user", JSON.stringify(updatedUser)); // ✅ Update stored user in cookies
+      if (profilePicture) {
+        // Handle file upload (multipart/form-data)
+        formData = new FormData();
+        for (const key in updates) {
+          formData.append(key, updates[key]);
+        }
+        formData.append("profilePicture", profilePicture); // Attach the file
 
-      return updatedUser; // ✅ Return updated user data
+        headers["Content-Type"] = "multipart/form-data";
+      }
+
+      const response = await axios.put(
+        `${API_URL}/${id}`,
+        profilePicture ? formData : updates, // Use formData for file upload, JSON otherwise
+        { headers }
+      );
+
+      return response.data.user; // Return updated user data
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to update user.");
-    }
-  }
-);
-
-// ✅ Thunk: Update profile picture
-export const updateProfilePicture = createAsyncThunk(
-  "users/updateProfilePicture",
-  async ({ id, file }, { rejectWithValue }) => {
-    try {
-      const token = Cookies.get("token");
-      if (!token) return rejectWithValue("No authentication token found.");
-
-      const formData = new FormData();
-      formData.append("profilePicture", file);
-
-      const response = await axios.patch(`${API_URL}/${id}/profile-picture`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      const updatedUser = response.data.user;
-      Cookies.set("user", JSON.stringify(updatedUser)); // ✅ Update stored user in cookies
-
-      return updatedUser;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Failed to update profile picture.");
     }
   }
 );
@@ -124,14 +106,14 @@ const userSlice = createSlice({
     currentUser: storedUser, // ✅ Use stored user from cookies
     token: storedToken, // ✅ Use stored token from cookies
     loading: false,
-    error: null,
+    error: null
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // ✅ Fetch all users
       .addCase(fetchAllUsers.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchAllUsers.fulfilled, (state, action) => {
         state.loading = false;
@@ -142,9 +124,9 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ✅ Fetch user by ID
       .addCase(fetchUserById.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchUserById.fulfilled, (state, action) => {
         state.loading = false;
@@ -155,9 +137,9 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ✅ Fetch current user
       .addCase(fetchCurrentUser.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
         state.loading = false;
@@ -168,32 +150,19 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ✅ Update user profile
       .addCase(updateUser.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.currentUser = action.payload; // ✅ Update current user
+        state.currentUser = action.payload; // ✅ Update current user data
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      })
-
-      // ✅ Update profile picture
-      .addCase(updateProfilePicture.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(updateProfilePicture.fulfilled, (state, action) => {
-        state.loading = false;
-        state.currentUser = action.payload; // ✅ Update current user
-      })
-      .addCase(updateProfilePicture.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       });
-  },
+  }
 });
 
 export default userSlice.reducer;
