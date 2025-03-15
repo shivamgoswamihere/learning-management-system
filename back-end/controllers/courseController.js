@@ -144,10 +144,32 @@ const getCourse = async (req, res) => {
 };
 
 
+const getTrainerCourses = async (req, res) => {
+    try {
+        const trainerId = req.user.id; // Extract trainer ID from authenticated user
+
+        const trainer = await User.findById(trainerId);
+        if (!trainer || trainer.role !== "trainer") {
+            return res.status(403).json({ success: false, message: "Only trainers can access their courses" });
+        }
+
+        const courses = await Course.find({ trainer: trainerId }).populate("lessons");
+
+        return res.status(200).json({
+            success: true,
+            courses,
+        });
+
+    } catch (error) {
+        console.error("Error fetching trainer courses:", error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
 
 module.exports = {
     createCourse,
     getAllCourses,
-    getCourse
+    getCourse,
+    getTrainerCourses, // ✅ Add this function to exports
 };
 

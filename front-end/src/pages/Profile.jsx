@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCurrentUser } from "../redux/userSlice";
 import { Link } from "react-router-dom";
+import TrainerCourses from "../components/TrainerCourses";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -76,12 +77,7 @@ const Profile = () => {
             {currentUser.socialLinks?.youtube && <a href={currentUser.socialLinks.youtube} target="_blank" rel="noopener noreferrer" className="text-red-500 hover:underline">YouTube</a>}
             {currentUser.socialLinks?.twitter && <a href={currentUser.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Twitter</a>}
           </div>
-
-          <Link to="/courseForm">
-            <button className="mt-4 px-5 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-900">
-              Add Course
-            </button>
-          </Link>
+          <TrainerCourses />
         </div>
       )}
 

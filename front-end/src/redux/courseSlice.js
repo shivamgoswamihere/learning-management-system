@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API_URL = "http://localhost:5000/api/courses";
 
-// ✅ Fetch All Courses
+// ✅ Fetch All Courses (Public)
 export const fetchAllCourses = createAsyncThunk(
     "courses/fetchAll",
     async (_, { rejectWithValue }) => {
@@ -16,6 +16,23 @@ export const fetchAllCourses = createAsyncThunk(
     }
 );
 
+// ✅ Fetch Trainer's Courses (Only Trainers)
+export const fetchTrainerCourses = createAsyncThunk(
+    "courses/fetchTrainer",
+    async (_, { rejectWithValue, getState }) => {
+        try {
+            const token = getState().auth.token;
+            const response = await axios.get(`${API_URL}/trainer`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            return response.data.courses;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to fetch trainer courses");
+        }
+    }
+);
+
 // ✅ Fetch Single Course (With Lessons)
 export const fetchCourseById = createAsyncThunk(
     "courses/fetchById",
@@ -23,9 +40,7 @@ export const fetchCourseById = createAsyncThunk(
         try {
             const token = getState().auth.token;
             const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: { Authorization: `Bearer ${token}` },
             };
 
             const response = await axios.get(`${API_URL}/${courseId}`, config);
@@ -43,11 +58,8 @@ export const createCourse = createAsyncThunk(
         try {
             const token = getState().auth.token;
             
-            // ✅ Don't pass Content-Type for FormData
             const response = await axios.post(`${API_URL}/create-course`, courseData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: { Authorization: `Bearer ${token}` },
             });
 
             return response.data;
@@ -61,6 +73,7 @@ const courseSlice = createSlice({
     name: "courses",
     initialState: {
         courses: [],
+        trainerCourses: [],
         selectedCourse: null,
         lessons: [],
         loading: false,
@@ -88,6 +101,19 @@ const courseSlice = createSlice({
                 state.error = action.payload;
             })
 
+            // ✅ Fetch Trainer Courses
+            .addCase(fetchTrainerCourses.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(fetchTrainerCourses.fulfilled, (state, action) => {
+                state.loading = false;
+                state.trainerCourses = action.payload;
+            })
+            .addCase(fetchTrainerCourses.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
             // ✅ Fetch Course + Lessons
             .addCase(fetchCourseById.pending, (state) => {
                 state.loading = true;
@@ -109,7 +135,7 @@ const courseSlice = createSlice({
             })
             .addCase(createCourse.fulfilled, (state, action) => {
                 state.loading = false;
-                state.courses.push(action.payload);
+                state.trainerCourses.push(action.payload); // ✅ Add to trainer courses
             })
             .addCase(createCourse.rejected, (state, action) => {
                 state.loading = false;

@@ -1,6 +1,11 @@
 const express = require("express");
 const { uploadCourseFiles } = require("../middlewares/multerConfig");
-const { createCourse, getCourse, getAllCourses } = require("../controllers/courseController");
+const { 
+    createCourse, 
+    getCourse, 
+    getAllCourses, 
+    getTrainerCourses 
+} = require("../controllers/courseController");
 const protect = require("../middlewares/authMiddleware");
 
 const router = express.Router();
@@ -16,7 +21,10 @@ router.post(
 // ✅ Get All Courses (Public)
 router.get("/all-courses", getAllCourses);
 
-// ✅ Get Single Course by ID (Logged-in Users Only)
+// ✅ Get Trainer's Courses (Trainer Only)
+router.get("/trainer", protect(["trainer"]), getTrainerCourses);
+
+// ✅ Get Single Course by ID (Logged-in Users Only) use protect()
 router.get("/:id", getCourse);
 
 module.exports = router;
