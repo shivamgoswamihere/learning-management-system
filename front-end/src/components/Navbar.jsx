@@ -32,11 +32,7 @@ function Navbar() {
       <div className="flex justify-between items-center px-6 md:px-10 py-4 bg-white text-black shadow-md">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <img
-            className="w-40"
-            src="logo.svg"
-            alt="Logo"
-          />
+          <img className="w-40" src="logo.svg" alt="Logo" />
         </Link>
 
         {/* Mobile Menu Button */}
@@ -106,13 +102,15 @@ function Navbar() {
             </>
           )}
 
-          {/* Cart Icon */}
-          <Link to="/cart" className="relative">
-            <FaShoppingCart className="text-2xl text-gray-700 hover:text-blue-600 transition" />
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-              3 {/* Replace with dynamic cart count */}
-            </span>
-          </Link>
+          {/* ✅ Show Cart Icon Only When Logged In */}
+          {user && (
+            <Link to="/cart" className="relative">
+              <FaShoppingCart className="text-2xl text-gray-700 hover:text-blue-600 transition" />
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                3 {/* Replace with dynamic cart count */}
+              </span>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -167,17 +165,19 @@ function Navbar() {
             </>
           )}
 
-          {/* Cart Icon */}
-          <Link
-            to="/cart"
-            className="relative flex items-center gap-2 text-lg font-medium"
-            onClick={() => setMenuOpen(false)}
-          >
-            <FaShoppingCart className="text-2xl text-gray-700 hover:text-blue-600 transition" />
-            <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-              3 {/* Replace with dynamic cart count */}
-            </span>
-          </Link>
+          {/* ✅ Show Cart Only When Logged In */}
+          {user && (
+            <Link
+              to="/cart"
+              className="relative flex items-center gap-2 text-lg font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              <FaShoppingCart className="text-2xl text-gray-700 hover:text-blue-600 transition" />
+              <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                3 {/* Replace with dynamic cart count */}
+              </span>
+            </Link>
+          )}
         </div>
       )}
 
