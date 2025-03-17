@@ -6,7 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const examRoutes = require('./routes/examRoutes');
 const connectDB = require("./config/db"); 
-
+const contactRoutes = require('./routes/contactRoutes');
 
 dotenv.config(); 
 
@@ -31,7 +31,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/courses",courseRoutes);
 app.use('/api/exams', examRoutes);
-
+app.use('/api/contact', contactRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;

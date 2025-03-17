@@ -143,6 +143,29 @@ const getCourse = async (req, res) => {
     }
 };
 
+const updateCourse = async (req, res) => {
+    try {
+        const { courseId } = req.params;
+        const updates = req.body; // Get updated course data
+
+        // Ensure only the trainer who created it or an admin can update
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ message: "Course not found" });
+        }
+
+        if (req.user.role !== "admin" && course.trainer.toString() !== req.user.id) {
+            return res.status(403).json({ message: "Unauthorized to update this course" });
+        }
+
+        // Perform update
+        const updatedCourse = await Course.findByIdAndUpdate(courseId, updates, { new: true });
+
+        res.status(200).json({ message: "Course updated successfully", course: updatedCourse });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to update course", error: error.message });
+    }
+};
 
 const getTrainerCourses = async (req, res) => {
     try {
@@ -171,5 +194,6 @@ module.exports = {
     getAllCourses,
     getCourse,
     getTrainerCourses, // ✅ Add this function to exports
+    updateCourse
 };
 

@@ -69,6 +69,23 @@ export const createCourse = createAsyncThunk(
     }
 );
 
+
+export const updateCourse = createAsyncThunk(
+    "courses/update",
+    async ({ courseId, updatedData }, { rejectWithValue, getState }) => {
+        try {
+            const token = getState().auth.token;
+            const response = await axios.put(`${API_URL}/${courseId}`, updatedData, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            return response.data.course; // Return updated course
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to update course");
+        }
+    }
+);
+
 const courseSlice = createSlice({
     name: "courses",
     initialState: {
@@ -86,6 +103,7 @@ const courseSlice = createSlice({
             state.error = null;
         },
     },
+    
     extraReducers: (builder) => {
         builder
             // ✅ Fetch All Courses
@@ -138,6 +156,20 @@ const courseSlice = createSlice({
                 state.trainerCourses.push(action.payload); // ✅ Add to trainer courses
             })
             .addCase(createCourse.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(updateCourse.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(updateCourse.fulfilled, (state, action) => {
+                state.loading = false;
+                state.selectedCourse = action.payload; // ✅ Update selected course
+                state.courses = state.courses.map((course) =>
+                    course._id === action.payload._id ? action.payload : course
+                ); // ✅ Update in the course list
+            })
+            .addCase(updateCourse.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

@@ -119,14 +119,14 @@ const Home = () => {
             <img
               src={featuredCourse ? featuredCourse.thumbnail : "Loading..."}
               alt="Hero Course"
-              className="w-full rounded-lg shadow-lg"
+              className="w-full h-[300px] object-fill rounded-lg shadow-lg"
             />
             {/* Play Button Overlay */}
-            <div className="absolute inset-0 flex items-center justify-center">
+            {/* <div className="absolute inset-0 flex items-center justify-center">
               <button className="bg-yellow-400 text-white p-4 rounded-full shadow-lg hover:bg-yellow-500 transition">
                 <FaPlay className="text-2xl" />
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

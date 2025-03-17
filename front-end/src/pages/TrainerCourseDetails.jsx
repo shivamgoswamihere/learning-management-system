@@ -2,39 +2,33 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCourseById } from "../redux/courseSlice";
+import UpdateCourseModal from "./UpdateCourseModal"; // Import the modal
 
-const CourseDetails = () => {
+const TrainerCourseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { selectedCourse, loading, error } = useSelector(
-    (state) => state.courses
-  );
+  const { selectedCourse, loading, error } = useSelector((state) => state.courses);
   const [showLessons, setShowLessons] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
   useEffect(() => {
     if (id) dispatch(fetchCourseById(id));
   }, [dispatch, id]);
 
-  if (loading)
-    return <p className="text-center text-lg">Loading course details...</p>;
+  if (loading) return <p className="text-center text-lg">Loading course details...</p>;
   if (error) return <p className="text-red-500 text-center">{error}</p>;
   if (!selectedCourse) return <p className="text-center">Course not found.</p>;
-
   const handleToggleLessons = () => {
     setShowLessons(!showLessons);
   };
 
   return (
-    <div className="max-w-full mx-auto mt-2 text-white ">
+    <div className="max-w-full mx-auto mt-2 text-white">
       {/* ✅ Back Button */}
-      <button
-        onClick={() => navigate(-1)}
-        className="mb-2 mx-6 px-4 py-1 bg-black text-white hover:bg-gray-900"
-      >
+      <button onClick={() => navigate(-1)} className="mb-2 mx-6 px-4 py-1 bg-black text-white hover:bg-gray-900">
         ← Back
       </button>
-
       <div className="grid grid-cols-2 gap-5 p-6 bg-gradient-to-r from-blue-900 to-blue-700">
         <div className="mt-4">
           <span className="bg-blue-200 text-blue-900 font-bold p-3 py-1 text-left text-sm">
@@ -110,8 +104,18 @@ const CourseDetails = () => {
           </div>
         )}
       </div>
+
+      {/* ✅ Update Course Button */}
+      <div className="mt-6 mx-6">
+        <button onClick={() => setIsUpdateModalOpen(true)} className="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600">
+          Edit Course
+        </button>
+      </div>
+
+      {/* ✅ Update Modal */}
+      <UpdateCourseModal course={selectedCourse} isOpen={isUpdateModalOpen} onClose={() => setIsUpdateModalOpen(false)} />
     </div>
   );
 };
 
-export default CourseDetails;
+export default TrainerCourseDetails;

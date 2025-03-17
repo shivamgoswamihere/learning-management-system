@@ -32,7 +32,7 @@ const TrainerCourses = () => {
             <h4 className="mt-2 text-lg font-semibold text-gray-800">{course.title}</h4>
             <p className="text-gray-600">{course.category}</p>
             <p className="text-gray-500">Price: ${course.price}</p>
-            <Link to={`/CourseDetails/${course._id}`} className="text-blue-500 hover:underline">
+            <Link to={`/TrainerCourseDetails/${course._id}`} className="text-blue-500 hover:underline">
               View Course
             </Link>
           </div>
