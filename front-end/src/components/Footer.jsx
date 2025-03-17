@@ -65,7 +65,7 @@ function Footer() {
 
       {/* Copyright */}
       <div className=" text-center text-sm mt-6 border-t border-gray-700 pt-4">
-        &copy; {new Date().getFullYear()} Udemy. All rights reserved.
+        &copy; {new Date().getFullYear()} Cognimatter. All rights reserved.
       </div>
     </footer>
   );
