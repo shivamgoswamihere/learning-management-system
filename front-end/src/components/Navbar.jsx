@@ -33,8 +33,8 @@ function Navbar() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img
-            className="w-24"
-            src="https://frontends.udemycdn.com/frontends-homepage/staticx/udemy/images/v7/logo-udemy.svg"
+            className="w-40"
+            src="logo.svg"
             alt="Logo"
           />
         </Link>
