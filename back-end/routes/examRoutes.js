@@ -3,8 +3,8 @@ const { createExam, addQuestions, getAllExams } = require("../controllers/examCo
 const protect = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-router.post("/create", protect, createExam);
-router.post("/add-questions", protect, addQuestions);
-router.get("/all", protect, getAllExams);
+router.post("/create", protect(["trainer"]), createExam);
+router.post("/add-questions", protect(["trainer"]), addQuestions);
+router.get("/all", protect(["trainer"]), getAllExams);
 
 module.exports = router;
