@@ -10,13 +10,11 @@ import Profile from "./pages/Profile.jsx";
 import CourseForm from "./pages/CourseForm.jsx";
 import CoursesList from "./pages/Courses.jsx";
 import Settings from "./components/Settings.jsx";
-
+import CreateExam from "./pages/CreateExam.jsx";
+import ExamList from "./pages/ExamList.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
 import AboutUsPage from './pages/AboutUsPage.jsx';
-
-
 function App() {
-  // const [count, setCount] = useState(0)
 
   return (
     <>
@@ -30,7 +28,8 @@ function App() {
           <Route path="/courseForm" element={<CourseForm />} />
           <Route path="/courses" element={<CoursesList />} />
           <Route path="/updateUser" element={<Settings />} />
-
+          <Route path="/create-exam" element={<CreateExam />} />
+          <Route path="/exam" element={<ExamList />} />
           <Route path="/about-us" element={<AboutUsPage />} />
           <Route path="/contact" element={<ContactPage />} />
 
