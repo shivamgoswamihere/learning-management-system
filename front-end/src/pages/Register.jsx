@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser, resetAuthState } from "../redux/authSlice";
+import { registerUser, resetAuthState,loginUser } from "../redux/authSlice";
 import { motion, AnimatePresence } from "framer-motion";
 
 function Register({ isOpen, onClose, onLoginClick }) {
@@ -41,10 +41,10 @@ function Register({ isOpen, onClose, onLoginClick }) {
   useEffect(() => {
     if (success) {
       alert("User registered successfully!");
-      setTimeout(() => {
+         // Auto-login after successful registration
+         dispatch(loginUser({ email: formData.email, password: formData.password }));
         onClose();
         dispatch(resetAuthState());
-      }, 300);
     }
   }, [success, dispatch, onClose]);
 
