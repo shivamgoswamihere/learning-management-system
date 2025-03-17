@@ -31,7 +31,7 @@ function CourseCard({ image, category, heading, level, duration, link }) {
               🏅 {level}
             </span>
             <span className="flex items-center">
-              <FaClock className="mr-1" /> {duration}
+              <FaClock className="mr-1" />Duration: {duration}hrs
             </span>
           </div>
         </div>
