@@ -4,7 +4,8 @@ const {
     createCourse, 
     getCourse, 
     getAllCourses, 
-    getTrainerCourses 
+    getTrainerCourses,
+    updateCourse
 } = require("../controllers/courseController");
 const protect = require("../middlewares/authMiddleware");
 
@@ -26,5 +27,6 @@ router.get("/trainer", protect(["trainer"]), getTrainerCourses);
 
 // ✅ Get Single Course by ID (Logged-in Users Only) use protect()
 router.get("/:id", getCourse);
+router.put("/:courseId", protect(["admin", "trainer"]), updateCourse);
 
 module.exports = router;

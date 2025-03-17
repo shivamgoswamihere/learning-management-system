@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import "./App.css";
 import CourseDetails from "./pages/CourseDetails.jsx";
+import TrainerCourseDetails from "./pages/TrainerCourseDetails.jsx";
 import Profile from "./pages/Profile.jsx";
 import CourseForm from "./pages/CourseForm.jsx";
 import CoursesList from "./pages/Courses.jsx";
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/CourseDetails/:id" element={<CourseDetails />} />
+          <Route path="/TrainerCourseDetails/:id" element={<TrainerCourseDetails/>} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/courseForm" element={<CourseForm />} />
           <Route path="/courses" element={<CoursesList />} />
