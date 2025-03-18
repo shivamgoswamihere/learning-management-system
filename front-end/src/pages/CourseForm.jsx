@@ -15,7 +15,7 @@ const CourseForm = () => {
         prerequisites: "",
         certificationAvailable: false,
         thumbnail: null,
-        bannerImage: null
+        // bannerImage: null
     });
 
     const [lessons, setLessons] = useState([]); // Store lessons
@@ -114,10 +114,6 @@ const CourseForm = () => {
                     <input type="file" name="thumbnail" accept="image/*" onChange={handleFileChange} required />
                 </label>
 
-                <label className="block">
-                    Banner Image:
-                    <input type="file" name="bannerImage" accept="image/*" onChange={handleFileChange} required />
-                </label>
 
                 {/* ✅ Add Lesson Section */}
                 <h3 className="text-lg font-semibold">Add Lessons</h3>

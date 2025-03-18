@@ -21,11 +21,11 @@ const createCourse = async (req, res) => {
 
         // ✅ Upload Files (Multer)
         const thumbnail = req.files?.thumbnail?.[0]?.path || null;
-        const bannerImage = req.files?.bannerImage?.[0]?.path || null;
+        // const bannerImage = req.files?.bannerImage?.[0]?.path || null;
 
         // ✅ Validate Files
-        if (!thumbnail || !bannerImage) {
-            return res.status(400).json({ success: false, message: "Thumbnail and Banner are required" });
+        if (!thumbnail) {
+            return res.status(400).json({ success: false, message: "Thumbnail is required" });
         }
 
         // ✅ Create New Course
@@ -35,7 +35,6 @@ const createCourse = async (req, res) => {
             category,
             trainer: trainer._id,
             thumbnail,
-            bannerImage,
             price,
             duration,
             prerequisites,

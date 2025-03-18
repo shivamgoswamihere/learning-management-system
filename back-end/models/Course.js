@@ -5,7 +5,7 @@ const courseSchema = new mongoose.Schema({
     description: { type: String, required: true },
     category: { type: String, required: true },
     thumbnail: { type: String }, // Cloudinary URL
-    bannerImage: { type: String }, // Cloudinary URL
+    // bannerImage: { type: String }, // Cloudinary URL
     price: { type: Number, default: 0 }, // 0 for free courses
     duration: { type: Number }, // Total hours
     lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }], // Lessons

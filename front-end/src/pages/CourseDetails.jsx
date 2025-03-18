@@ -66,7 +66,7 @@ const CourseDetails = () => {
         <div className="relative w-full h-80 bg-gray-200 rounded-lg overflow-hidden">
           <img
             src={
-              selectedCourse.bannerImage ||
+              selectedCourse.thumbnail ||
               "https://via.placeholder.com/800x400"
             }
             alt={selectedCourse.title}

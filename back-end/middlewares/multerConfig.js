@@ -107,7 +107,7 @@ module.exports = {
   uploadSingle: upload.single("profilePicture"),
   uploadCourseFiles: upload.fields([
     { name: "thumbnail", maxCount: 1 },
-    { name: "bannerImage", maxCount: 1 },
+    // { name: "bannerImage", maxCount: 1 },
     { name: "lessonVideos", maxCount: 50 },
   ]),
   uploadCSV: upload.single("file"), // ✅ Add this for CSV uploads
