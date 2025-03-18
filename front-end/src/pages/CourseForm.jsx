@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createCourse } from "../redux/courseSlice";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const CourseForm = () => {
     const dispatch = useDispatch();
     const { loading, error, success } = useSelector((state) => state.courses);
+    const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
         title: "",
@@ -13,6 +15,7 @@ const CourseForm = () => {
         price: "",
         duration: "",
         prerequisites: "",
+        courseLevel: "",
         certificationAvailable: false,
         thumbnail: null,
         // bannerImage: null
@@ -90,6 +93,7 @@ const CourseForm = () => {
         dispatch(createCourse(courseData))
         .then(() => {
             alert("🎉 Course created successfully!");
+            navigate("/profile")
         })
         .catch((err) => {
             alert(`❌ Error: ${err.message || "Failed to create course"}`);
@@ -107,7 +111,20 @@ const CourseForm = () => {
                 <input type="number" name="price" placeholder="Price" onChange={handleChange} className="w-full p-2 border rounded" required />
                 <input type="text" name="duration" placeholder="Duration" onChange={handleChange} className="w-full p-2 border rounded" required />
                 <input type="text" name="prerequisites" placeholder="Prerequisites" onChange={handleChange} className="w-full p-2 border rounded" />
-                
+                <select className="w-full p-2 border rounded"  name='courseLevel' required onChange={handleChange}>
+                <option value="" disabled selected hidden className="text-gray-300">
+    Select Course Level
+  </option>
+                    <option name="Beginner">
+                        Beginner
+                    </option>
+                    <option name="Intermediate">
+                        Intermediate
+                    </option>
+                    <option name="Advance">
+                        Advance
+                    </option>
+                </select>
                 <label className="flex items-center space-x-2">
                     <input type="checkbox" name="certificationAvailable" onChange={handleChange} />
                     <span>Certification Available</span>

@@ -11,6 +11,7 @@ const courseSchema = new mongoose.Schema({
     lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }], // Lessons
     lastUpdated: { type: Date, default: Date.now },
     prerequisites: [String], // List of prerequisites
+    courseLevel: {type: String, enum:["Beginner", "Intermediate", "Advance"], default:"Beginner"},
     certificationAvailable: { type: Boolean, default: false },
     reviews: [{ userId: mongoose.Schema.Types.ObjectId, comment: String, rating: Number }],
     status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" }, // Approval workflow

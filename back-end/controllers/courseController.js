@@ -6,7 +6,7 @@ const createCourse = async (req, res) => {
     try {
         const { 
             title, description, category, 
-            price, duration, prerequisites, certificationAvailable 
+            price, duration, prerequisites,courseLevel, certificationAvailable
         } = req.body;
         
         const lessons = Array.isArray(req.body.lessons) 
@@ -38,6 +38,7 @@ const createCourse = async (req, res) => {
             price,
             duration,
             prerequisites,
+            courseLevel,
             certificationAvailable
         });
 

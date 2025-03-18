@@ -56,6 +56,14 @@ const CourseDetails = () => {
                 <strong>Prerequisites:</strong> {selectedCourse.prerequisites}
               </p>
             )}
+            {selectedCourse.trainer.name &&(
+              <p>
+                <strong>
+                  Trainer: 
+                </strong>
+                {selectedCourse.trainer.name}
+              </p>
+            )}
             <p>
               <strong>Certification:</strong>{" "}
               {selectedCourse.certificationAvailable ? "Yes" : "No"}

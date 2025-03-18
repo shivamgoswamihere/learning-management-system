@@ -5,7 +5,7 @@ import { FaClock } from "react-icons/fa";
 function CourseCard({ image, category, heading, level, duration, link }) {
   return (
     <Link to={link} className="group">
-      <div className="bg-white shadow-lg rounded-xl overflow-hidden transition-all group-hover:shadow-2xl p-4">
+      <div className="bg-white shadow-lg rounded-xl overflow-hidden transition-all group-hover:shadow-2xl border-[1px] border-gray-200 p-4">
         {/* Course Image */}
         <div className="h-[180px] w-full overflow-hidden rounded-lg">
           <img
