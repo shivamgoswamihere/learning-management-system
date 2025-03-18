@@ -28,23 +28,51 @@ exports.createExam = async (req, res) => {
 };
 
 exports.addQuestions = async (req, res) => {
-  if (req.user.role !== "trainer") return res.status(403).json({ error: "Only trainers can add questions" });
+  if (req.user.role !== "trainer") {
+    return res.status(403).json({ error: "Only trainers can add questions" });
+  }
+
   try {
     const { examId, questions } = req.body;
     const exam = await Exam.findById(examId);
     if (!exam) return res.status(404).json({ error: "Exam not found" });
-    const questionDocs = questions.map(q => ({ ...q, exam: examId }));
-    await Question.insertMany(questionDocs);
-    res.status(201).json({ message: "Questions added successfully" });
+
+    const questionDocs = await Question.insertMany(
+      questions.map((q) => ({ ...q, exam: examId }))
+    );
+
+    // ✅ Link questions to the Exam
+    exam.questions.push(...questionDocs.map((q) => q._id));
+    await exam.save(); // ✅ Ensure questions are added to the exam
+
+    res.status(201).json({ message: "Questions added successfully", questions: questionDocs });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
+
 exports.getAllExams = async (req, res) => {
   try {
-    const exams = await Exam.find().populate("questions");
+    const exams = await Exam.find().populate({
+      path: "questions", // Ensure it fetches related questions
+      model: "Question",
+    });
+
+    console.log("Fetched Exams with Questions:", exams); // Debugging
     res.json(exams);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+exports.getExamQuestions = async (req, res) => {
+  try {
+    const { examId } = req.params;
+    
+    const exam = await Exam.findById(examId).populate("questions");
+    if (!exam) return res.status(404).json({ error: "Exam not found" });
+
+    res.json(exam.questions);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

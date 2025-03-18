@@ -163,6 +163,11 @@ const Profile = () => {
           Add Course
         </button>
       </Link>
+      <Link to="/create-exam">
+        <button className="mt-4 px-5 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-900">
+          Add Exam
+        </button>
+      </Link>
           <TrainerCourses />
         </div>
       )}

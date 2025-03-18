@@ -14,6 +14,7 @@ import CreateExam from "./pages/CreateExam.jsx";
 import ExamList from "./pages/ExamList.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
 import AboutUsPage from './pages/AboutUsPage.jsx';
+import StartExam from "./pages/StartExam.jsx";
 function App() {
 
   return (
@@ -29,10 +30,10 @@ function App() {
           <Route path="/courses" element={<CoursesList />} />
           <Route path="/updateUser" element={<Settings />} />
           <Route path="/create-exam" element={<CreateExam />} />
-          <Route path="/exam" element={<ExamList />} />
+          <Route path="/exams" element={<ExamList />} />
           <Route path="/about-us" element={<AboutUsPage />} />
           <Route path="/contact" element={<ContactPage />} />
-
+          <Route path="/exam/start/:examId" element={<StartExam />} />
         </Routes>
         <Footer/>
       </Router>
