@@ -86,6 +86,7 @@ export const addQuestions = createAsyncThunk(
 );
 
 // ✅ Fetch Questions for a Specific Exam (Trainers & Examinees)
+// ✅ Fetch a single exam's questions
 export const fetchExamQuestions = createAsyncThunk(
   "exam/fetchExamQuestions",
   async (examId, { rejectWithValue }) => {
@@ -150,11 +151,13 @@ const examSlice = createSlice({
         const { examId, questions } = action.payload;
         const exam = state.exams.find((e) => e._id === examId);
         if (exam) {
-          exam.questions = questions; // ✅ Ensure questions are updated in state
+          exam.questions = questions; // ✅ Ensure questions are stored
         }
+        state.status = "succeeded";
       })
       .addCase(fetchExamQuestions.rejected, (state, action) => {
         state.error = action.payload;
+        state.status = "failed";
       });
   },
 });
