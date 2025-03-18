@@ -87,14 +87,18 @@ const CourseForm = () => {
         });
 
         // ✅ Dispatch Course Creation
-        dispatch(createCourse(courseData));
+        dispatch(createCourse(courseData))
+        .then(() => {
+            alert("🎉 Course created successfully!");
+        })
+        .catch((err) => {
+            alert(`❌ Error: ${err.message || "Failed to create course"}`);
+        });
     };
 
     return (
         <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
             <h2 className="text-xl font-semibold mb-4">Create a Course</h2>
-            {error && <p className="text-red-500">{error}</p>}
-            {success && <p className="text-green-500">Course created successfully!</p>}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <input type="text" name="title" placeholder="Title" onChange={handleChange} className="w-full p-2 border rounded" required />
