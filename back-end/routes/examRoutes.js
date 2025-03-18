@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.post("/create", protect(["trainer"]), createExam);
 router.post("/add-questions", protect(["trainer"]), addQuestions);
-router.get("/all", protect(["trainer"]), getAllExams);
+router.get("/all", protect(["trainer","learner"]), getAllExams);
 
 module.exports = router;

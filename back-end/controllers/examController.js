@@ -1,23 +1,6 @@
 const Exam = require("../models/Exam");
 const Question = require("../models/Question");
 
-// exports.createExam = async (req, res) => {
-//     console.log("User making request:", req.user); // Debugging log
-  
-//     if (!req.user || req.user.role !== "trainer") {
-//       return res.status(403).json({ error: "Only trainers can create exams" });
-//     }
-  
-//     try {
-//       const exam = new Exam({ ...req.body, createdBy: req.user.id });
-//       await exam.save();
-//       console.log("Exam saved:", exam); // Debugging log
-//       res.status(201).json(exam);
-//     } catch (err) {
-//       console.error("Database error:", err.message); // Debugging log
-//       res.status(500).json({ error: err.message });
-//     }
-//   };
   
 exports.createExam = async (req, res) => {
   console.log("API Hit - Create Exam");
