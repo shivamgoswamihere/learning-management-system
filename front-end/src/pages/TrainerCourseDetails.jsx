@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCourseById } from "../redux/courseSlice";
 import UpdateCourseModal from "./UpdateCourseModal"; // Import the modal
+import VideoPlayer from "../components/VideoPlayer";
 
 const TrainerCourseDetails = () => {
   const { id } = useParams();
@@ -69,38 +70,30 @@ const TrainerCourseDetails = () => {
         </div>
       </div>
 
-      {/* ✅ Course Banner */}
 
-      {/* ✅ Course Details */}
-
-    
-
+      {/* Toggle Lessons */}
       <div className="mt-6">
-        <button
-          onClick={handleToggleLessons}
-          className="bg-blue-600 text-white px-4 py-2 mx-6 rounded hover:bg-blue-700"
-        >
+        <button onClick={() => setShowLessons(!showLessons)} className="bg-blue-600 text-white px-4 py-2 mx-6 rounded hover:bg-blue-700">
           {showLessons ? "Hide Lessons" : "Show Lessons"}
         </button>
 
         {showLessons && (
-          <div className="mt-4 flex flex-col text-black mx-6">
+          <div className="mt-4 mx-6">
             <h2 className="text-2xl font-bold mb-3">Course Lessons</h2>
-            <h3 className="text-xl font-bold mt-6">Lessons</h3>
-            {selectedCourse.lessons.length > 0 ? (
-              selectedCourse.lessons.map((lesson) => (
-                <div key={lesson._id} className="border p-4 w-fit rounded mt-2">
-                  <h4>{lesson.title}</h4>
-                  <video
-                    src={lesson.videoUrl}
-                    controls
-                    className="w-fit h-40 mt-2"
-                  ></video>
-                </div>
-              ))
-            ) : (
-              <p>No lessons available.</p>
-            )}
+
+            {/* ✅ Display Lessons in Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {selectedCourse.lessons.length > 0 ? (
+                selectedCourse.lessons.map((lesson) => (
+                  <div key={lesson._id} className="bg-gray-800 p-4 rounded-lg shadow-md">
+                    <h4 className="text-lg font-semibold text-white mb-2">{lesson.title}</h4>
+                    <VideoPlayer src={lesson.videoUrl} title={lesson.title} /> {/* ✅ Use VideoPlayer */}
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-400">No lessons available.</p>
+              )}
+            </div>
           </div>
         )}
       </div>
