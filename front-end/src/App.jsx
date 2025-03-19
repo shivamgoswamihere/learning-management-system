@@ -15,8 +15,6 @@ import ExamList from "./pages/ExamList.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
 import AboutUsPage from './pages/AboutUsPage.jsx';
 import StartExam from "./pages/StartExam.jsx";
-import UsersList from "./components/UsersList.jsx";
-import UserDetails from "./components/UserDetails.jsx";
 function App() {
 
   return (
@@ -36,8 +34,6 @@ function App() {
           <Route path="/about-us" element={<AboutUsPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/exam/start/:examId" element={<StartExam />} />
-          <Route path="/usersList" element={<UsersList />} />
-          <Route path="/users/:id" element={<UserDetails />} />
         </Routes>
         <Footer/>
       </Router>

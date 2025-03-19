@@ -21,7 +21,7 @@ const createCourse = async (req, res) => {
 
         // ✅ Upload Files (Multer)
         const thumbnail = req.files?.thumbnail?.[0]?.path || null;
-        // const bannerImage = req.files?.bannerImage?.[0]?.path || null;
+       
 
         // ✅ Validate Files
         if (!thumbnail) {
@@ -97,32 +97,6 @@ const getAllCourses = async (req, res) => {
     }
 };
 
-// ✅ Get Single Course by ID
-// const getCourse = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const course = await Course.findById(id)
-//             .populate("trainer", "name email")
-//             .populate({
-//                 path: "lessons",
-//                 options: { sort: { order: 1 } }
-//             });
-
-//         if (!course) {
-//             return res.status(404).json({ success: false, message: "Course not found" });
-//         }
-
-//         return res.status(200).json({
-//             success: true,
-//             message: "Course fetched successfully",
-//             course
-//         });
-
-//     } catch (error) {
-//         console.error("Error fetching course:", error);
-//         return res.status(500).json({ success: false, message: error.message });
-//     }
-// };
 const getCourse = async (req, res) => {
     try {
         const course = await Course.findById(req.params.id)
@@ -169,7 +143,7 @@ const updateCourse = async (req, res) => {
 
 const getTrainerCourses = async (req, res) => {
     try {
-        const trainerId = req.user.id; // Extract trainer ID from authenticated user
+        const trainerId = req.user.id;
 
         const trainer = await User.findById(trainerId);
         if (!trainer || trainer.role !== "trainer") {
@@ -188,12 +162,80 @@ const getTrainerCourses = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
+const enrollCourse = async (req, res) => {
+    try {
+        const { courseId } = req.params;
+        const userId = req.user.id;
+
+        // ✅ Find the course by ID
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ success: false, message: "Course not found" });
+        }
+
+        // ✅ Find the user by ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // ✅ Check if user is a learner
+        if (user.role !== "learner") {
+            return res.status(403).json({ success: false, message: "Only learners can enroll in courses" });
+        }
+
+        // ✅ Check if already enrolled
+        if (user.enrolledCourses.includes(courseId)) {
+            return res.status(400).json({ success: false, message: "Already enrolled in this course" });
+        }
+
+        // ✅ Enroll user in the course
+        user.enrolledCourses.push(courseId);
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Enrolled in course successfully",
+            enrolledCourses: user.enrolledCourses
+        });
+
+    } catch (error) {
+        console.error("Error enrolling in course:", error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+const getEnrolledCourses = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // ✅ Get the user with enrolled courses populated
+        const user = await User.findById(userId)
+            .populate("enrolledCourses", "title description category trainer")
+            .select("fullName enrolledCourses");
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Enrolled courses fetched successfully",
+            enrolledCourses: user.enrolledCourses
+        });
+
+    } catch (error) {
+        console.error("Error fetching enrolled courses:", error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
 
 module.exports = {
     createCourse,
     getAllCourses,
     getCourse,
-    getTrainerCourses, // ✅ Add this function to exports
-    updateCourse
+    getTrainerCourses, 
+    updateCourse,
+    enrollCourse, 
+    getEnrolledCourses, 
 };
 

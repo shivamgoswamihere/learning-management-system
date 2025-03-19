@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCourseById } from "../redux/courseSlice";
-import VideoPlayer from "../components/VideoPlayer"; // ✅ Import VideoPlayer
 
 const CourseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { selectedCourse, loading, error } = useSelector((state) => state.courses);
+  const { selectedCourse, loading, error } = useSelector(
+    (state) => state.courses
+  );
   const [showLessons, setShowLessons] = useState(false);
+  const [enrollmentStatus, setEnrollmentStatus] = useState(null);
 
   useEffect(() => {
     if (id) dispatch(fetchCourseById(id));
@@ -18,6 +20,10 @@ const CourseDetails = () => {
   if (loading) return <p className="text-center text-lg">Loading course details...</p>;
   if (error) return <p className="text-red-500 text-center">{error}</p>;
   if (!selectedCourse) return <p className="text-center">Course not found.</p>;
+
+  const handleToggleLessons = () => {
+    setShowLessons(!showLessons);
+  };
 
   return (
     <div className="max-w-full mx-auto mt-2 text-white">
@@ -41,6 +47,17 @@ const CourseDetails = () => {
             )}
             <p><strong>Certification:</strong> {selectedCourse.certificationAvailable ? "Yes" : "No"}</p>
           </div>
+           {/* ✅ Enrollment Status */}
+           {enrollmentSuccess && (
+            <p className="success-message">{enrollmentSuccess}</p>
+          )}
+          {enrollmentError && (
+            <p className="error-message">{enrollmentError}</p>
+          )}
+
+          <button onClick={handleEnroll} disabled={loading}>
+            {loading ? "Enrolling..." : "Enroll in Course"}
+          </button>
         </div>
 
         <div className="relative w-full h-80 bg-gray-200 rounded-lg overflow-hidden">
