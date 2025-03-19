@@ -11,7 +11,7 @@ const CourseDetails = () => {
     (state) => state.courses
   );
   const [showLessons, setShowLessons] = useState(false);
-  const [enrollmentStatus, setEnrollmentStatus] = useState(null);
+  
 
   useEffect(() => {
     if (id) dispatch(fetchCourseById(id));
@@ -49,13 +49,13 @@ const CourseDetails = () => {
           </div>
            {/* ✅ Enrollment Status */}
            {enrollmentSuccess && (
-            <p className="success-message">{enrollmentSuccess}</p>
+            <p className="success-message ">{enrollmentSuccess}</p>
           )}
           {enrollmentError && (
             <p className="error-message">{enrollmentError}</p>
           )}
 
-          <button onClick={handleEnroll} disabled={loading}>
+          <button onClick={handleEnroll} disabled={loading} className="bg-orange-600 text-white px-4 py-2 my-6 rounded hover:bg-orange-700">
             {loading ? "Enrolling..." : "Enroll in Course"}
           </button>
         </div>
