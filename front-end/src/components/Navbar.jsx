@@ -13,6 +13,7 @@ function Navbar() {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // ✅ Search state
 
   const openLogin = () => setModalType("login");
   const openRegister = () => setModalType("register");
@@ -23,6 +24,14 @@ function Navbar() {
     navigate("/");
     setDropdownOpen(false);
     setMenuOpen(false);
+  };
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter" && searchQuery.trim() !== "") {
+      navigate(`/courses?query=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery(""); // Clear input after search
+      setMenuOpen(false); // Close menu on mobile
+    }
   };
 
   return (
@@ -42,16 +51,19 @@ function Navbar() {
         <div className="hidden md:flex items-center gap-6 text-lg font-medium">
           <Link to="/courses" className="hover:text-blue-600 transition-all">Courses</Link>
 
-          {/* ✅ Show "Exams" Link Only When Logged In */}
           {user && (
             <Link to="/exams" className="hover:text-blue-600 transition-all">
               Exams
             </Link>
           )}
 
+          {/* ✅ Search Bar */}
           <input
             type="text"
             placeholder="Search for courses..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearch} // 🔍 Trigger search on Enter key
             className="hidden md:block px-4 py-2 w-80 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
           />
 
@@ -87,7 +99,6 @@ function Navbar() {
             </>
           )}
 
-          {/* ✅ Show Cart Icon Only When Logged In */}
           {user && (
             <Link to="/cart" className="relative">
               <FaShoppingCart className="text-2xl text-gray-700 hover:text-blue-600 transition" />
@@ -106,14 +117,21 @@ function Navbar() {
             Courses
           </Link>
 
-          {/* ✅ Show "Exams" in Mobile Menu Only When Logged In */}
           {user && (
             <Link to="/exams" className="text-lg font-medium hover:text-blue-600 transition" onClick={() => setMenuOpen(false)}>
               Exams
             </Link>
           )}
 
-          <input type="text" placeholder="Search for courses..." className="px-4 py-2 w-80 border rounded-md outline-none focus:ring-2 focus:ring-blue-500" />
+          {/* ✅ Mobile Search Bar */}
+          <input
+            type="text"
+            placeholder="Search for courses..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearch}
+            className="px-4 py-2 w-80 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+          />
 
           {user ? (
             <>
@@ -135,7 +153,6 @@ function Navbar() {
             </>
           )}
 
-          {/* ✅ Show Cart Only When Logged In */}
           {user && (
             <Link to="/cart" className="relative flex items-center gap-2 text-lg font-medium" onClick={() => setMenuOpen(false)}>
               <FaShoppingCart className="text-2xl text-gray-700 hover:text-blue-600 transition" />
