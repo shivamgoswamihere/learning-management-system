@@ -18,6 +18,7 @@ import StartExam from "./pages/StartExam.jsx";
 import UsersList from "./components/UsersList.jsx";
 import UserDetails from "./components/UserDetails.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
+import AllCourses from "./components/AllCourses.jsx";
 function App() {
 
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="/admin/usersList" element={<UsersList />} />
           <Route path="/users/:id" element={<UserDetails />} />
           <Route path="/admin/Dash" element={<AdminDashboard/>}/>
+          <Route path="/admin/coursesList" element={<AllCourses/>}/>
         </Routes>
         <Footer/>
       </Router>

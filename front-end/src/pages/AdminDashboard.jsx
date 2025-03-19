@@ -25,7 +25,7 @@ const AdminDashboard = () => {
               </Link>
             </li>
             <li>
-              <Link to="/admin/courses" className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded">
+              <Link to="/admin/coursesList" className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded">
                 <FiBook /> Manage Courses
               </Link>
             </li>
