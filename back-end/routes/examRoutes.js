@@ -3,11 +3,11 @@ const { createExam, addQuestions, getAllExams, getExamQuestions } = require("../
 const protect = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-router.post("/create", protect(["trainer"]), createExam);
-router.post("/add-questions", protect(["trainer"]), addQuestions);
-router.get("/all", protect(["trainer", "examinee"]), getAllExams);
+router.post("/create", protect(["trainer","admin"]), createExam);
+router.post("/add-questions", protect(["trainer","admin"]), addQuestions);
+router.get("/all", protect(["trainer", "examinee","admin"]), getAllExams);
 
 // ✅ New Route: Fetch questions for a specific exam
-router.get("/:examId/questions", protect(["trainer", "examinee"]), getExamQuestions);
+router.get("/:examId/questions", protect(["trainer", "examinee","admin"]), getExamQuestions);
 
 module.exports = router;

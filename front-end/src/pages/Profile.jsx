@@ -4,7 +4,6 @@ import { fetchCurrentUser, updateUser } from "../redux/userSlice"; // ✅ Use up
 import { Link } from "react-router-dom";
 import TrainerCourses from "../components/TrainerCourses";
 import set from "../assets/settings.svg";
-import { getEnrolledCourses } from "../redux/courseSlice";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -182,15 +181,15 @@ const Profile = () => {
           <p><strong>Total Experience:</strong> {currentUser.totalExperience} years</p>
           <p><strong>Career Description:</strong> {currentUser.careerDescription || "Not provided"}</p>
           <Link to="/courseForm">
-        <button className="mt-4 px-5 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-900">
-          Add Course
-        </button>
-      </Link>
-      <Link to="/create-exam">
-        <button className="mt-4 px-5 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-900">
-          Add Exam
-        </button>
-      </Link>
+            <button className="mt-4 px-5 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-900">
+              Add Course
+            </button>
+          </Link>
+          <Link to="/create-exam">
+            <button className="mt-4 px-5 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-900">
+              Add Exam
+            </button>
+          </Link>
           <TrainerCourses />
         </div>
       )}
@@ -206,7 +205,16 @@ const Profile = () => {
         <div className="mt-8 p-6 bg-gradient-to-r from-red-100 to-red-200 rounded-lg shadow">
           <h3 className="text-xl font-semibold text-red-700">Admin Details</h3>
           <p><strong>Access Level:</strong> {currentUser.accessLevel || "Not specified"}</p>
+          <div className="mt-4">
+            <Link
+              to="/usersList"
+              className="px-4 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition"
+            >
+              Manage Users
+            </Link>
+          </div>
         </div>
+
       )}
     </div>
   );

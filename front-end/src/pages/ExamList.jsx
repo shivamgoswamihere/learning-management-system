@@ -34,7 +34,7 @@ const ExamList = () => {
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-gray-100 shadow-md rounded-lg">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Available Exams</h2>
-      
+
       {exams.length === 0 ? (
         <p className="text-gray-600">No exams available.</p>
       ) : (
@@ -45,16 +45,17 @@ const ExamList = () => {
                 <h3 className="text-lg font-semibold text-gray-800">{exam.title}</h3>
                 <p className="text-gray-600">Code: {exam.code}</p>
               </div>
-              {/* Show "Start Exam" button only for Examinee & Trainer roles */}
-              {user?.role === "examinee" || user?.role === "trainer" ? (
+              
+              {/* Role-based Exam Actions */}
+              {user?.role === "examinee" || user?.role === "trainer" ||user?.role === "admin"? (
                 <button
                   onClick={() => navigate(`/exam/start/${exam._id}`)}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
                 >
                   Start Exam
                 </button>
-              ) : (
-                <p className="text-gray-500 text-sm">Not authorized to start</p>
+              ): (
+                <p className="text-gray-500 text-sm">Not authorized</p>
               )}
             </li>
           ))}
