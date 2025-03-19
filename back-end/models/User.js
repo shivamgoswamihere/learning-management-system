@@ -38,6 +38,7 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: "Course" 
     }],
+    
 
     // Examiner-Specific Fields
     canEnrollCourses: { type: Boolean, default: false }, // Cannot enroll unless upgraded

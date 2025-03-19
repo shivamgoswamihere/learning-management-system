@@ -168,7 +168,11 @@ const Profile = () => {
               <h4 className="text-lg font-semibold">{course.title}</h4>
               <p className="text-gray-600">{course.description}</p>
               <p className="text-sm text-green-500">Enrolled on: {new Date(course.enrolledDate).toLocaleDateString()}</p>
+              <p className="text-sm text-red-500"><Link to={`/CourseDetails/${course._id}`}>Go to Course</Link></p>
+            
+
             </li>
+            
           ))}
         </ul>
       </div>
