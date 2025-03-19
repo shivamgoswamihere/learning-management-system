@@ -84,21 +84,66 @@ export const updateCourse = createAsyncThunk(
         }
     }
 );
-
+// ✅ Enroll in Course (POST)
+// ✅ Enroll in a Course (POST /enroll/:courseId)
+export const enrollCourse = createAsyncThunk(
+    "courses/enrollCourse",
+    async (courseId, { rejectWithValue, getState }) => {
+      try {
+        const token = getState().auth.token;
+        const response = await axios.post(
+          `${API_URL}/enroll/${courseId}`,
+          null, // No request body needed for enrollment
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        return response.data;
+      } catch (error) {
+        return rejectWithValue(
+          error.response?.data?.message || "Error enrolling in course"
+        );
+      }
+    }
+  );
+  
+  // ✅ Get Enrolled Courses (GET /enrolled)
+  export const getEnrolledCourses = createAsyncThunk(
+    "courses/getEnrolledCourses",
+    async (_, { rejectWithValue, getState }) => {
+      try {
+        const token = getState().auth.token;
+        const response = await axios.get(`${API_URL}/enrolled`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data.enrolledCourses;
+      } catch (error) {
+        return rejectWithValue(
+          error.response?.data?.message || "Error fetching enrolled courses"
+        );
+      }
+    }
+  );
+  
 const courseSlice = createSlice({
     name: "courses",
     initialState: {
         courses: [],
         trainerCourses: [],
+        enrolledCourses: [],
         selectedCourse: null,
         lessons: [],
         loading: false,
+        enrollmentSuccess: null,
+        enrollmentError: null,
         error: null,
     },
     reducers: {
         resetCourseState: (state) => {
             state.selectedCourse = null;
             state.lessons = [];
+            state.enrollmentSuccess = null;
+            state.enrollmentError = null;
             state.error = null;
         },
     },
@@ -171,7 +216,36 @@ const courseSlice = createSlice({
             .addCase(updateCourse.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-            });
+            })
+             // ✅ Enroll Course
+      .addCase(enrollCourse.pending, (state) => {
+        state.loading = true;
+        state.enrollmentSuccess = null;
+        state.enrollmentError = null;
+      })
+      .addCase(enrollCourse.fulfilled, (state, action) => {
+        state.loading = false;
+        state.enrollmentSuccess = action.payload.message;
+        state.enrolledCourses.push(action.payload.enrolledCourses);
+      })
+      .addCase(enrollCourse.rejected, (state, action) => {
+        state.loading = false;
+        state.enrollmentError = action.payload;
+      })
+
+      // ✅ Get Enrolled Courses
+      .addCase(getEnrolledCourses.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getEnrolledCourses.fulfilled, (state, action) => {
+        state.loading = false;
+        state.enrolledCourses = action.payload;
+      })
+      .addCase(getEnrolledCourses.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+            
     },
 });
 

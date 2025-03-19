@@ -33,6 +33,11 @@ const UserSchema = new mongoose.Schema({
     profession: { type: String }, // Student, Working Professional, etc.
     organization: { name: String, address: String },
     interests: { type: String },
+    
+    enrolledCourses: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Course" 
+    }],
 
     // Examiner-Specific Fields
     canEnrollCourses: { type: Boolean, default: false }, // Cannot enroll unless upgraded

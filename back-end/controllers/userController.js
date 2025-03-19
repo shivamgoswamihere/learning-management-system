@@ -53,7 +53,7 @@ const getCurrentUser = async (req, res) => {
     }
 };
 
-// // ✅ Update user profile (User themselves)
+
 // const updateUser = async (req, res) => {
 //     try {
 //         const { id } = req.params;

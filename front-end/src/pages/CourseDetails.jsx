@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCourseById } from "../redux/courseSlice";
+import { fetchCourseById , enrollCourse} from "../redux/courseSlice";
 
 const CourseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { selectedCourse, loading, error } = useSelector(
+  const { selectedCourse, loading,enrollmentSuccess,enrollmentError, error } = useSelector(
     (state) => state.courses
   );
+  const token = useSelector((state) => state.auth.token);
   const [showLessons, setShowLessons] = useState(false);
+  const [enrollmentStatus, setEnrollmentStatus] = useState(null);
 
   useEffect(() => {
     if (id) dispatch(fetchCourseById(id));
@@ -24,6 +26,22 @@ const CourseDetails = () => {
   const handleToggleLessons = () => {
     setShowLessons(!showLessons);
   };
+    // ✅ Enroll handler
+    const handleEnroll = async () => {
+      if (!selectedCourse || !selectedCourse._id) {
+        alert("Course ID is missing. Unable to enroll.");
+        return;
+      }
+    
+      if (!token) {
+        alert("Please login to enroll.");
+        return;
+      }
+    
+      dispatch(enrollCourse(selectedCourse._id));
+    };
+    
+
 
   return (
     <div className="max-w-full mx-auto mt-2 text-white ">
@@ -69,6 +87,17 @@ const CourseDetails = () => {
               {selectedCourse.certificationAvailable ? "Yes" : "No"}
             </p>
           </div>
+           {/* ✅ Enrollment Status */}
+           {enrollmentSuccess && (
+            <p className="success-message">{enrollmentSuccess}</p>
+          )}
+          {enrollmentError && (
+            <p className="error-message">{enrollmentError}</p>
+          )}
+
+          <button onClick={handleEnroll} disabled={loading}>
+            {loading ? "Enrolling..." : "Enroll in Course"}
+          </button>
         </div>
 
         <div className="relative w-full h-80 bg-gray-200 rounded-lg overflow-hidden">
