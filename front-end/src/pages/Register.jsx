@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser, resetAuthState,loginUser } from "../redux/authSlice";
+import { registerUser, resetAuthState, loginUser } from "../redux/authSlice";
 import { motion, AnimatePresence } from "framer-motion";
 
 function Register({ isOpen, onClose, onLoginClick }) {
@@ -40,10 +40,10 @@ function Register({ isOpen, onClose, onLoginClick }) {
   useEffect(() => {
     if (success) {
       alert("User registered successfully!");
-         // Auto-login after successful registration
-         dispatch(loginUser({ email: formData.email, password: formData.password }));
-        onClose();
-        dispatch(resetAuthState());
+      // Auto-login after successful registration
+      dispatch(loginUser({ email: formData.email, password: formData.password }));
+      onClose();
+      dispatch(resetAuthState());
     }
   }, [success, dispatch, onClose]);
 
@@ -64,14 +64,14 @@ function Register({ isOpen, onClose, onLoginClick }) {
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", "my_preset"); 
-   
+      formData.append("upload_preset", "my_preset");
+
       try {
         const res = await fetch("https://api.cloudinary.com/v1_1/drhk6uycr/image/upload", {
           method: "POST",
           body: formData,
         });
-  
+
         const data = await res.json();
         setFormData((prev) => ({ ...prev, profilePicture: data.secure_url })); // Cloudinary image URL
         setImagePreview(data.secure_url);
@@ -80,7 +80,7 @@ function Register({ isOpen, onClose, onLoginClick }) {
       }
     }
   };
-  
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -169,6 +169,23 @@ function Register({ isOpen, onClose, onLoginClick }) {
                     />
                   </div>
 
+                  {/* Role Selection */}
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium">Role</label>
+                    <select
+                      name="role"
+                      className="w-full p-2 border rounded-md"
+                      value={formData.role}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="learner">Learner</option>
+                      <option value="examinee">Examinee</option>
+                      <option value="trainer">Trainer</option>
+                    </select>
+                  </div>
+
+
                   {/* Email */}
                   <div className="mb-3">
                     <label className="block text-sm font-medium">Email</label>
@@ -198,17 +215,17 @@ function Register({ isOpen, onClose, onLoginClick }) {
                       required
                     />
                   </div>
-                  
+
                   <div className="flex justify-center">
-                  <button
+                    <button
                       type="submit"
                       className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
                     >
                       {loading ? "Registering..." : "Register"}
                     </button>
-                    </div>
+                  </div>
 
-                  
+
                 </>
               )}
             </form>
