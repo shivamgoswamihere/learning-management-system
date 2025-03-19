@@ -39,7 +39,7 @@ router.get("/enrolled", protect(["learner"]), getEnrolledCourses);
 router.put("/:courseId", protect(["admin", "trainer"]), updateCourse);
 
 // ✅ Get Single Course by ID (Logged-in Users Only)
-router.get("/:id", protect(), async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
     const { id } = req.params;
 
     // Validate if the ID is a valid ObjectId

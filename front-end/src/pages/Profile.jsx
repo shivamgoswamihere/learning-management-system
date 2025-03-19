@@ -4,6 +4,7 @@ import { fetchCurrentUser, updateUser } from "../redux/userSlice"; // ✅ Use up
 import { Link } from "react-router-dom";
 import TrainerCourses from "../components/TrainerCourses";
 import set from "../assets/settings.svg";
+import { getEnrolledCourses } from "../redux/courseSlice";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ const Profile = () => {
 
   useEffect(() => {
     dispatch(fetchCurrentUser());
+    dispatch(getEnrolledCourses());
   }, [dispatch]);
 
   const handleFileChange = (event) => {
