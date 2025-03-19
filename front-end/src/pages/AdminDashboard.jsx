@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAdminStats } from "../redux/adminSlice";
+import { FiUsers, FiBook, FiClipboard, FiDollarSign, FiBarChart, FiHome } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import { FiUsers, FiBook, FiClipboard, FiDollarSign, FiBarChart } from "react-icons/fi";
 
 const AdminDashboard = () => {
+  const dispatch = useDispatch();
+  const { totalUsers, totalCourses, totalExams, loading, error } = useSelector((state) => state.admin);
+
+  useEffect(() => {
+    dispatch(fetchAdminStats());
+  }, [dispatch]);
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
@@ -42,14 +51,17 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <main className="flex-1 p-6">
         <h2 className="text-3xl font-bold mb-6">Welcome, Admin!</h2>
-        
+
+        {loading && <p>Loading stats...</p>}
+        {error && <p className="text-red-500">{error}</p>}
+
         {/* Dashboard Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-5 bg-white shadow rounded-lg flex items-center">
             <FiUsers className="text-blue-500 text-3xl mr-3" />
             <div>
               <h3 className="text-lg font-semibold">Total Users</h3>
-              <p className="text-2xl">1,250</p>
+              <p className="text-2xl">{loading ? "..." : totalUsers}</p>
             </div>
           </div>
 
@@ -57,7 +69,7 @@ const AdminDashboard = () => {
             <FiBook className="text-green-500 text-3xl mr-3" />
             <div>
               <h3 className="text-lg font-semibold">Total Courses</h3>
-              <p className="text-2xl">230</p>
+              <p className="text-2xl">{loading ? "..." : totalCourses}</p>
             </div>
           </div>
 
@@ -65,7 +77,7 @@ const AdminDashboard = () => {
             <FiClipboard className="text-red-500 text-3xl mr-3" />
             <div>
               <h3 className="text-lg font-semibold">Total Exams</h3>
-              <p className="text-2xl">150</p>
+              <p className="text-2xl">{loading ? "..." : totalExams}</p>
             </div>
           </div>
         </div>

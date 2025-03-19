@@ -7,11 +7,14 @@ const CourseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { selectedCourse, loading, error } = useSelector(
-    (state) => state.courses
-  );
+
+  // Get course data from Redux
+  const { selectedCourse, loading, error } = useSelector((state) => state.courses);
+
+  // Manage enrollment status locally
   const [showLessons, setShowLessons] = useState(false);
-  
+  const [enrollmentSuccess, setEnrollmentSuccess] = useState(null);
+  const [enrollmentError, setEnrollmentError] = useState(null);
 
   useEffect(() => {
     if (id) dispatch(fetchCourseById(id));
@@ -21,8 +24,19 @@ const CourseDetails = () => {
   if (error) return <p className="text-red-500 text-center">{error}</p>;
   if (!selectedCourse) return <p className="text-center">Course not found.</p>;
 
-  const handleToggleLessons = () => {
-    setShowLessons(!showLessons);
+  // Handle course enrollment
+  const handleEnroll = async () => {
+    try {
+      setEnrollmentSuccess(null);
+      setEnrollmentError(null);
+      
+      // Simulating an API call delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      setEnrollmentSuccess("Successfully enrolled in the course!");
+    } catch (error) {
+      setEnrollmentError("Failed to enroll. Please try again.");
+    }
   };
 
   return (
@@ -47,13 +61,10 @@ const CourseDetails = () => {
             )}
             <p><strong>Certification:</strong> {selectedCourse.certificationAvailable ? "Yes" : "No"}</p>
           </div>
-           {/* ✅ Enrollment Status */}
-           {enrollmentSuccess && (
-            <p className="success-message ">{enrollmentSuccess}</p>
-          )}
-          {enrollmentError && (
-            <p className="error-message">{enrollmentError}</p>
-          )}
+
+          {/* ✅ Enrollment Status Messages */}
+          {enrollmentSuccess && <p className="text-green-500 mt-2">{enrollmentSuccess}</p>}
+          {enrollmentError && <p className="text-red-500 mt-2">{enrollmentError}</p>}
 
           <button onClick={handleEnroll} disabled={loading} className="bg-orange-600 text-white px-4 py-2 my-6 rounded hover:bg-orange-700">
             {loading ? "Enrolling..." : "Enroll in Course"}
@@ -77,11 +88,12 @@ const CourseDetails = () => {
             
             {/* ✅ Display Lessons in Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {selectedCourse.lessons.length > 0 ? (
+              {selectedCourse.lessons?.length > 0 ? (
                 selectedCourse.lessons.map((lesson) => (
                   <div key={lesson._id} className="bg-gray-800 p-4 rounded-lg shadow-md">
                     <h4 className="text-lg font-semibold text-white mb-2">{lesson.title}</h4>
-                    <VideoPlayer src={lesson.videoUrl} title={lesson.title} /> {/* ✅ Use VideoPlayer */}
+                    {/* Make sure VideoPlayer component exists */}
+                    <VideoPlayer src={lesson.videoUrl} title={lesson.title} />
                   </div>
                 ))
               ) : (
