@@ -11,7 +11,7 @@ const AdminDashboard = () => {
         <nav>
           <ul className="space-y-4">
             <li>
-              <Link to="/admin/users" className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded">
+              <Link to="/admin/usersList" className="flex items-center gap-2 p-2 hover:bg-blue-700 rounded">
                 <FiUsers /> Manage Users
               </Link>
             </li>

@@ -15,7 +15,6 @@ const Profile = () => {
 
   useEffect(() => {
     dispatch(fetchCurrentUser());
-    dispatch(getEnrolledCourses());
   }, [dispatch]);
 
   const handleFileChange = (event) => {
@@ -207,10 +206,10 @@ const Profile = () => {
           <p><strong>Access Level:</strong> {currentUser.accessLevel || "Not specified"}</p>
           <div className="mt-4">
             <Link
-              to="/usersList"
+              to="/admin/dash"
               className="px-4 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition"
             >
-              Manage Users
+              Admin Dashboard
             </Link>
           </div>
         </div>
