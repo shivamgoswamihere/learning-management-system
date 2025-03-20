@@ -1,34 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import "./App.css";
-import CourseDetails from "./pages/CourseDetails.jsx";
-import TrainerCourseDetails from "./pages/TrainerCourseDetails.jsx";
-import Profile from "./pages/Profile.jsx";
-import CourseForm from "./pages/CourseForm.jsx";
-import CoursesList from "./pages/Courses.jsx";
-import UpdateUserDetails from "./components/UpdateUserDetails.jsx";
-import CreateExam from "./pages/CreateExam.jsx";
-import ExamList from "./pages/ExamList.jsx";
-import ContactPage from "./pages/ContactPage.jsx";
-import AboutUsPage from './pages/AboutUsPage.jsx';
-import StartExam from "./pages/StartExam.jsx";
-import UsersList from "./components/UsersList.jsx";
-import UserDetails from "./components/UserDetails.jsx";
-import AdminDashboard from "./pages/AdminDashboard.jsx";
-import AllCourses from "./components/AllCourses.jsx";
+import DevDojoLogo from "./assets/DevDojoLogo.png"; // Ensure correct path
+
+// Lazy Loading Pages
+const Home = lazy(() => import("./pages/Home.jsx"));
+const CourseDetails = lazy(() => import("./pages/CourseDetails.jsx"));
+const TrainerCourseDetails = lazy(() => import("./pages/TrainerCourseDetails.jsx"));
+const Profile = lazy(() => import("./pages/Profile.jsx"));
+const CourseForm = lazy(() => import("./pages/CourseForm.jsx"));
+const CoursesList = lazy(() => import("./pages/Courses.jsx"));
+const UpdateUserDetails = lazy(() => import("./components/UpdateUserDetails.jsx"));
+const CreateExam = lazy(() => import("./pages/CreateExam.jsx"));
+const ExamList = lazy(() => import("./pages/ExamList.jsx"));
+const ContactPage = lazy(() => import("./pages/ContactPage.jsx"));
+const AboutUsPage = lazy(() => import("./pages/AboutUsPage.jsx"));
+const StartExam = lazy(() => import("./pages/StartExam.jsx"));
+const UsersList = lazy(() => import("./components/UsersList.jsx"));
+const UserDetails = lazy(() => import("./components/UserDetails.jsx"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard.jsx"));
+const AllCourses = lazy(() => import("./components/AllCourses.jsx"));
+
+// Full-Page Loading Screen
+const LoadingScreen = () => (
+  <div className="loading-container">
+    <img src={DevDojoLogo} alt="Loading..." className="loading-logo" />
+  </div>
+);
+
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate a 2-second loading delay
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer); // Cleanup
+  }, []);
+
+  if (isLoading) {
+    return <LoadingScreen />; // Show only the loading screen
+  }
 
   return (
-    <>
-      <Router>
-      <Navbar/>
+    <Router>
+      <Navbar />
+      <Suspense fallback={<LoadingScreen />}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/CourseDetails/:id" element={<CourseDetails />} />
-          <Route path="/TrainerCourseDetails/:id" element={<TrainerCourseDetails/>} />
+          <Route path="/TrainerCourseDetails/:id" element={<TrainerCourseDetails />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/courseForm" element={<CourseForm />} />
           <Route path="/courses" element={<CoursesList />} />
@@ -40,13 +65,12 @@ function App() {
           <Route path="/exam/start/:examId" element={<StartExam />} />
           <Route path="/admin/usersList" element={<UsersList />} />
           <Route path="/users/:id" element={<UserDetails />} />
-          <Route path="/admin/Dash" element={<AdminDashboard/>}/>
-          <Route path="/admin/coursesList" element={<AllCourses/>}/>
+          <Route path="/admin/Dash" element={<AdminDashboard />} />
+          <Route path="/admin/coursesList" element={<AllCourses />} />
         </Routes>
-        <Footer/>
-      </Router>
-
-    </>
+      </Suspense>
+      <Footer />
+    </Router>
   );
 }
 

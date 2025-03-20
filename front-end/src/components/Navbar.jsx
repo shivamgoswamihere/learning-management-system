@@ -5,6 +5,7 @@ import { logoutUser } from "../redux/authSlice";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import { FaShoppingCart, FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
+import devdojo from "../assets/DevDojo.png";
 
 function Navbar() {
   const [modalType, setModalType] = useState(null);
@@ -39,7 +40,7 @@ function Navbar() {
       <div className="flex justify-between items-center px-6 md:px-10 py-4 bg-white text-black shadow-md">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <img className="w-40" src="logo.svg" alt="Logo" />
+          <img className="w-40" src={devdojo} alt="Logo" />
         </Link>
 
         {/* Mobile Menu Button */}
