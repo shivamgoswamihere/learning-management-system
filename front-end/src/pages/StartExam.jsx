@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchExamQuestions } from "../redux/examSlice";
 
+
 const StartExam = () => {
     const { examId } = useParams();
     const dispatch = useDispatch();
@@ -11,6 +12,7 @@ const StartExam = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [showResult, setShowResult] = useState(false);
+    const [timeUp, setTimeUp] = useState(false);
     const [timeLeft, setTimeLeft] = useState(exam?.timeLimit * 60 || 0);
     const navigate = useNavigate();
 
@@ -25,7 +27,7 @@ const StartExam = () => {
             const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
             return () => clearInterval(timer);
         } else if (timeLeft === 0) {
-            setShowResult(true);
+            setTimeUp(true);
         }
     }, [timeLeft, showResult]);
 
@@ -41,7 +43,7 @@ const StartExam = () => {
     const handleAnswerSelect = (option) => {
         setSelectedAnswers((prev) => ({ ...prev, [currentQuestion._id]: option }));
     };
-    
+
     const handleNext = () => {
         if (currentQuestionIndex < exam.questions.length - 1) {
             setCurrentQuestionIndex((prev) => prev + 1);
@@ -49,22 +51,27 @@ const StartExam = () => {
             setShowResult(true);
         }
     };
-    
+
     const handleBack = () => {
         if (currentQuestionIndex > 0) {
             setCurrentQuestionIndex((prev) => prev - 1);
         }
     };
-    
+
     const calculateResults = () => {
+        const marksPerQuestion = exam.totalMarks / exam.questions.length;
         let correct = 0;
+
         exam.questions.forEach((q) => {
             if (selectedAnswers[q._id] === q.correctAnswer) {
                 correct++;
             }
         });
-        return { correct, incorrect: exam.questions.length - correct };
+
+        const obtainedMarks = correct * marksPerQuestion;
+        return { correct, incorrect: exam.questions.length - correct, obtainedMarks };
     };
+
 
     return (
         <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
@@ -115,12 +122,30 @@ const StartExam = () => {
                         <h2 className="text-xl font-bold">Exam Results</h2>
                         <p className="mt-4 text-green-600">Correct Answers: {calculateResults().correct}</p>
                         <p className="text-red-600">Incorrect Answers: {calculateResults().incorrect}</p>
-
+                        <p className="mt-4 font-bold text-gray-700">
+                            Marks Obtained: <span className="text-blue-600">{calculateResults().obtainedMarks} / {exam.totalMarks}</span>
+                        </p>
                         <button
                             onClick={() => navigate("/exams")}
                             className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
                         >
                             Close
+                        </button>
+                    </div>
+                </div>
+            )}
+
+
+            {timeUp && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-md max-w-md">
+                        <h2 className="text-xl font-bold text-red-600">Time's Up!</h2>
+                        <p className="mt-4 text-gray-600">The exam time has expired. Please submit your answers.</p>
+                        <button
+                            onClick={() => { setShowResult(true); setTimeUp(false); }}
+                            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+                        >
+                            Submit & View Results
                         </button>
                     </div>
                 </div>

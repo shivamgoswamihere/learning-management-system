@@ -235,7 +235,7 @@ const Home = () => {
       </section>
 
       {/* Course Categories */}
-      <CourseCategories />
+      {/* <CourseCategories /> */}
 
       {/* Testimonials */}
       <section className="bg-gray-100 py-16 px-10 text-center">
