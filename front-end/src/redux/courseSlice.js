@@ -22,15 +22,19 @@ export const fetchTrainerCourses = createAsyncThunk(
     async (_, { rejectWithValue, getState }) => {
         try {
             const token = getState().auth.token;
+            console.log("Token being sent:", token); // Debugging
+            
             const response = await axios.get(`${API_URL}/trainer`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-
+    
             return response.data.courses;
         } catch (error) {
+            console.error("Error fetching trainer courses:", error.response?.data);
             return rejectWithValue(error.response?.data?.message || "Failed to fetch trainer courses");
         }
     }
+    
 );
 
 // ✅ Fetch Single Course (With Lessons)

@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post("/create", protect(["trainer","admin"]), createExam);
 router.post("/add-questions", protect(["trainer","admin"]), addQuestions);
-router.get("/all", protect(["trainer", "examinee","admin"]), getAllExams);
+router.get("/all", protect(["trainer", "examinee","admin","learner"]), getAllExams);
 
 // ✅ New Route: Fetch questions for a specific exam
 router.get("/:examId/questions", protect(["trainer", "examinee","admin"]), getExamQuestions);
