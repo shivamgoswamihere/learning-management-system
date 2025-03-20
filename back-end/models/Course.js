@@ -16,6 +16,11 @@ const courseSchema = new mongoose.Schema({
     reviews: [{ userId: mongoose.Schema.Types.ObjectId, comment: String, rating: Number }],
     status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" }, // Approval workflow
     trainer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Trainer reference
+    syllabus: [{ 
+        title: { type: String, required: true },
+        description: { type: String, required: true }
+    }]
+    
 }, { timestamps: true });
 
 module.exports = mongoose.model("Course", courseSchema);

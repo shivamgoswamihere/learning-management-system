@@ -5,15 +5,15 @@ const User = require("../models/User");
 const createCourse = async (req, res) => {
     try {
         const { 
-            title, description, category, 
-            price, duration, prerequisites,courseLevel, certificationAvailable
+            title, description, category, price, duration, prerequisites, 
+            courseLevel, certificationAvailable, syllabus: syllabusRaw 
         } = req.body;
         
         const lessons = Array.isArray(req.body.lessons) 
             ? req.body.lessons 
             : JSON.parse(req.body.lessons || "[]");
 
-        // ✅ Check if user is a trainer
+        // ✅ Ensure user is a trainer
         const trainer = await User.findById(req.user.id);
         if (!trainer || trainer.role !== "trainer") {
             return res.status(403).json({ success: false, message: "Only trainers can create courses" });
@@ -21,11 +21,25 @@ const createCourse = async (req, res) => {
 
         // ✅ Upload Files (Multer)
         const thumbnail = req.files?.thumbnail?.[0]?.path || null;
-       
 
-        // ✅ Validate Files
-        if (!thumbnail) {
-            return res.status(400).json({ success: false, message: "Thumbnail is required" });
+        // ✅ Validate Inputs
+        if (!title || !description || !category || !price || !duration || !courseLevel || !thumbnail) {
+            return res.status(400).json({ success: false, message: "Missing required fields" });
+        }
+
+        // ✅ Parse & Validate Syllabus
+        let syllabus = [];
+        try {
+            syllabus = Array.isArray(syllabusRaw) ? syllabusRaw : JSON.parse(syllabusRaw || "[]");
+
+            // Ensure each syllabus item has a title & description
+            syllabus.forEach(item => {
+                if (!item.title || !item.description) {
+                    throw new Error("Each syllabus item must have a title and description.");
+                }
+            });
+        } catch (err) {
+            return res.status(400).json({ success: false, message: "Invalid syllabus format: " + err.message });
         }
 
         // ✅ Create New Course
@@ -39,7 +53,8 @@ const createCourse = async (req, res) => {
             duration,
             prerequisites,
             courseLevel,
-            certificationAvailable
+            certificationAvailable,
+            syllabus
         });
 
         await course.save();
