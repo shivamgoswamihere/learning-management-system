@@ -77,7 +77,9 @@ const Profile = () => {
           to="/updateUser"
           className="absolute top-2 right-2 md:top-4 md:right-4 text-gray-600 hover:text-gray-800 transition"
         >
-          <img src={set} className="h-6 w-6 md:h-7 md:w-7" />
+          <label  className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer">
+                Edit Profile
+              </label>
         </Link>
       </div>
 
@@ -136,22 +138,65 @@ const Profile = () => {
 
       {/* General Information */}
       <div className="mt-6 grid md:grid-cols-2 gap-6 text-gray-700">
-        <p><strong>Email:</strong> {currentUser.privacySettings?.showEmail ? currentUser.email : "Hidden"}</p>
-        <p><strong>Phone:</strong> {currentUser.privacySettings?.showPhone ? currentUser.phoneNumber || "N/A" : "Hidden"}</p>
-        <p><strong>Gender:</strong> {currentUser.gender || "Not specified"}</p>
-        <p><strong>Date of Birth:</strong> {currentUser.dateOfBirth ? new Date(currentUser.dateOfBirth).toLocaleDateString() : "Not provided"}</p>
-        <p><strong>Address:</strong> {currentUser.address?.city}, {currentUser.address?.state}, {currentUser.address?.country}</p>
+      {currentUser.privacySettings?.showEmail && (
+    <p>
+      <strong>Email:</strong> {currentUser.email}
+    </p>
+  )}
+  {currentUser.privacySettings?.showPhone && currentUser.phoneNumber && (
+    <p>
+      <strong>Phone:</strong> {currentUser.phoneNumber}
+    </p>
+  )}
+  {currentUser.gender && (
+    <p>
+      <strong>Gender:</strong> {currentUser.gender}
+    </p>
+  )}
+  {currentUser.dateOfBirth && (
+    <p>
+      <strong>Date of Birth:</strong>{" "}
+      {new Date(currentUser.dateOfBirth).toLocaleDateString()}
+    </p>
+  )}
+  {currentUser.address?.city && (
+    <p>
+      <strong>Address:</strong> {currentUser.address.city}, {currentUser.address.state},{" "}
+      {currentUser.address.country}
+    </p>
+  )}
       </div>
 
       {/* Role-Specific Sections */}
       {currentUser.role === "learner" && (
         <div className="mt-8 p-6 bg-gradient-to-r from-blue-100 to-blue-200 rounded-lg shadow">
           <h3 className="text-xl font-semibold text-blue-700">Learner Details</h3>
-          <p><strong>Qualification:</strong> {currentUser.qualification} ({currentUser.qualificationStatus})</p>
-          <p><strong>Degree:</strong> {currentUser.degree}</p>
-          <p><strong>Profession:</strong> {currentUser.privacySettings?.showProfession ? currentUser.profession || "N/A" : "Hidden"}</p>
-          {currentUser.organization?.name && <p><strong>Organization:</strong> {currentUser.organization.name}</p>}
-          <p><strong>Interests:</strong> {currentUser.interests || "Not provided"}</p>
+          {currentUser.qualification && (
+      <p>
+        <strong>Qualification:</strong> {currentUser.qualification} (
+        {currentUser.qualificationStatus})
+      </p>
+    )}
+    {currentUser.degree && (
+      <p>
+        <strong>Degree:</strong> {currentUser.degree}
+      </p>
+    )}
+    {currentUser.privacySettings?.showProfession && currentUser.profession && (
+      <p>
+        <strong>Profession:</strong> {currentUser.profession}
+      </p>
+    )}
+    {currentUser.organization?.name && (
+      <p>
+        <strong>Organization:</strong> {currentUser.organization.name}
+      </p>
+    )}
+    {currentUser.interests && (
+      <p>
+        <strong>Interests:</strong> {currentUser.interests}
+      </p>
+    )}
           <div className="mt-6">
         <h3 className="text-xl font-semibold mb-3">My Enrolled Courses</h3>
         
@@ -182,9 +227,21 @@ const Profile = () => {
       {currentUser.role === "trainer" && (
         <div className="mt-8 p-6 bg-gradient-to-r from-yellow-100 to-yellow-200 rounded-lg shadow">
           <h3 className="text-xl font-semibold text-yellow-700">Trainer Details</h3>
-          <p><strong>Professional Title:</strong> {currentUser.professionalTitle || "Not provided"}</p>
-          <p><strong>Total Experience:</strong> {currentUser.totalExperience} years</p>
-          <p><strong>Career Description:</strong> {currentUser.careerDescription || "Not provided"}</p>
+          {currentUser.professionalTitle && (
+      <p>
+        <strong>Professional Title:</strong> {currentUser.professionalTitle}
+      </p>
+    )}
+    {currentUser.totalExperience && (
+      <p>
+        <strong>Total Experience:</strong> {currentUser.totalExperience} years
+      </p>
+    )}
+    {currentUser.careerDescription && (
+      <p>
+        <strong>Career Description:</strong> {currentUser.careerDescription}
+      </p>
+    )}
           <Link to="/courseForm">
             <button className="mt-4 px-5 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-900">
               Add Course
@@ -202,14 +259,21 @@ const Profile = () => {
       {currentUser.role === "examinee" && (
         <div className="mt-8 p-6 bg-gradient-to-r from-green-100 to-green-200 rounded-lg shadow">
           <h3 className="text-xl font-semibold text-green-700">Examinee Details</h3>
-          <p><strong>Can Enroll in Courses:</strong> {currentUser.canEnrollCourses ? "Yes" : "No"}</p>
+          <p>
+      <strong>Can Enroll in Courses:</strong>{" "}
+      {currentUser.canEnrollCourses ? "Yes" : "No"}
+    </p>
         </div>
       )}
 
       {currentUser.role === "admin" && (
         <div className="mt-8 p-6 bg-gradient-to-r from-red-100 to-red-200 rounded-lg shadow">
           <h3 className="text-xl font-semibold text-red-700">Admin Details</h3>
-          <p><strong>Access Level:</strong> {currentUser.accessLevel || "Not specified"}</p>
+          {currentUser.accessLevel && (
+      <p>
+        <strong>Access Level:</strong> {currentUser.accessLevel}
+      </p>
+    )}
           <div className="mt-4">
             <Link
               to="/admin/dash"
