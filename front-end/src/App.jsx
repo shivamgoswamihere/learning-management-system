@@ -9,7 +9,7 @@ import TrainerCourseDetails from "./pages/TrainerCourseDetails.jsx";
 import Profile from "./pages/Profile.jsx";
 import CourseForm from "./pages/CourseForm.jsx";
 import CoursesList from "./pages/Courses.jsx";
-import Settings from "./components/Settings.jsx";
+import UpdateUserDetails from "./components/UpdateUserDetails.jsx";
 import CreateExam from "./pages/CreateExam.jsx";
 import ExamList from "./pages/ExamList.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
@@ -32,7 +32,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/courseForm" element={<CourseForm />} />
           <Route path="/courses" element={<CoursesList />} />
-          <Route path="/updateUser" element={<Settings />} />
+          <Route path="/updateUser" element={<UpdateUserDetails />} />
           <Route path="/create-exam" element={<CreateExam />} />
           <Route path="/exams" element={<ExamList />} />
           <Route path="/about-us" element={<AboutUsPage />} />

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCurrentUser, updateUser } from "../redux/userSlice";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const Settings = () => {
   const dispatch = useDispatch();
@@ -82,7 +83,10 @@ const Settings = () => {
 
   return (
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
-      <h2 className="text-2xl font-bold mb-5">Settings</h2>
+      <Link to="/profile">
+      <FaArrowLeft/> 
+      </Link>
+      <h2 className="text-2xl font-bold mb-5">Update Details</h2>
 
       {error && <p className="text-red-500">{error}</p>}
       {loading && <p className="text-gray-500">Loading...</p>}
