@@ -188,48 +188,7 @@ exports.submitResult = async (req, res) => {
 };
 
 
-// ✅ Fetch submitted results for a user
-// exports.getSubmittedResults = async (req, res) => {
-//   try {
-//     const results = await Result.find({ user: req.user.id })
-//       .populate("exam", "title code subject totalMarks") // Populate exam details
-//       .sort({ createdAt: -1 }); // Sort by most recent
 
-//     if (!results || results.length === 0) {
-//       return res.status(404).json({ message: "No results found." });
-//     }
-
-//     res.status(200).json(results);
-//   } catch (error) {
-//     console.error("Error fetching results:", error);
-//     res.status(500).json({ error: error.message });
-//   }
-// };
-
-// exports.getSubmittedResults = async (req, res) => {
-//   try {
-//     const results = await Result.find({ user: req.user.id })
-//       .populate("exam", "title code subject totalMarks")
-//       .sort({ createdAt: -1 });
-
-//     if (!results || results.length === 0) {
-//       return res.status(404).json({ message: "No results found." });
-//     }
-
-//     // ✅ Map results to include examTitle and other required fields
-//     const formattedResults = results.map((result) => ({
-//       _id: result._id,
-//       examTitle: result.exam?.title || "Unknown Exam", // ✅ Include exam title
-//       score: result.score || 0, // ✅ Default to 0 if score is missing
-//       submittedAt: result.createdAt,
-//     }));
-
-//     res.status(200).json(formattedResults);
-//   } catch (error) {
-//     console.error("Error fetching results:", error);
-//     res.status(500).json({ error: error.message });
-//   }
-// };
 
 exports.getSubmittedResults = async (req, res) => {
   try {

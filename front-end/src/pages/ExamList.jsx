@@ -84,7 +84,7 @@ const ExamList = () => {
                     >
                       Start Exam
                     </button>
-                    {!exam.isEnrolled ? (
+                    {/* {!exam.isEnrolled ? (
                       <button
                         onClick={() => handleEnroll(exam._id)}
                         className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
@@ -95,7 +95,7 @@ const ExamList = () => {
                       <span className="text-gray-500 text-sm">
                         Already Enrolled
                       </span>
-                    )}
+                    )} */}
                   </>
                 ) : (
                   <p className="text-gray-500 text-sm">Not authorized</p>
