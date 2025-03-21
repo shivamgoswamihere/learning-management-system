@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchExamQuestions } from "../redux/examSlice";
+import { fetchExamQuestions,submitResult } from "../redux/examSlice";
 
 
 const StartExam = () => {
@@ -46,11 +46,13 @@ const StartExam = () => {
 
     const handleNext = () => {
         if (currentQuestionIndex < exam.questions.length - 1) {
-            setCurrentQuestionIndex((prev) => prev + 1);
+          setCurrentQuestionIndex((prev) => prev + 1);
         } else {
-            setShowResult(true);
+          handleSubmitResult(); // Submit result on finish
+          setShowResult(true);
         }
-    };
+      };
+      
 
     const handleBack = () => {
         if (currentQuestionIndex > 0) {
@@ -58,21 +60,53 @@ const StartExam = () => {
         }
     };
 
-    const calculateResults = () => {
-        const marksPerQuestion = exam.totalMarks / exam.questions.length;
-        let correct = 0;
+    const correctAnswers = exam.questions.reduce((acc, question) => {
+        acc[question._id] = question.correctAnswer;
+        return acc;
+      }, {});
+      
+      const marksPerQuestion = exam.totalMarks / exam.questions.length;
 
-        exam.questions.forEach((q) => {
-            if (selectedAnswers[q._id] === q.correctAnswer) {
-                correct++;
-            }
-        });
-
+      const calculateResults = () => {
+        const correct = Object.keys(selectedAnswers).filter(
+          (key) => selectedAnswers[key] === correctAnswers[key]
+        ).length;
+      
+        const incorrect = Object.keys(selectedAnswers).length - correct;
         const obtainedMarks = correct * marksPerQuestion;
-        return { correct, incorrect: exam.questions.length - correct, obtainedMarks };
-    };
-
-
+      
+        return {
+          correct,
+          incorrect,
+          obtainedMarks,
+          totalQuestions: exam.questions.length, // ✅ Use total questions from exam
+        };
+      };
+      
+      const handleSubmitResult = () => {
+        const resultData = calculateResults(); // ✅ No need to pass correctAnswers now
+        console.log("Submitting result:", {
+          examId,
+          result: {
+            selectedAnswers,
+            ...resultData,
+          },
+        });
+      
+        dispatch(
+          submitResult({
+            examId,
+            result: {
+              selectedAnswers,
+              ...resultData,
+            },
+          })
+        );
+      };
+      
+      
+      
+      
     return (
         <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
             <h2 className="text-2xl font-bold text-gray-800">{exam.title}</h2>
@@ -137,19 +171,24 @@ const StartExam = () => {
 
 
             {timeUp && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-md max-w-md">
-                        <h2 className="text-xl font-bold text-red-600">Time's Up!</h2>
-                        <p className="mt-4 text-gray-600">The exam time has expired. Please submit your answers.</p>
-                        <button
-                            onClick={() => { setShowResult(true); setTimeUp(false); }}
-                            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
-                        >
-                            Submit & View Results
-                        </button>
-                    </div>
-                </div>
-            )}
+  <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+    <div className="bg-white p-6 rounded-lg shadow-md max-w-md">
+      <h2 className="text-xl font-bold text-red-600">Time's Up!</h2>
+      <p className="mt-4 text-gray-600">The exam time has expired. Please submit your answers.</p>
+      <button
+        onClick={() => {
+          handleSubmitResult(); // Submit result on time up
+          setShowResult(true);
+          setTimeUp(false);
+        }}
+        className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+      >
+        Submit & View Results
+      </button>
+    </div>
+  </div>
+)}
+
         </div>
     );
 };

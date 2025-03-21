@@ -1,11 +1,10 @@
 const Exam = require("../models/Exam");
 const Question = require("../models/Question");
 const User = require("../models/User");
+const Result = require("../models/Result");
   
 exports.createExam = async (req, res) => {
-  console.log("API Hit - Create Exam");
-  console.log("Request Headers:", req.headers);  // Check if token is sent
-  console.log("Request Body:", req.body);        // Check if data is received
+ 
 
   if (!req.user) {
       console.log("Error: req.user is undefined"); // Debugging log
@@ -149,3 +148,43 @@ exports.getEnrolledExams = async (req, res) => {
       return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+exports.submitResult = async (req, res) => {
+  try {
+    const { examId, result } = req.body;
+
+    if (!result || !examId) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const { obtainedMarks, correct, incorrect, selectedAnswers, totalQuestions } = result;
+
+    if (
+      obtainedMarks === undefined ||
+      correct === undefined ||
+      incorrect === undefined ||
+      totalQuestions === undefined
+    ) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const newResult = new Result({
+      user: req.user.id,
+      exam: examId,
+      obtainedMarks,
+      correctAnswers: correct,
+      incorrectAnswers: incorrect,
+      totalQuestions,
+      percentage: (correct / totalQuestions) * 100,
+      passed: obtainedMarks >= 40,
+    });
+
+    await newResult.save();
+    res.status(201).json({ message: "Result submitted successfully", result: newResult });
+  } catch (error) {
+    console.error("Error submitting result:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+

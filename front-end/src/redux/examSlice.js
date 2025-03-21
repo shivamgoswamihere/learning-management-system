@@ -149,16 +149,65 @@ export const fetchEnrolledExams = createAsyncThunk(
     }
   }
 );
+// ✅ Submit Exam Result
+export const submitResult = createAsyncThunk(
+  "exam/submitResult",
+  async (resultData, { rejectWithValue }) => {
+    try {
+      const token = getToken(); // ✅ Ensure token is fetched correctly
+      if (!token) throw new Error("Unauthorized - No token");
+
+      const response = await axios.post(
+        `${API_BASE_URL}/submit-result`, // ✅ Correct URL
+        resultData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // ✅ Important
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Error submitting result:", error.response?.data || error.message);
+      return rejectWithValue(error.response?.data || "Failed to submit result");
+    }
+  }
+);
+
+
+
+// ✅ Fetch Results for a User
+export const fetchResults = createAsyncThunk(
+  "exam/fetchResults",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = getToken();
+      if (!token) throw new Error("Unauthorized - No token");
+
+      const response = await axios.get(`${API_BASE_URL}/results`, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
+
+      return response.data.results;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Failed to fetch results");
+    }
+  }
+);
+
 
 // ✅ Exam Slice
 const examSlice = createSlice({
   name: "exam",
   initialState: {
     exams: [],
-    enrolledExams: [], // ✅ Add this to track enrolled exams
+    enrolledExams: [],
+    results: [], // ✅ Store results
     status: "idle",
-    error: null,
-  },
+    error: null,},
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -207,7 +256,7 @@ const examSlice = createSlice({
         state.error = action.payload;
         state.status = "failed";
       })
-      .addCase(enrollExam.fulfilled, (state, action) => {
+       .addCase(enrollExam.fulfilled, (state, action) => {
         state.status = "succeeded";
       })
       .addCase(enrollExam.rejected, (state, action) => {
@@ -221,6 +270,23 @@ const examSlice = createSlice({
         state.status = "succeeded";
       })
       .addCase(fetchEnrolledExams.rejected, (state, action) => {
+        state.error = action.payload;
+        state.status = "failed";
+      })
+      .addCase(submitResult.fulfilled, (state, action) => {
+        state.status = "succeeded";
+      })
+      .addCase(submitResult.rejected, (state, action) => {
+        state.error = action.payload;
+        state.status = "failed";
+      })
+    
+      // ✅ Fetch Results
+      .addCase(fetchResults.fulfilled, (state, action) => {
+        state.results = action.payload; // Store user results
+        state.status = "succeeded";
+      })
+      .addCase(fetchResults.rejected, (state, action) => {
         state.error = action.payload;
         state.status = "failed";
       });
