@@ -28,6 +28,8 @@ const Profile = () => {
     }
   };
 
+
+  
   const handleProfileUpdate = async () => {
     if (selectedFile && currentUser) {
       const formData = new FormData();
@@ -43,9 +45,11 @@ const Profile = () => {
       }
     }
   };
-  const { exams, loading: resultsLoading, error: resultsError } = useSelector(
+  const { results, loading: resultsLoading, error: resultsError } = useSelector(
     (state) => state.exam
   );
+  
+  
   
 
   if (loading)
@@ -228,28 +232,34 @@ const Profile = () => {
       </div>
         </div>
       )}
-      {(currentUser.role === "examinee" || currentUser.role === "learner") && (
-  <div className="mt-8 p-6 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg shadow">
-    <h3 className="text-xl font-semibold text-purple-700">My Submitted Results</h3>
+      {(currentUser?.role === "examinee" || currentUser?.role === "learner") && (
+    <div className="mt-8 p-6 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg shadow">
+      <h3 className="text-xl font-semibold text-purple-700">My Submitted Results</h3>
 
-    {resultsLoading && <p className="text-blue-500">Loading results...</p>}
-    {resultsError && <p className="text-red-500">Error: {resultsError}</p>}
+      {resultsLoading && <p className="text-blue-500">Loading results...</p>}
+      {resultsError && <p className="text-red-500">Error: {resultsError}</p>}
 
-    {exams?.length === 0 && !resultsLoading && (
-      <p className="text-gray-500">No results submitted yet.</p>
-    )}
-
-    <ul className="space-y-4">
-      {exams?.map((result) => (
-        <li key={result._id} className="p-4 bg-gray-100 rounded-md shadow">
-          <h4 className="text-lg font-semibold">{result.examTitle}</h4>
-          <p className="text-gray-600">Score: {result.score}%</p>
-          <p className="text-sm text-green-500">Submitted on: {new Date(result.submittedAt).toLocaleDateString()}</p>
-        </li>
-      ))}
-    </ul>
-  </div>
+      {results?.length === 0 && !resultsLoading && (
+  <p className="text-gray-500">No results submitted yet.</p>
 )}
+
+<ul className="space-y-4">
+  {results?.map((result) => (
+    <li key={result._id} className="p-4 bg-gray-100 rounded-md shadow">
+      {/* ✅ Add exam name dynamically */}
+      <h4 className="text-lg font-semibold">
+        {result.examTitle || "Exam Name Not Available"}
+      </h4>
+      <p className="text-gray-600">Score: {result.score}%</p>
+      <p className="text-sm text-green-500">
+        Submitted on: {new Date(result.submittedAt).toLocaleDateString()}
+      </p>
+    </li>
+  ))}
+</ul>
+
+    </div>
+  )}
 
 
       {currentUser.role === "trainer" && (

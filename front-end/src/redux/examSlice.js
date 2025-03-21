@@ -190,8 +190,9 @@ export const fetchResults = createAsyncThunk(
 
       const response = await axios.get(`${API_BASE_URL}/submitted-results`, {
         headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
+        withCredentials: true, // Only needed if backend uses cookies
       });
+      
 
       // ✅ Return results correctly
       return response.data;
@@ -295,8 +296,9 @@ const examSlice = createSlice({
       })
       .addCase(fetchResults.fulfilled, (state, action) => {
         state.loading = false;
-        state.results = action.payload;
+        state.results = action.payload; // ✅ Ensure correct data assignment
       })
+      
       .addCase(fetchResults.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
