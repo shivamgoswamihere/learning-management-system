@@ -15,16 +15,23 @@ const ExamList = () => {
     }
   }, [dispatch, status]);
 
-  const handleEnroll = (examId) => {
-    dispatch(enrollExam(examId))
-      .unwrap()
-      .then(() => {
-        alert("Successfully enrolled in the exam!");
-      })
-      .catch((err) => {
-        alert(err.message || "Failed to enroll.");
-      });
+ 
+  const handleEnroll = (examId, isEnrolled) => {
+    if (isEnrolled) {
+      navigate(`/exam/start/${examId}`); // ✅ Navigate if already enrolled
+    } else {
+      dispatch(enrollExam(examId))
+        .unwrap()
+        .then(() => {
+          alert("Successfully enrolled in the exam!");
+          navigate(`/exam/start/${examId}`); // ✅ Navigate after enrollment
+        })
+        .catch((err) => {
+          alert(err.message || "Failed to enroll.");
+        });
+    }
   };
+  
 
   if (status === "loading") {
     return (
@@ -56,15 +63,20 @@ const ExamList = () => {
               className="p-4 bg-white shadow rounded-lg flex justify-between items-center"
             >
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {exam.title}
-                </h3>
-                <p className="text-gray-600">Code: {exam.code}</p>
-              </div>
+          <h3 className="text-lg font-semibold text-gray-800">
+            {exam.title}
+          </h3>
+          <p className="text-gray-600">Code: {exam.code}</p>
+          <p className="text-gray-600">Subject: {exam.subject}</p>
+          <p className="text-gray-600">Time Limit: {exam.timeLimit} min</p>
+          <p className="text-gray-600">Number of Questions: {exam.numQuestions}</p>
+          <p className="text-gray-600">Total Marks: {exam.totalMarks}</p>
+        </div>
+
 
               <div className="flex space-x-4">
                 {/* Role-based Exam Actions */}
-                {user?.role === "examinee" || user?.role === "trainer" || user?.role === "admin" ? (
+                {user?.role === "examinee" || user?.role === "trainer" || user?.role === "learner" || user?.role === "admin" ? (
                   <>
                     <button
                       onClick={() => navigate(`/exam/start/${exam._id}`)}
