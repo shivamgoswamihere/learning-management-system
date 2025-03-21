@@ -246,17 +246,28 @@ const Profile = () => {
 <ul className="space-y-4">
   {results?.map((result) => (
     <li key={result._id} className="p-4 bg-gray-100 rounded-md shadow">
-      {/* ✅ Add exam name dynamically */}
       <h4 className="text-lg font-semibold">
         {result.examTitle || "Exam Name Not Available"}
       </h4>
-      <p className="text-gray-600">Score: {result.score}%</p>
+      <p className="text-gray-600">Obtained Marks: {result.obtainedMarks}</p>
+      <p className="text-gray-600">Correct Answers: {result.correctAnswers}</p>
+      <p className="text-gray-600">Incorrect Answers: {result.incorrectAnswers}</p>
+      <p className="text-gray-600">Total Questions: {result.totalQuestions}</p>
+      <p className="text-gray-600">Percentage: {result.percentage}%</p>
+      <p
+        className={`text-sm ${
+          result.passed ? "text-green-500" : "text-red-500"
+        }`}
+      >
+        {result.passed ? "Passed" : "Failed"}
+      </p>
       <p className="text-sm text-green-500">
         Submitted on: {new Date(result.submittedAt).toLocaleDateString()}
       </p>
     </li>
   ))}
 </ul>
+
 
     </div>
   )}
