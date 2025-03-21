@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCourseById, enrollCourse } from "../redux/courseSlice";
+import { fetchCourseById, enrollCourse } from "../redux/courseSlice"; 
 
 const CourseDetails = () => {
   const { id } = useParams();

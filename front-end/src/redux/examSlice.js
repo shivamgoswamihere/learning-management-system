@@ -106,11 +106,59 @@ export const fetchExamQuestions = createAsyncThunk(
   }
 );
 
+// ✅ Enroll in an Exam (Learners & Examinees)
+export const enrollExam = createAsyncThunk(
+  "exam/enrollExam",
+  async (examId, { rejectWithValue }) => {
+    try {
+      const token = getToken();
+      if (!token) throw new Error("Unauthorized - No token");
+
+      const response = await axios.post(
+        `${API_BASE_URL}/enroll/${examId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Failed to enroll in exam");
+    }
+  }
+);
+
+// ✅ Fetch Enrolled Exams for a User
+export const fetchEnrolledExams = createAsyncThunk(
+  "exam/fetchEnrolledExams",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = getToken();
+      if (!token) throw new Error("Unauthorized - No token");
+
+      const response = await axios.get(`${API_BASE_URL}/enrolledExam`, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
+
+      return response.data.enrolledExams;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Failed to fetch enrolled exams");
+    }
+  }
+);
 
 // ✅ Exam Slice
 const examSlice = createSlice({
   name: "exam",
-  initialState: { exams: [], status: "idle", error: null },
+  initialState: {
+    exams: [],
+    enrolledExams: [], // ✅ Add this to track enrolled exams
+    status: "idle",
+    error: null,
+  },
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -156,6 +204,23 @@ const examSlice = createSlice({
         state.status = "succeeded";
       })
       .addCase(fetchExamQuestions.rejected, (state, action) => {
+        state.error = action.payload;
+        state.status = "failed";
+      })
+      .addCase(enrollExam.fulfilled, (state, action) => {
+        state.status = "succeeded";
+      })
+      .addCase(enrollExam.rejected, (state, action) => {
+        state.error = action.payload;
+        state.status = "failed";
+      })
+
+      // ✅ Fetch Enrolled Exams
+      .addCase(fetchEnrolledExams.fulfilled, (state, action) => {
+        state.enrolledExams = action.payload; // Store enrolled exams
+        state.status = "succeeded";
+      })
+      .addCase(fetchEnrolledExams.rejected, (state, action) => {
         state.error = action.payload;
         state.status = "failed";
       });

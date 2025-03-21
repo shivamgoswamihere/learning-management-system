@@ -14,7 +14,7 @@ export const fetchAllCourses = createAsyncThunk(
             return rejectWithValue(error.response?.data?.message || "Failed to fetch courses");
         }
     }
-);
+); 
 
 // ✅ Fetch Trainer's Courses (Only Trainers)
 export const fetchTrainerCourses = createAsyncThunk(
