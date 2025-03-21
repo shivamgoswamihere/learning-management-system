@@ -184,19 +184,26 @@ export const fetchResults = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = getToken();
-      if (!token) throw new Error("Unauthorized - No token");
+      if (!token) {
+        throw new Error("Unauthorized - Please log in to view results.");
+      }
 
-      const response = await axios.get(`${API_BASE_URL}/results`, {
+      const response = await axios.get(`${API_BASE_URL}/submitted-results`, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
 
-      return response.data.results;
+      // ✅ Return results correctly
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to fetch results");
+      // ✅ Proper error handling
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch results"
+      );
     }
   }
 );
+
 
 
 // ✅ Exam Slice
@@ -206,6 +213,7 @@ const examSlice = createSlice({
     exams: [],
     enrolledExams: [],
     results: [], // ✅ Store results
+    loading: false,
     status: "idle",
     error: null,},
   reducers: {},
@@ -282,13 +290,16 @@ const examSlice = createSlice({
       })
     
       // ✅ Fetch Results
+      .addCase(fetchResults.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(fetchResults.fulfilled, (state, action) => {
-        state.results = action.payload; // Store user results
-        state.status = "succeeded";
+        state.loading = false;
+        state.results = action.payload;
       })
       .addCase(fetchResults.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
-        state.status = "failed";
       });
   },
 });
