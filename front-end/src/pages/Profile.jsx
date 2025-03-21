@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCurrentUser, updateUser } from "../redux/userSlice"; // ✅ Use updateUser for profile picture update
 import { Link } from "react-router-dom";
 import TrainerCourses from "../components/TrainerCourses";
-import set from "../assets/settings.svg";
+import { fetchResults } from "../redux/examSlice";
 import { getEnrolledCourses } from "../redux/courseSlice";
 
 const Profile = () => {
@@ -17,6 +17,7 @@ const Profile = () => {
   useEffect(() => {
     dispatch(fetchCurrentUser());
     dispatch(getEnrolledCourses());
+    dispatch(fetchResults());
   }, [dispatch]);
 
   const handleFileChange = (event) => {
@@ -42,6 +43,10 @@ const Profile = () => {
       }
     }
   };
+  const { exams, loading: resultsLoading, error: resultsError } = useSelector(
+    (state) => state.exam
+  );
+  
 
   if (loading)
     return <p className="text-center text-lg font-semibold text-gray-600">Loading profile...</p>;
@@ -223,6 +228,29 @@ const Profile = () => {
       </div>
         </div>
       )}
+      {(currentUser.role === "examinee" || currentUser.role === "learner") && (
+  <div className="mt-8 p-6 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg shadow">
+    <h3 className="text-xl font-semibold text-purple-700">My Submitted Results</h3>
+
+    {resultsLoading && <p className="text-blue-500">Loading results...</p>}
+    {resultsError && <p className="text-red-500">Error: {resultsError}</p>}
+
+    {exams?.length === 0 && !resultsLoading && (
+      <p className="text-gray-500">No results submitted yet.</p>
+    )}
+
+    <ul className="space-y-4">
+      {exams?.map((result) => (
+        <li key={result._id} className="p-4 bg-gray-100 rounded-md shadow">
+          <h4 className="text-lg font-semibold">{result.examTitle}</h4>
+          <p className="text-gray-600">Score: {result.score}%</p>
+          <p className="text-sm text-green-500">Submitted on: {new Date(result.submittedAt).toLocaleDateString()}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
 
       {currentUser.role === "trainer" && (
         <div className="mt-8 p-6 bg-gradient-to-r from-yellow-100 to-yellow-200 rounded-lg shadow">
