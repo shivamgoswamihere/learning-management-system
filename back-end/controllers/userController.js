@@ -33,12 +33,16 @@ const getUserById = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        res.status(200).json(user);
+        res.status(200).json({
+            ...user.toObject(),
+            isBanned: user.isBanned || false, // ✅ Ensure `isBanned` is sent
+        });
     } catch (error) {
         console.error("🔴 Error retrieving user:", error);
         res.status(500).json({ message: "Server Error", error: error.message });
     }
 };
+
 
 // ✅ Get current logged-in user
 const getCurrentUser = async (req, res) => {

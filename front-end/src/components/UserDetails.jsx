@@ -1,17 +1,37 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserById } from "../redux/userSlice"; // Ensure this exists
+import { banUser, unbanUser } from "../redux/adminSlice"; // Import ban/unban actions
 import { useParams, useNavigate } from "react-router-dom";
 
 const UserDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, loading, error } = useSelector((state) => state.users); // ✅ Fix state selection
+  const { user, loading, error } = useSelector((state) => state.users);
+  const { bannedUsers } = useSelector((state) => state.admin); // Track banned users
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     dispatch(fetchUserById(id));
   }, [dispatch, id]);
+
+  const isBanned = user?.isBanned || bannedUsers.includes(id);
+
+  const handleBanUser = async () => {
+    setActionLoading(true);
+    await dispatch(banUser(id)).unwrap();
+    await dispatch(fetchUserById(id)); // ✅ Ensure updated user state
+    setActionLoading(false);
+  };
+  
+  const handleUnbanUser = async () => {
+    setActionLoading(true);
+    await dispatch(unbanUser(id)).unwrap();
+    await dispatch(fetchUserById(id)); // ✅ Ensure updated user state
+    setActionLoading(false);
+  };
+  
 
   return (
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
@@ -48,6 +68,27 @@ const UserDetails = () => {
               <strong>Address:</strong> 
               {user.address?.city || "N/A"}, {user.address?.state || "N/A"}, {user.address?.country || "N/A"}
             </p>
+          </div>
+
+          {/* Ban/Unban Buttons */}
+          <div className="mt-6">
+            {isBanned ? (
+              <button
+                onClick={handleUnbanUser}
+                disabled={actionLoading}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+              >
+                {actionLoading ? "Unbanning..." : "Unban User"}
+              </button>
+            ) : (
+              <button
+                onClick={handleBanUser}
+                disabled={actionLoading}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50"
+              >
+                {actionLoading ? "Banning..." : "Ban User"}
+              </button>
+            )}
           </div>
         </div>
       )}

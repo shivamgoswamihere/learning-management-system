@@ -32,14 +32,19 @@ export const fetchUserById = createAsyncThunk(
       if (!token) return rejectWithValue("No authentication token found.");
 
       const response = await axios.get(`${API_URL}/${_id}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      return response.data;
+
+      return {
+        ...response.data,
+        isBanned: response.data.isBanned || false, // ✅ Ensure `isBanned` exists
+      };
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch user.");
     }
   }
 );
+
 
 // ✅ Fetch current logged-in user
 export const fetchCurrentUser = createAsyncThunk(

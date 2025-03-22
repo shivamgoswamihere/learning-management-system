@@ -11,6 +11,10 @@ function Login({ isOpen, onClose, onRegisterClick }) {
 
   useEffect(() => {
     if (success) {
+      if (error?.includes("banned")) {
+        alert("Your account is banned. Please contact support.");
+        return;
+      }
       alert("Login successful!");
       onClose(); // ✅ Close modal
       dispatch(resetAuthState()); // ✅ Reset auth state
