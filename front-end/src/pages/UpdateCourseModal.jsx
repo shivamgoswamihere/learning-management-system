@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { useDispatch } from "react-redux";
 import { updateCourse } from "../redux/courseSlice";
 
 const UpdateCourseModal = ({ course, isOpen, onClose }) => {
     const dispatch = useDispatch();
-
+    
     const [updatedData, setUpdatedData] = useState({
         title: course?.title || "",
         description: course?.description || "",
@@ -31,52 +32,77 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className=" p-6 rounded shadow-lg max-w-lg w-full">
-                <h2 className="text-xl font-bold mb-4">Update Course</h2>
+        <div className="fixed inset-0 flex items-center justify-center bg-transparent backdrop-blur-md z-50 text-gray-600">
+            <motion.div
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg"
+            >
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-bold">Update Course</h2>
+                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-xl">&times;</button>
+                </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <input
-                        type="text"
-                        name="title"
-                        value={updatedData.title}
-                        onChange={handleChange}
-                        className="border p-2"
-                        placeholder="Course Title"
-                        required
-                    />
-                    <textarea
-                        name="description"
-                        value={updatedData.description}
-                        onChange={handleChange}
-                        className="border p-2"
-                        placeholder="Course Description"
-                        required
-                    />
-                    <input
-                        type="number"
-                        name="price"
-                        value={updatedData.price}
-                        onChange={handleChange}
-                        className="border p-2"
-                        placeholder="Price"
-                    />
-                    <input
-                        type="text"
-                        name="duration"
-                        value={updatedData.duration}
-                        onChange={handleChange}
-                        className="border p-2"
-                        placeholder="Duration"
-                    />
-                    <input
-                        type="text"
-                        name="prerequisites"
-                        value={updatedData.prerequisites}
-                        onChange={handleChange}
-                        className="border p-2"
-                        placeholder="Prerequisites"
-                    />
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                        <label className="block text-sm font-medium">Title</label>
+                        <input
+                            type="text"
+                            name="title"
+                            value={updatedData.title}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                            required
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="block text-sm font-medium">Description</label>
+                        <textarea
+                            name="description"
+                            value={updatedData.description}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                            required
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-sm font-medium">Price</label>
+                            <input
+                                type="number"
+                                name="price"
+                                value={updatedData.price}
+                                onChange={handleChange}
+                                className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium">Duration</label>
+                            <input
+                                type="text"
+                                name="duration"
+                                value={updatedData.duration}
+                                onChange={handleChange}
+                                className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="block text-sm font-medium">Prerequisites</label>
+                        <input
+                            type="text"
+                            name="prerequisites"
+                            value={updatedData.prerequisites}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                        />
+                    </div>
+
                     <label className="flex items-center gap-2">
                         <input
                             type="checkbox"
@@ -87,23 +113,23 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
                         Certification Available
                     </label>
 
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-2 mt-4">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="bg-gray-500 text-white px-4 py-2 rounded"
+                            className="bg-gray-500 text-white px-4 py-2 rounded-md"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="bg-blue-600 text-white px-4 py-2 rounded"
+                            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                         >
                             Update
                         </button>
                     </div>
                 </form>
-            </div>
+            </motion.div>
         </div>
     );
 };

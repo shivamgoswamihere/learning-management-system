@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import { fetchTrainerCourses } from "../redux/courseSlice";
+import CourseCard from "../components/CourseCard";
+import { useNavigate } from "react-router-dom";
 
 const TrainerCourses = () => {
   const dispatch = useDispatch();
   const { trainerCourses, loading, error } = useSelector((state) => state.courses);
   const { currentUser } = useSelector((state) => state.users);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (currentUser?.role === "trainer") {
@@ -14,29 +16,38 @@ const TrainerCourses = () => {
     }
   }, [dispatch, currentUser]);
 
-  if (loading) return <p className="text-center">Loading your courses...</p>;
-  if (error) return <p className="text-center text-red-500">{error}</p>;
-  if (trainerCourses.length === 0) return <p className="text-center">No courses found.</p>;
-
   return (
-    <div className="mt-8 p-6 bg-gradient-to-r from-yellow-100 to-yellow-200 rounded-lg shadow">
-      <h3 className="text-xl font-semibold text-yellow-700 mb-4">Your Created Courses</h3>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {trainerCourses.map((course) => (
-          <div key={course._id} className="bg-white p-4 rounded-lg shadow-md">
-            <img
-              src={course.thumbnail}
-              alt={course.title}
-              className="w-full h-40 object-cover rounded-md"
-            />
-            <h4 className="mt-2 text-lg font-semibold text-gray-800">{course.title}</h4>
-            <p className="text-gray-600">{course.category}</p>
-            <p className="text-gray-500">Price: ${course.price}</p>
-            <Link to={`/TrainerCourseDetails/${course._id}`} className="text-blue-500 hover:underline">
-              View Course
-            </Link>
+    <div className="min-h-screen bg-gray-100 py-8 px-4 md:px-10">
+      <button onClick={() => navigate(-1)} className="mb-2 mx-6 px-4 py-1 bg-black text-white hover:bg-gray-900">
+        ← Back
+      </button>
+      <div className="max-w-6xl mx-auto">
+        {/* Page Title */}
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Created Courses</h2>
+
+        {/* Loading & Error Handling */}
+        {loading && <p className="text-center text-gray-600">Loading your courses...</p>}
+        {error && <p className="text-center text-red-500">{error}</p>}
+        {trainerCourses.length === 0 && !loading && !error && (
+          <p className="text-center text-gray-600">No courses found.</p>
+        )}
+
+        {/* Courses Grid */}
+        {!loading && !error && trainerCourses.length > 0 && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {trainerCourses.map((course) => (
+              <CourseCard
+                key={course._id}
+                image={course.thumbnail}
+                category={course.category}
+                heading={course.title}
+                level={course.level || "Beginner"}
+                duration={course.duration || "N/A"}
+                link={`/TrainerCourseDetails/${course._id}`}
+              />
+            ))}
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 const express = require("express");
-const { createExam, addQuestions, getAllExams, getExamQuestions,enrollExam, getEnrolledExams,submitResult,getSubmittedResults } = require("../controllers/examController");
+const { createExam, addQuestions, getAllExams, getExamQuestions,enrollExam, getEnrolledExams,submitResult,getSubmittedResults,getCreatedExams } = require("../controllers/examController");
 const protect = require("../middlewares/authMiddleware");
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.post("/enroll/:examId", protect(["learner","examinee"]), enrollExam);
 router.get("/enrolledExam", protect(["learner","examinee"]), getEnrolledExams);
 router.post("/submit-result", protect(["learner","examinee"]), submitResult);
 // ✅ Get submitted results for user (Examinee or Learner)
-router.get("/submitted-results", protect(["learner", "examinee"]), getSubmittedResults);
-
+router.get("/submitted-results", protect(["learner", "examinee","trainer"]), getSubmittedResults);
+router.get("/created-exams", protect(["trainer","admin"]), getCreatedExams);
 
 module.exports = router;

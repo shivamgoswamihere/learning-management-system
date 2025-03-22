@@ -22,6 +22,8 @@ const UsersList = lazy(() => import("./components/UsersList.jsx"));
 const UserDetails = lazy(() => import("./components/UserDetails.jsx"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard.jsx"));
 const AllCourses = lazy(() => import("./components/AllCourses.jsx"));
+const TrainerExams = lazy(() => import("./components/TrainerExams.jsx"));
+const TrainerCourses = lazy(() => import("./components/TrainerCourses.jsx"));
 
 // Full-Page Loading Screen
 const LoadingScreen = () => (
@@ -67,6 +69,8 @@ function App() {
           <Route path="/users/:id" element={<UserDetails />} />
           <Route path="/admin/Dash" element={<AdminDashboard />} />
           <Route path="/admin/coursesList" element={<AllCourses />} />
+          <Route path="/trainer-exams" element={<TrainerExams />} />
+          <Route path="/trainer-courses" element={<TrainerCourses />} /> 
         </Routes>
       </Suspense>
       <Footer />

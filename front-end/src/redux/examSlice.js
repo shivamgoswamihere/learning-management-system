@@ -204,6 +204,31 @@ export const fetchResults = createAsyncThunk(
     }
   }
 );
+// ✅ Fetch Created Exams (Only Trainers & Admins)
+export const fetchCreatedExams = createAsyncThunk(
+  "exam/fetchCreatedExams",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = getToken();
+      if (!token) throw new Error("Unauthorized - No token");
+
+      const response = await axios.get(`${API_BASE_URL}/created-exams`, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
+
+      if (!response.data || response.data.length === 0) {
+        return rejectWithValue("No exams found.");
+      }
+
+      return response.data; // ✅ Ensure backend returns correct structure
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Failed to fetch created exams");
+    }
+  }
+);
+
+
 
 
 
@@ -214,6 +239,7 @@ const examSlice = createSlice({
     exams: [],
     enrolledExams: [],
     results: [], // ✅ Store results
+    createdExams: [],
     loading: false,
     status: "idle",
     error: null,},
@@ -300,6 +326,17 @@ const examSlice = createSlice({
       })
       
       .addCase(fetchResults.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchCreatedExams.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchCreatedExams.fulfilled, (state, action) => {
+        state.loading = false;
+        state.exams = action.payload; // ✅ Store created exams
+      })
+      .addCase(fetchCreatedExams.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

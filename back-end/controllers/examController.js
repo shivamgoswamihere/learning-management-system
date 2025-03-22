@@ -2,6 +2,7 @@ const Exam = require("../models/Exam");
 const Question = require("../models/Question");
 const User = require("../models/User");
 const Result = require("../models/Result");
+const mongoose = require("mongoose");
   
 exports.createExam = async (req, res) => {
  
@@ -219,3 +220,30 @@ exports.getSubmittedResults = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.getCreatedExams = async (req, res) => {
+  try {
+    console.log("User making request:", req.user); // Debugging log
+
+    // Ensure only trainers or admins can fetch their created exams
+    if (!["trainer", "admin"].includes(req.user.role)) {
+      return res.status(403).json({ error: "Access denied. Only trainers and admins can view created exams." });
+    }
+
+    // Convert user ID to ObjectId (if needed)
+    const userId = new mongoose.Types.ObjectId(req.user.id);
+
+    // Fetch exams created by the logged-in trainer/admin
+    const createdExams = await Exam.find({ createdBy: userId })
+      .populate("questions", "text options correctAnswer") // Populate questions if needed
+      .sort({ createdAt: -1 }); // Show latest first
+
+    console.log("Fetched Exams:", createdExams); // Debugging log
+
+    res.json(createdExams);
+  } catch (error) {
+    console.error("Error fetching created exams:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+

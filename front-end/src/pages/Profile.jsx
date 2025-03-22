@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import TrainerCourses from "../components/TrainerCourses";
 import { fetchResults } from "../redux/examSlice";
 import { getEnrolledCourses } from "../redux/courseSlice";
+import TrainerExams from "../components/TrainerExams";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const Profile = () => {
   };
 
 
-  
+
   const handleProfileUpdate = async () => {
     if (selectedFile && currentUser) {
       const formData = new FormData();
@@ -48,9 +49,9 @@ const Profile = () => {
   const { results, loading: resultsLoading, error: resultsError } = useSelector(
     (state) => state.exam
   );
-  
-  
-  
+
+
+
 
   if (loading)
     return <p className="text-center text-lg font-semibold text-gray-600">Loading profile...</p>;
@@ -86,9 +87,9 @@ const Profile = () => {
           to="/updateUser"
           className="absolute top-2 right-2 md:top-4 md:right-4 text-gray-600 hover:text-gray-800 transition"
         >
-          <label  className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer">
-                Edit Profile
-              </label>
+          <label className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer">
+            Edit Profile
+          </label>
         </Link>
       </div>
 
@@ -147,33 +148,33 @@ const Profile = () => {
 
       {/* General Information */}
       <div className="mt-6 grid md:grid-cols-2 gap-6 text-gray-700">
-      {currentUser.privacySettings?.showEmail && (
-    <p>
-      <strong>Email:</strong> {currentUser.email}
-    </p>
-  )}
-  {currentUser.privacySettings?.showPhone && currentUser.phoneNumber && (
-    <p>
-      <strong>Phone:</strong> {currentUser.phoneNumber}
-    </p>
-  )}
-  {currentUser.gender && (
-    <p>
-      <strong>Gender:</strong> {currentUser.gender}
-    </p>
-  )}
-  {currentUser.dateOfBirth && (
-    <p>
-      <strong>Date of Birth:</strong>{" "}
-      {new Date(currentUser.dateOfBirth).toLocaleDateString()}
-    </p>
-  )}
-  {currentUser.address?.city && (
-    <p>
-      <strong>Address:</strong> {currentUser.address.city}, {currentUser.address.state},{" "}
-      {currentUser.address.country}
-    </p>
-  )}
+        {currentUser.privacySettings?.showEmail && (
+          <p>
+            <strong>Email:</strong> {currentUser.email}
+          </p>
+        )}
+        {currentUser.privacySettings?.showPhone && currentUser.phoneNumber && (
+          <p>
+            <strong>Phone:</strong> {currentUser.phoneNumber}
+          </p>
+        )}
+        {currentUser.gender && (
+          <p>
+            <strong>Gender:</strong> {currentUser.gender}
+          </p>
+        )}
+        {currentUser.dateOfBirth && (
+          <p>
+            <strong>Date of Birth:</strong>{" "}
+            {new Date(currentUser.dateOfBirth).toLocaleDateString()}
+          </p>
+        )}
+        {currentUser.address?.city && (
+          <p>
+            <strong>Address:</strong> {currentUser.address.city}, {currentUser.address.state},{" "}
+            {currentUser.address.country}
+          </p>
+        )}
       </div>
 
       {/* Role-Specific Sections */}
@@ -181,116 +182,116 @@ const Profile = () => {
         <div className="mt-8 p-6 bg-gradient-to-r from-blue-100 to-blue-200 rounded-lg shadow">
           <h3 className="text-xl font-semibold text-blue-700">Learner Details</h3>
           {currentUser.qualification && (
-      <p>
-        <strong>Qualification:</strong> {currentUser.qualification} (
-        {currentUser.qualificationStatus})
-      </p>
-    )}
-    {currentUser.degree && (
-      <p>
-        <strong>Degree:</strong> {currentUser.degree}
-      </p>
-    )}
-    {currentUser.privacySettings?.showProfession && currentUser.profession && (
-      <p>
-        <strong>Profession:</strong> {currentUser.profession}
-      </p>
-    )}
-    {currentUser.organization?.name && (
-      <p>
-        <strong>Organization:</strong> {currentUser.organization.name}
-      </p>
-    )}
-    {currentUser.interests && (
-      <p>
-        <strong>Interests:</strong> {currentUser.interests}
-      </p>
-    )}
+            <p>
+              <strong>Qualification:</strong> {currentUser.qualification} (
+              {currentUser.qualificationStatus})
+            </p>
+          )}
+          {currentUser.degree && (
+            <p>
+              <strong>Degree:</strong> {currentUser.degree}
+            </p>
+          )}
+          {currentUser.privacySettings?.showProfession && currentUser.profession && (
+            <p>
+              <strong>Profession:</strong> {currentUser.profession}
+            </p>
+          )}
+          {currentUser.organization?.name && (
+            <p>
+              <strong>Organization:</strong> {currentUser.organization.name}
+            </p>
+          )}
+          {currentUser.interests && (
+            <p>
+              <strong>Interests:</strong> {currentUser.interests}
+            </p>
+          )}
           <div className="mt-6">
-        <h3 className="text-xl font-semibold mb-3">My Enrolled Courses</h3>
-        
-        {loading && <p className="text-blue-500">Loading courses...</p>}
-        {error && <p className="text-red-500">Error: {error}</p>}
-        
-        {enrolledCourses?.length === 0 && !loading && (
-          <p className="text-gray-500">You haven't enrolled in any courses yet.</p>
-        )}
+            <h3 className="text-xl font-semibold mb-3">My Enrolled Courses</h3>
 
-        <ul className="space-y-4">
-          {enrolledCourses?.map((course) => (
-            <li key={course._id} className="p-4 bg-gray-100 rounded-md shadow">
-              <h4 className="text-lg font-semibold">{course.title}</h4>
-              <p className="text-gray-600">{course.description}</p>
-              <p className="text-sm text-green-500">Enrolled on: {new Date(course.enrolledDate).toLocaleDateString()}</p>
-              <p className="text-sm text-red-500"><Link to={`/CourseDetails/${course._id}`}>Go to Course</Link></p>
-            
+            {loading && <p className="text-blue-500">Loading courses...</p>}
+            {error && <p className="text-red-500">Error: {error}</p>}
 
-            </li>
-            
-          ))}
-        </ul>
-      </div>
+            {enrolledCourses?.length === 0 && !loading && (
+              <p className="text-gray-500">You haven't enrolled in any courses yet.</p>
+            )}
+
+            <ul className="space-y-4">
+              {enrolledCourses?.map((course) => (
+                <li key={course._id} className="p-4 bg-gray-100 rounded-md shadow">
+                  <h4 className="text-lg font-semibold">{course.title}</h4>
+                  <p className="text-gray-600">{course.description}</p>
+                  <p className="text-sm text-green-500">Enrolled on: {new Date(course.enrolledDate).toLocaleDateString()}</p>
+                  <p className="text-sm text-red-500"><Link to={`/CourseDetails/${course._id}`}>Go to Course</Link></p>
+
+
+                </li>
+
+              ))}
+            </ul>
+          </div>
         </div>
       )}
       {(currentUser?.role === "examinee" || currentUser?.role === "learner") && (
-    <div className="mt-8 p-6 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg shadow">
-      <h3 className="text-xl font-semibold text-purple-700">My Submitted Results</h3>
+        <div className="mt-8 p-6 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg shadow">
+          <h3 className="text-xl font-semibold text-purple-700">My Submitted Results</h3>
 
-      {resultsLoading && <p className="text-blue-500">Loading results...</p>}
-      {resultsError && <p className="text-red-500">Error: {resultsError}</p>}
+          {resultsLoading && <p className="text-blue-500">Loading results...</p>}
+          {resultsError && <p className="text-red-500">Error: {resultsError}</p>}
 
-      {results?.length === 0 && !resultsLoading && (
-  <p className="text-gray-500">No results submitted yet.</p>
-)}
+          {results?.length === 0 && !resultsLoading && (
+            <p className="text-gray-500">No results submitted yet.</p>
+          )}
 
-<ul className="space-y-4">
-  {results?.map((result) => (
-    <li key={result._id} className="p-4 bg-gray-100 rounded-md shadow">
-      <h4 className="text-lg font-semibold">
-        {result.examTitle || "Exam Name Not Available"}
-      </h4>
-      <p className="text-gray-600">Obtained Marks: {result.obtainedMarks}</p>
-      <p className="text-gray-600">Correct Answers: {result.correctAnswers}</p>
-      <p className="text-gray-600">Incorrect Answers: {result.incorrectAnswers}</p>
-      <p className="text-gray-600">Total Questions: {result.totalQuestions}</p>
-      <p className="text-gray-600">Percentage: {result.percentage}%</p>
-      <p
-        className={`text-sm ${
-          result.passed ? "text-green-500" : "text-red-500"
-        }`}
-      >
-        {result.passed ? "Passed" : "Failed"}
-      </p>
-      <p className="text-sm text-green-500">
-        Submitted on: {new Date(result.submittedAt).toLocaleDateString()}
-      </p>
-    </li>
-  ))}
-</ul>
+          <ul className="space-y-4">
+            {results?.map((result) => (
+              <li key={result._id} className="p-4 bg-gray-100 rounded-md shadow">
+                <h4 className="text-lg font-semibold">
+                  {result.examTitle || "Exam Name Not Available"}
+                </h4>
+                <p className="text-gray-600">Obtained Marks: {result.obtainedMarks}</p>
+                <p className="text-gray-600">Correct Answers: {result.correctAnswers}</p>
+                <p className="text-gray-600">Incorrect Answers: {result.incorrectAnswers}</p>
+                <p className="text-gray-600">Total Questions: {result.totalQuestions}</p>
+                <p className="text-gray-600">Percentage: {result.percentage}%</p>
+                <p
+                  className={`text-sm ${result.passed ? "text-green-500" : "text-red-500"
+                    }`}
+                >
+                  {result.passed ? "Passed" : "Failed"}
+                </p>
+                <p className="text-sm text-green-500">
+                  Submitted on: {new Date(result.submittedAt).toLocaleDateString()}
+                </p>
+              </li>
+            ))}
+          </ul>
 
 
-    </div>
-  )}
+        </div>
+      )}
 
 
       {currentUser.role === "trainer" && (
         <div className="mt-8 p-6 bg-gradient-to-r from-yellow-100 to-yellow-200 rounded-lg shadow">
           <h3 className="text-xl font-semibold text-yellow-700">Trainer Details</h3>
           {currentUser.professionalTitle && (
-      <p>
-        <strong>Professional Title:</strong> {currentUser.professionalTitle}
-      </p>
-    )}
-    {currentUser.totalExperience && (
-      <p>
-        <strong>Total Experience:</strong> {currentUser.totalExperience} years
-      </p>
-    )}
-    {currentUser.careerDescription && (
-      <p>
-        <strong>Career Description:</strong> {currentUser.careerDescription}
-      </p>
-    )}
+            <p>
+              <strong>Professional Title:</strong> {currentUser.professionalTitle}
+            </p>
+          )}
+          {currentUser.totalExperience && (
+            <p>
+              <strong>Total Experience:</strong> {currentUser.totalExperience} years
+            </p>
+          )}
+          {currentUser.careerDescription && (
+            <p>
+              <strong>Career Description:</strong> {currentUser.careerDescription}
+            </p>
+          )}
+          <div className="grid">
           <Link to="/courseForm">
             <button className="mt-4 px-5 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-900">
               Add Course
@@ -301,7 +302,16 @@ const Profile = () => {
               Add Exam
             </button>
           </Link>
-          <TrainerCourses />
+          <Link to="/trainer-courses" >
+            <button className="mt-4 px-5 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-900">My Courses</button>
+
+          </Link>
+          <Link to="/trainer-exams">
+            <button className="mt-4 px-5 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-900">
+              View Created Exams
+            </button>
+          </Link>
+          </div>
         </div>
       )}
 
@@ -309,9 +319,9 @@ const Profile = () => {
         <div className="mt-8 p-6 bg-gradient-to-r from-green-100 to-green-200 rounded-lg shadow">
           <h3 className="text-xl font-semibold text-green-700">Examinee Details</h3>
           <p>
-      <strong>Can Enroll in Courses:</strong>{" "}
-      {currentUser.canEnrollCourses ? "Yes" : "No"}
-    </p>
+            <strong>Can Enroll in Courses:</strong>{" "}
+            {currentUser.canEnrollCourses ? "Yes" : "No"}
+          </p>
         </div>
       )}
 
@@ -319,10 +329,10 @@ const Profile = () => {
         <div className="mt-8 p-6 bg-gradient-to-r from-red-100 to-red-200 rounded-lg shadow">
           <h3 className="text-xl font-semibold text-red-700">Admin Details</h3>
           {currentUser.accessLevel && (
-      <p>
-        <strong>Access Level:</strong> {currentUser.accessLevel}
-      </p>
-    )}
+            <p>
+              <strong>Access Level:</strong> {currentUser.accessLevel}
+            </p>
+          )}
           <div className="mt-4">
             <Link
               to="/admin/dash"

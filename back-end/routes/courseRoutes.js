@@ -32,7 +32,7 @@ router.get("/trainer", protect(["trainer","admin"]), getTrainerCourses);
 router.post("/enroll/:courseId", protect(["learner","trainer","admin"]), enrollCourse);
 
 // ✅ Get Enrolled Courses for Learner
-router.get("/enrolled", protect(["learner","trainer"]), getEnrolledCourses);
+router.get("/enrolled", protect(["learner","trainer","admin"]), getEnrolledCourses);
 
 
 // ✅ Update Course (Admin or Trainer Only)
