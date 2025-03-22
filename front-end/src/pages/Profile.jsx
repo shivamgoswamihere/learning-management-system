@@ -243,44 +243,75 @@ const Profile = () => {
   </div>
 )}
 
-      {(currentUser?.role === "examinee" || currentUser?.role === "learner") && (
-        <div className="mt-8 p-6 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg shadow">
-          <h3 className="text-xl font-semibold text-purple-700">My Submitted Results</h3>
+{(currentUser?.role === "examinee" || currentUser?.role === "learner") && (
+  <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl shadow-lg">
+    {/* ✅ Results Header */}
+    <h3 className="text-2xl font-bold text-purple-800 mb-4">📊 My Submitted Results</h3>
 
-          {resultsLoading && <p className="text-blue-500">Loading results...</p>}
-          {resultsError && <p className="text-red-500">Error: {resultsError}</p>}
+    {/* ✅ Loading and Error States */}
+    {resultsLoading && (
+      <p className="text-purple-500 flex items-center">
+        ⏳ <span className="ml-2">Loading results...</span>
+      </p>
+    )}
+    {resultsError && (
+      <p className="text-red-500">
+        ❌ Error: {resultsError}
+      </p>
+    )}
 
-          {results?.length === 0 && !resultsLoading && (
-            <p className="text-gray-500">No results submitted yet.</p>
-          )}
+    {/* ✅ No Results Available */}
+    {results?.length === 0 && !resultsLoading && (
+      <p className="text-gray-500">😕 No results submitted yet.</p>
+    )}
 
-          <ul className="space-y-4">
-            {results?.map((result) => (
-              <li key={result._id} className="p-4 bg-gray-100 rounded-md shadow">
-                <h4 className="text-lg font-semibold">
-                  {result.examTitle || "Exam Name Not Available"}
-                </h4>
-                <p className="text-gray-600">Obtained Marks: {result.obtainedMarks}</p>
-                <p className="text-gray-600">Correct Answers: {result.correctAnswers}</p>
-                <p className="text-gray-600">Incorrect Answers: {result.incorrectAnswers}</p>
-                <p className="text-gray-600">Total Questions: {result.totalQuestions}</p>
-                <p className="text-gray-600">Percentage: {result.percentage}%</p>
-                <p
-                  className={`text-sm ${result.passed ? "text-green-500" : "text-red-500"
-                    }`}
-                >
-                  {result.passed ? "Passed" : "Failed"}
-                </p>
-                <p className="text-sm text-green-500">
-                  Submitted on: {new Date(result.submittedAt).toLocaleDateString()}
-                </p>
-              </li>
-            ))}
-          </ul>
+    {/* ✅ Results List */}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {results?.map((result) => (
+        <div
+          key={result._id}
+          className="p-5 bg-white rounded-lg shadow-md hover:shadow-lg transition border border-purple-200"
+        >
+          <h4 className="text-lg font-semibold text-gray-800 mb-2">
+            🎯 {result.examTitle || "Exam Name Not Available"}
+          </h4>
 
+          {/* ✅ Marks and Performance Details */}
+          <div className="space-y-2 text-sm text-gray-700">
+            <p>
+              📚 <span className="font-semibold">Obtained Marks:</span> {result.obtainedMarks}
+            </p>
+            <p>
+              ✅ <span className="font-semibold">Correct Answers:</span> {result.correctAnswers}
+            </p>
+            <p>
+              ❌ <span className="font-semibold">Incorrect Answers:</span> {result.incorrectAnswers}
+            </p>
+            <p>
+              📝 <span className="font-semibold">Total Questions:</span> {result.totalQuestions}
+            </p>
+            <p>
+              📈 <span className="font-semibold">Percentage:</span> {result.percentage}%
+            </p>
+          </div>
 
+          {/* ✅ Pass/Fail Status */}
+          <p
+            className={`text-sm font-semibold mt-3 ${result.passed ? "text-green-600" : "text-red-600"
+              }`}
+          >
+            {result.passed ? "🎉 Passed" : "❗ Failed"}
+          </p>
+
+          {/* ✅ Submission Date */}
+          <p className="text-xs text-gray-500 mt-1">
+            ⏰ Submitted on: {new Date(result.submittedAt).toLocaleDateString()}
+          </p>
         </div>
-      )}
+      ))}
+    </div>
+  </div>
+)}
 
 
       {currentUser.role === "trainer" && (
