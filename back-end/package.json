@@ -111,6 +111,7 @@
     "on-finished": "^2.4.1",
     "parseurl": "^1.3.3",
     "path-to-regexp": "^0.1.12",
+    "pdfkit": "^0.16.0",
     "picomatch": "^2.3.1",
     "process-nextick-args": "^2.0.1",
     "proxy-addr": "^2.0.7",

@@ -15,7 +15,6 @@ const ExamList = () => {
     }
   }, [dispatch, status]);
 
- 
   const handleEnroll = (examId, isEnrolled) => {
     if (isEnrolled) {
       navigate(`/exam/start/${examId}`); // ✅ Navigate if already enrolled
@@ -31,7 +30,6 @@ const ExamList = () => {
         });
     }
   };
-  
 
   if (status === "loading") {
     return (
@@ -63,16 +61,19 @@ const ExamList = () => {
               className="p-4 bg-white shadow rounded-lg flex justify-between items-center"
             >
               <div>
-          <h3 className="text-lg font-semibold text-gray-800">
-            {exam.title}
-          </h3>
-          <p className="text-gray-600">Code: {exam.code}</p>
-          <p className="text-gray-600">Subject: {exam.subject}</p>
-          <p className="text-gray-600">Time Limit: {exam.timeLimit} min</p>
-          <p className="text-gray-600">Number of Questions: {exam.numQuestions}</p>
-          <p className="text-gray-600">Total Marks: {exam.totalMarks}</p>
-        </div>
-
+                <h3 className="text-lg font-semibold text-gray-800">
+                  {exam.title}
+                </h3>
+                <p className="text-gray-600">Code: {exam.code}</p>
+                <p className="text-gray-600">Subject: {exam.subject}</p>
+                <p className="text-gray-600">Category: {exam.category}</p>
+                <p className="text-gray-600">Time Limit: {exam.timeLimit} min</p>
+                <p className="text-gray-600">Number of Questions: {exam.numQuestions}</p>
+                <p className="text-gray-600">Total Marks: {exam.totalMarks}</p>
+                <p className="text-gray-700 font-semibold">
+                  Exam Type: {exam.type}
+                </p>
+              </div>
 
               <div className="flex space-x-4">
                 {/* Role-based Exam Actions */}
@@ -84,18 +85,6 @@ const ExamList = () => {
                     >
                       Start Exam
                     </button>
-                    {/* {!exam.isEnrolled ? (
-                      <button
-                        onClick={() => handleEnroll(exam._id)}
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
-                      >
-                        Enroll
-                      </button>
-                    ) : (
-                      <span className="text-gray-500 text-sm">
-                        Already Enrolled
-                      </span>
-                    )} */}
                   </>
                 ) : (
                   <p className="text-gray-500 text-sm">Not authorized</p>

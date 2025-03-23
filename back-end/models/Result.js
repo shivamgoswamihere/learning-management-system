@@ -21,6 +21,7 @@ const resultSchema = new mongoose.Schema({
   totalQuestions: Number, // ✅ Required
   percentage: Number,
   passed: Boolean,
+  certificateUrl: { type: String }, // ✅ Store Cloudinary URL
   submittedAt: { type: Date, default: Date.now },
 });
 

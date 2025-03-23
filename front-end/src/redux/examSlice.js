@@ -192,7 +192,7 @@ export const fetchResults = createAsyncThunk(
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true, // Only needed if backend uses cookies
       });
-      
+
 
       // ✅ Return results correctly
       return response.data;
@@ -228,7 +228,35 @@ export const fetchCreatedExams = createAsyncThunk(
   }
 );
 
+// ✅ Generate Certificate for Passed Students
+export const generateCertificate = createAsyncThunk(
+  "exam/generateCertificate",
+  async (examId, { rejectWithValue }) => {
+    try {
+      console.log("Token before request:", getToken());
+      const token = getToken();
+      if (!token) throw new Error("Unauthorized - No token found");
 
+      const response = await axios.get(`${API_BASE_URL}/${examId}/certificate`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true, // Ensure cookies are sent if required
+
+      });
+
+      if (!response.data.success) throw new Error(response.data.message);
+
+      // ✅ Open the certificate URL in a new tab
+      window.open(response.data.certificateUrl, "_blank");
+
+      return { success: true, message: "Certificate opened successfully." };
+    } catch (error) {
+      console.error("Certificate Generation Error:", error);
+      return rejectWithValue(error.response?.data || "Failed to generate certificate");
+    }
+  }
+);
 
 
 
@@ -242,7 +270,8 @@ const examSlice = createSlice({
     createdExams: [],
     loading: false,
     status: "idle",
-    error: null,},
+    error: null,
+  },
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -291,7 +320,7 @@ const examSlice = createSlice({
         state.error = action.payload;
         state.status = "failed";
       })
-       .addCase(enrollExam.fulfilled, (state, action) => {
+      .addCase(enrollExam.fulfilled, (state, action) => {
         state.status = "succeeded";
       })
       .addCase(enrollExam.rejected, (state, action) => {
@@ -315,7 +344,7 @@ const examSlice = createSlice({
         state.error = action.payload;
         state.status = "failed";
       })
-    
+
       // ✅ Fetch Results
       .addCase(fetchResults.pending, (state) => {
         state.loading = true;
@@ -324,7 +353,7 @@ const examSlice = createSlice({
         state.loading = false;
         state.results = action.payload; // ✅ Ensure correct data assignment
       })
-      
+
       .addCase(fetchResults.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -339,6 +368,18 @@ const examSlice = createSlice({
       .addCase(fetchCreatedExams.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(generateCertificate.pending, (state) => {
+        state.status = "loading";
+        state.certificateUrl = null; // Reset on new request
+      })
+      .addCase(generateCertificate.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.certificateUrl = action.payload?.certificateUrl || null; // Store the URL
+      })
+      .addCase(generateCertificate.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload || "Unknown error occurred";
       });
   },
 });

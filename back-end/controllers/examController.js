@@ -1,29 +1,32 @@
 const Exam = require("../models/Exam");
 const Question = require("../models/Question");
 const User = require("../models/User");
-const Result = require("../models/Result");
+const PDFDocument = require("pdfkit");
+const cloudinary = require("../config/cloudinary");
+const { Readable } = require("stream"); // ✅ To upload from memory
+const Result = require("../models/Result"); // Ensure you have the correct model
 const mongoose = require("mongoose");
-  
+
 exports.createExam = async (req, res) => {
- 
+
 
   if (!req.user) {
-      console.log("Error: req.user is undefined"); // Debugging log
-      return res.status(403).json({ error: "Unauthorized request" });
+    console.log("Error: req.user is undefined"); // Debugging log
+    return res.status(403).json({ error: "Unauthorized request" });
   }
 
   if (req.user.role !== "trainer") {
-      return res.status(403).json({ error: "Only trainers can create exams" });
+    return res.status(403).json({ error: "Only trainers can create exams" });
   }
 
   try {
-      const exam = new Exam({ ...req.body, createdBy: req.user.id });
-      await exam.save();
-      console.log("Exam saved:", exam); // Debugging log
-      res.status(201).json(exam);
+    const exam = new Exam({ ...req.body, createdBy: req.user.id });
+    await exam.save();
+    console.log("Exam saved:", exam); // Debugging log
+    res.status(201).json(exam);
   } catch (err) {
-      console.error("Database error:", err.message); // Debugging log
-      res.status(500).json({ error: err.message });
+    console.error("Database error:", err.message); // Debugging log
+    res.status(500).json({ error: err.message });
   }
 };
 
@@ -68,7 +71,7 @@ exports.getAllExams = async (req, res) => {
 exports.getExamQuestions = async (req, res) => {
   try {
     const { examId } = req.params;
-    
+
     const exam = await Exam.findById(examId).populate("questions");
     if (!exam) return res.status(404).json({ error: "Exam not found" });
 
@@ -80,114 +83,115 @@ exports.getExamQuestions = async (req, res) => {
 
 exports.enrollExam = async (req, res) => {
   try {
-      const { examId } = req.params;
-      const userId = req.user.id;
+    const { examId } = req.params;
+    const userId = req.user.id;
 
-      // ✅ Find the exam by ID
-      const exam = await Exam.findById(examId);
-      if (!exam) {
-          return res.status(404).json({ success: false, message: "Exam not found" });
-      }
+    // ✅ Find the exam by ID
+    const exam = await Exam.findById(examId);
+    if (!exam) {
+      return res.status(404).json({ success: false, message: "Exam not found" });
+    }
 
-      // ✅ Find the user by ID
-      const user = await User.findById(userId);
-      if (!user) {
-          return res.status(404).json({ success: false, message: "User not found" });
-      }
+    // ✅ Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
 
-      // ✅ Check if user is a learner or examinee (Fixed Condition)
-      if (user.role !== "learner" && user.role !== "examinee") {
-          return res.status(403).json({ success: false, message: "Only learners and examinees can enroll in exams" });
-      }
+    // ✅ Check if user is a learner or examinee (Fixed Condition)
+    if (user.role !== "learner" && user.role !== "examinee") {
+      return res.status(403).json({ success: false, message: "Only learners and examinees can enroll in exams" });
+    }
 
-      // ✅ Check if already enrolled
-      if (user.enrolledExams.includes(examId)) {
-          return res.status(400).json({ success: false, message: "Already enrolled in this exam" });
-      }
+    // ✅ Check if already enrolled
+    if (user.enrolledExams.includes(examId)) {
+      return res.status(400).json({ success: false, message: "Already enrolled in this exam" });
+    }
 
-      // ✅ Enroll user in the exam
-      user.enrolledExams.push(examId);
-      await user.save();
+    // ✅ Enroll user in the exam
+    user.enrolledExams.push(examId);
+    await user.save();
 
-      return res.status(200).json({
-          success: true,
-          message: "Enrolled in exam successfully",
-          enrolledExams: user.enrolledExams
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Enrolled in exam successfully",
+      enrolledExams: user.enrolledExams
+    });
 
   } catch (error) {
-      console.error("Error enrolling in exam:", error);
-      return res.status(500).json({ success: false, message: error.message });
+    console.error("Error enrolling in exam:", error);
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 exports.getEnrolledExams = async (req, res) => {
   try {
-      const userId = req.user.id;
+    const userId = req.user.id;
 
-      // ✅ Get the user with enrolled exams populated
-      const user = await User.findById(userId)
-          .populate({
-              path: "enrolledExams",
-              select: "title description category trainer",
-              populate: { path: "trainer", select: "fullName" } // Fetch trainer details
-          })
-          .select("fullName enrolledExams");
+    // ✅ Get the user with enrolled exams populated
+    const user = await User.findById(userId)
+      .populate({
+        path: "enrolledExams",
+        select: "title description category trainer",
+        populate: { path: "trainer", select: "fullName" } // Fetch trainer details
+      })
+      .select("fullName enrolledExams");
 
-      if (!user) {
-          return res.status(404).json({ success: false, message: "User not found" });
-      }
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
 
-      return res.status(200).json({
-          success: true,
-          message: "Enrolled exams fetched successfully",
-          enrolledExams: user.enrolledExams
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Enrolled exams fetched successfully",
+      enrolledExams: user.enrolledExams
+    });
 
   } catch (error) {
-      console.error("Error fetching enrolled exams:", error);
-      return res.status(500).json({ success: false, message: error.message });
+    console.error("Error fetching enrolled exams:", error);
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 exports.submitResult = async (req, res) => {
   try {
     const { examId, result } = req.body;
-
     if (!result || !examId) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const { obtainedMarks, correct, incorrect, selectedAnswers, totalQuestions } = result;
-
-    if (
-      obtainedMarks === undefined ||
-      correct === undefined ||
-      incorrect === undefined ||
-      totalQuestions === undefined
-    ) {
+    const { obtainedMarks, correct, incorrect, totalQuestions } = result;
+    if (obtainedMarks === undefined || correct === undefined || incorrect === undefined || totalQuestions === undefined) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const newResult = new Result({
-      user: req.user.id,
-      exam: examId,
-      obtainedMarks,
-      correctAnswers: correct,
-      incorrectAnswers: incorrect,
-      totalQuestions,
-      percentage: (correct / totalQuestions) * 100,
-      passed: obtainedMarks >= 40,
-    });
+    // ✅ Fetch Exam Details
+    const exam = await Exam.findById(examId);
+    if (!exam || exam.totalMarks === undefined) {
+      return res.status(400).json({ error: "Exam details not found or totalMarks missing" });
+    }
 
-    await newResult.save();
-    res.status(201).json({ message: "Result submitted successfully", result: newResult });
+    const passingMarks = exam.totalMarks * 0.4;
+    const passed = obtainedMarks >= passingMarks;
+
+    console.log("Obtained Marks:", obtainedMarks);
+    console.log("Exam Total Marks:", exam.totalMarks);
+    console.log("Passing Marks:", passingMarks);
+    console.log("Passed:", passed);
+
+    // ✅ Update existing result or create a new one
+    const updatedResult = await Result.findOneAndUpdate(
+      { user: req.user.id, exam: examId },  // Find by user & exam
+      { $set: { obtainedMarks, correctAnswers: correct, incorrectAnswers: incorrect, totalQuestions, percentage: (correct / totalQuestions) * 100, passed } },  
+      { new: true, upsert: true } // ✅ Return updated result & create if missing
+    );
+
+    res.status(201).json({ message: "Result submitted successfully", result: updatedResult });
   } catch (error) {
     console.error("Error submitting result:", error);
     res.status(500).json({ error: error.message });
   }
 };
-
 
 
 
@@ -247,3 +251,80 @@ exports.getCreatedExams = async (req, res) => {
 };
 
 
+
+exports.generateCertificate = async (req, res) => {
+  try {
+    const { examId } = req.params;
+    const userId = req.user.id;
+
+     // ✅ Fetch the result
+     const result = await Result.findOne({ exam: examId, user: userId }).populate("exam", "title totalMarks");
+
+     console.log("Fetched result:", result);
+ 
+     if (!result) {
+       console.error("No exam result found for this user.");
+       return res.status(403).json({ success: false, message: "No exam result found" });
+     }
+ 
+     console.log("Passed status from DB:", result.passed);
+ 
+     if (!result.passed) {
+       console.error("User did not pass the exam.");
+       return res.status(403).json({ success: false, message: "You are not eligible for a certificate" });
+     }
+ 
+    // ✅ Generate PDF in memory
+    const doc = new PDFDocument();
+    let pdfBuffer = [];
+
+    doc.on("data", (chunk) => pdfBuffer.push(chunk));
+    doc.on("end", async () => {
+      const buffer = Buffer.concat(pdfBuffer);
+      const stream = Readable.from(buffer);
+
+      // ✅ Upload to Cloudinary
+      cloudinary.uploader.upload_stream(
+        {
+          folder: "certificates",
+          public_id: `certificate_${userId}_${examId}`,
+          resource_type: "raw",
+          format: "pdf",
+        },
+        async (error, uploadResult) => {
+          if (error) {
+            console.error("Cloudinary Upload Error:", error);
+            return res.status(500).json({ success: false, message: "Certificate upload failed" });
+          }
+
+          // ✅ Save Cloudinary URL in the database
+          await Result.findByIdAndUpdate(result._id, { certificateUrl: uploadResult.secure_url }, { new: true });
+
+          return res.status(200).json({
+            success: true,
+            message: "Certificate generated successfully",
+            certificateUrl: uploadResult.secure_url, // ✅ Return the Cloudinary URL
+          });
+        }
+      ).end(buffer);
+    });
+
+    // ✅ PDF Content
+    doc.fontSize(26).text("Certificate of Achievement", { align: "center", underline: true });
+    doc.moveDown();
+    doc.fontSize(18).text("This certifies that", { align: "center" });
+    doc.moveDown();
+    doc.fontSize(22).text(`${req.user.name}`, { align: "center", bold: true });
+    doc.moveDown();
+    doc.fontSize(18).text(`has successfully passed the "${result.exam.title}" exam.`, { align: "center" });
+    doc.moveDown();
+    doc.text(`Score: ${result.obtainedMarks}/${result.exam.totalMarks}`, { align: "center" });
+    doc.moveDown();
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, { align: "center" });
+    doc.end(); // ✅ Finish the document
+
+  } catch (error) {
+    console.error("Error generating certificate:", error);
+    res.status(500).json({ success: false, message: "Error generating certificate" });
+  }
+};

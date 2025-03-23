@@ -10,6 +10,7 @@ const examSchema = new mongoose.Schema({
   type: { type: String, enum: ["Practice Test", "Certification Exam"] },
   questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  certificateTemplate: String,
   randomized: Boolean,
   sections: [{ name: String, timeLimit: Number }],
   accessCodes: [String],
