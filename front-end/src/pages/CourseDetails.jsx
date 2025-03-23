@@ -54,7 +54,8 @@ const CourseDetails = () => {
     </button>
   
     {/* Header Section */}
-    <div className="grid grid-cols-1 md:grid-cols-5 gap-5 p-6 bg-white rounded-lg shadow-lg border border-gray-200">
+    <div className="grid grid-cols-1 md:grid-cols-5 gap-5 p-6 bg-white rounded-lg shadow-lg border border-gray-200 bg-gradient-to-r from-blue-100 via-indigo-200 to-blue-900
+">
   {/* Course Information */}
   <div className="col-span-1 md:col-span-3 mt-2 md:mt-0">
     <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
@@ -94,7 +95,7 @@ const CourseDetails = () => {
       <button
         onClick={handleEnroll}
         disabled={loading}
-        className="bg-blue-600 text-white px-5 py-2 mt-2 rounded-lg hover:bg-blue-700 transition-all duration-300"
+        className="bg-orange-500 text-white px-5 py-2 mt-2 rounded-lg hover:bg-orange-600 transition-all duration-300"
       >
         {loading ? "Enrolling..." : "Enroll Now"}
       </button>
@@ -127,43 +128,50 @@ const CourseDetails = () => {
     <h2 className="text-2xl font-bold mb-6 text-gray-800">📚 Course Lessons</h2>
 
     {selectedCourse?.lessons?.length > 0 ? (
-      <div className="space-y-6">
-        {selectedCourse.lessons.map((lesson, index) => (
-          <div
-            key={lesson._id}
-            className="border border-gray-200 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300"
-          >
-            {/* Lesson Header */}
-            <div className="p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-t-lg">
-              <h4 className="text-lg font-semibold text-gray-900">
-                Lesson {index + 1}: {lesson.title}
-              </h4>
-            </div>
+  <div className="space-y-6">
+    {selectedCourse.lessons.map((lesson, index) => (
+      <div
+        key={lesson._id}
+        className="border border-blue-200 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300"
+      >
+        {/* Lesson Header */}
+        <div className="p-4 bg-gradient-to-r from-blue-100 to-blue-900 rounded-t-lg">
+          <h4 className="text-lg font-semibold text-gray-900">
+            Lesson {index + 1}: {lesson.title}
+          </h4>
+        </div>
 
-            {/* Video Player (Smaller and Properly Sized) */}
-            <div className="flex justify-center items-center p-4">
-              <video
-                src={lesson.videoUrl}
-                controls
-                className="w-[70%] h-auto max-w-[700px] rounded-md shadow-md"
-              />
-            </div>
-
-            {/* Lesson Info */}
-            <div className="p-4">
-              {/* <p className="text-gray-700">🕒 Duration: {lesson.duration || "N/A"} mins</p> */}
-              {lesson.description && (
-                <p className="text-gray-600 mt-2">{lesson.description}</p>
-              )}
-            </div>
+        {/* Lesson Content in Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-4 items-center">
+          {/* Video Player on the Left Side (Larger Size) */}
+          <div className="col-span-1 md:col-span-3 flex justify-center items-center">
+            <video
+              src={lesson.videoUrl}
+              controls
+              className="w-full md:w-[95%] h-auto max-w-[800px] rounded-md shadow-md"
+            />
           </div>
-        ))}
+
+          {/* Lesson Info on the Right Side */}
+          <div className="col-span-1 md:col-span-2 flex flex-col justify-center">
+            <h4 className="text-xl font-semibold text-gray-900 mb-2">
+              {lesson.title}
+            </h4>
+            {lesson.description && (
+              <p className="text-gray-600 text-base">{lesson.description}</p>
+            )}
+          </div>
+        </div>
       </div>
-    ) : (
-      <p className="text-lg text-center text-gray-500 bg-gray-100 py-4 rounded-lg">
-        🚫 No lessons available for this course.
-      </p>
-    )}
+    ))}
+  </div>
+) : (
+  <p className="text-lg text-center text-gray-500 bg-gray-100 py-4 rounded-lg">
+    🚫 No lessons available for this course.
+  </p>
+)}
+
+
   </div>
 )}
 
