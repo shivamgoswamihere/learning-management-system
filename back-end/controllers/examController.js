@@ -6,6 +6,7 @@ const cloudinary = require("../config/cloudinary");
 const { Readable } = require("stream"); // ✅ To upload from memory
 const Result = require("../models/Result"); // Ensure you have the correct model
 const mongoose = require("mongoose");
+const path = require("path");
 
 exports.createExam = async (req, res) => {
 
@@ -182,7 +183,7 @@ exports.submitResult = async (req, res) => {
     // ✅ Update existing result or create a new one
     const updatedResult = await Result.findOneAndUpdate(
       { user: req.user.id, exam: examId },  // Find by user & exam
-      { $set: { obtainedMarks, correctAnswers: correct, incorrectAnswers: incorrect, totalQuestions, percentage: (correct / totalQuestions) * 100, passed } },  
+      { $set: { obtainedMarks, correctAnswers: correct, incorrectAnswers: incorrect, totalQuestions, percentage: (correct / totalQuestions) * 100, passed } },
       { new: true, upsert: true } // ✅ Return updated result & create if missing
     );
 
@@ -257,25 +258,23 @@ exports.generateCertificate = async (req, res) => {
     const { examId } = req.params;
     const userId = req.user.id;
 
-     // ✅ Fetch the result
-     const result = await Result.findOne({ exam: examId, user: userId }).populate("exam", "title totalMarks");
+    // Fetch user details
+    const user = await User.findById(userId).select("fullName");
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
 
-     console.log("Fetched result:", result);
- 
-     if (!result) {
-       console.error("No exam result found for this user.");
-       return res.status(403).json({ success: false, message: "No exam result found" });
-     }
- 
-     console.log("Passed status from DB:", result.passed);
- 
-     if (!result.passed) {
-       console.error("User did not pass the exam.");
-       return res.status(403).json({ success: false, message: "You are not eligible for a certificate" });
-     }
- 
-    // ✅ Generate PDF in memory
-    const doc = new PDFDocument();
+    // Fetch exam result
+    const result = await Result.findOne({ exam: examId, user: userId }).populate("exam", "title totalMarks");
+    if (!result) {
+      return res.status(403).json({ success: false, message: "No exam result found" });
+    }
+    if (!result.passed) {
+      return res.status(403).json({ success: false, message: "You are not eligible for a certificate" });
+    }
+
+    // Generate PDF
+    const doc = new PDFDocument({ size: "A4", layout: "landscape", margin: 50 });
     let pdfBuffer = [];
 
     doc.on("data", (chunk) => pdfBuffer.push(chunk));
@@ -283,7 +282,7 @@ exports.generateCertificate = async (req, res) => {
       const buffer = Buffer.concat(pdfBuffer);
       const stream = Readable.from(buffer);
 
-      // ✅ Upload to Cloudinary
+      // Upload to Cloudinary
       cloudinary.uploader.upload_stream(
         {
           folder: "certificates",
@@ -293,38 +292,51 @@ exports.generateCertificate = async (req, res) => {
         },
         async (error, uploadResult) => {
           if (error) {
-            console.error("Cloudinary Upload Error:", error);
             return res.status(500).json({ success: false, message: "Certificate upload failed" });
           }
 
-          // ✅ Save Cloudinary URL in the database
           await Result.findByIdAndUpdate(result._id, { certificateUrl: uploadResult.secure_url }, { new: true });
 
           return res.status(200).json({
             success: true,
             message: "Certificate generated successfully",
-            certificateUrl: uploadResult.secure_url, // ✅ Return the Cloudinary URL
+            certificateUrl: uploadResult.secure_url,
           });
         }
       ).end(buffer);
     });
 
-    // ✅ PDF Content
+    // Draw border
+    doc.rect(20, 20, doc.page.width - 40, doc.page.height - 40).stroke("#000");
+
+    // Header
     doc.fontSize(26).text("Certificate of Achievement", { align: "center", underline: true });
     doc.moveDown();
-    doc.fontSize(18).text("This certifies that", { align: "center" });
+    doc.image(path.join(__dirname, "../public/images/DevDojoLogo.png"), 20, 20, { width: 100 });
+    // Recipient name
     doc.moveDown();
-    doc.fontSize(22).text(`${req.user.name}`, { align: "center", bold: true });
+    doc.fontSize(18).text("This is awarded to", { align: "center" });
     doc.moveDown();
-    doc.fontSize(18).text(`has successfully passed the "${result.exam.title}" exam.`, { align: "center" });
+    doc.fontSize(28).text(`${user.fullName}`, { align: "center", bold: true });
+    doc.moveDown();
+    
+    // Exam details
+    doc.fontSize(18).text(`For successfully passing the "${result.exam.title}" examination.`, { align: "center" });
     doc.moveDown();
     doc.text(`Score: ${result.obtainedMarks}/${result.exam.totalMarks}`, { align: "center" });
     doc.moveDown();
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, { align: "center" });
-    doc.end(); // ✅ Finish the document
+    doc.text(`Awarded on: ${new Date().toLocaleDateString()}`, { align: "center" });
 
+    // Signature area
+    doc.moveDown(2);
+    doc.text("______________________", 150, doc.page.height - 100);
+    doc.text("Authorized Signature", 150, doc.page.height - 80);
+
+    doc.text("______________________", doc.page.width - 300, doc.page.height - 100);
+    doc.text("Exam Supervisor", doc.page.width - 300, doc.page.height - 80);
+    
+    doc.end();
   } catch (error) {
-    console.error("Error generating certificate:", error);
     res.status(500).json({ success: false, message: "Error generating certificate" });
   }
 };
