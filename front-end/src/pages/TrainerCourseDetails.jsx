@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCourseById } from "../redux/courseSlice";
+import { fetchCourseById, deleteCourse} from "../redux/courseSlice";
 import UpdateCourseModal from "./UpdateCourseModal"; // Import the modal
 import VideoPlayer from "../components/VideoPlayer";
+
 
 const TrainerCourseDetails = () => {
   const { id } = useParams();
@@ -20,6 +21,16 @@ const TrainerCourseDetails = () => {
   if (loading) return <p className="text-center text-lg">Loading course details...</p>;
   if (error) return <p className="text-red-500 text-center">{error}</p>;
   if (!selectedCourse) return <p className="text-center">Course not found.</p>;
+
+  const handleDeleteCourse = () => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this course?");
+    if (confirmDelete) {
+      dispatch(deleteCourse(id)).then(() => {
+        alert("Course deleted successfully!");
+        navigate("/courses"); // Redirect to courses list after deletion
+      });
+    }
+  };
   const handleToggleLessons = () => {
     setShowLessons(!showLessons);
   };
@@ -102,6 +113,10 @@ const TrainerCourseDetails = () => {
       <div className="mt-6 mx-6">
         <button onClick={() => setIsUpdateModalOpen(true)} className="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600">
           Edit Course
+        </button>
+
+        <button onClick={handleDeleteCourse} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+          Delete Course
         </button>
       </div>
 

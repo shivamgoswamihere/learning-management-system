@@ -110,6 +110,23 @@ export const enrollCourse = createAsyncThunk(
       }
     }
   );
+
+  // ✅ Delete Course
+export const deleteCourse = createAsyncThunk(
+    "courses/delete",
+    async (courseId, { rejectWithValue, getState }) => {
+        try {
+            const token = getState().auth.token;
+            await axios.delete(`${API_URL}/${courseId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            return courseId; // Return deleted course ID
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to delete course");
+        }
+    }
+);
   
   // ✅ Get Enrolled Courses (GET /enrolled)
   export const getEnrolledCourses = createAsyncThunk(
@@ -221,6 +238,12 @@ const courseSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+
+
+            .addCase(deleteCourse.fulfilled, (state, action) => {
+                state.trainerCourses = state.trainerCourses.filter(course => course._id !== action.payload);
+                state.courses = state.courses.filter(course => course._id !== action.payload);
+            }) 
              // ✅ Enroll Course
       .addCase(enrollCourse.pending, (state) => {
         state.loading = true;
