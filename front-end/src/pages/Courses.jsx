@@ -52,55 +52,74 @@ const CoursesList = () => {
     if (error) return <p className="text-red-500 text-center">{error}</p>;
 
     return (
-        <div className="container mx-auto p-6">
-            <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Available Courses</h1>
+    <div className="container mx-auto p-6">
+    {/* Page Heading */}
+    <h1 className="text-4xl font-extrabold text-center mb-8 text-gray-800">
+        📚 Available Courses
+    </h1>
 
-            {searchQuery && (
-                <p className="text-center text-lg text-gray-600">
-                    Search results for: <span className="font-semibold">{searchQuery}</span>
-                </p>
-            )}
+    {/* Search Results Display */}
+    {searchQuery && (
+        <p className="text-center text-lg text-gray-600 mb-4">
+        Search results for:{" "}
+        <span className="font-semibold text-blue-600">{searchQuery}</span>
+        </p>
+    )}
 
-            {/* Courses Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {currentCourses.length > 0 ? (
-                    currentCourses.map((course) => (
-                        <CourseCard
-                            key={course._id}
-                            image={course.thumbnail || "https://via.placeholder.com/300"}
-                            category={course.category || "General"}
-                            heading={course.title || "Untitled Course"}
-                            level={course.courseLevel || "Beginner"}
-                            duration={course.duration || "N/A"}
-                            link={`/CourseDetails/${course._id}`}
-                        />
-                    ))
-                ) : (
-                    <p className="col-span-full text-center text-lg text-gray-600">No courses found.</p>
-                )}
-            </div>
-
-            {/* Pagination */}
-            <div className="flex justify-center mt-8 space-x-4">
-                <button 
-                    onClick={prevPage} 
-                    disabled={currentPage === 1}
-                    className="px-4 py-2 bg-gray-600 text-white rounded-lg shadow hover:bg-gray-700 transition disabled:bg-gray-400"
-                >
-                    Previous
-                </button>
-                
-                <span className="text-lg font-semibold">{currentPage} / {totalPages}</span>
-                
-                <button 
-                    onClick={nextPage} 
-                    disabled={currentPage === totalPages}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition disabled:bg-gray-400"
-                >
-                    Next
-                </button>
-            </div>
+    {/* Courses Grid */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {currentCourses.length > 0 ? (
+        currentCourses.map((course) => (
+            <CourseCard
+            key={course._id}
+            image={course.thumbnail || "https://via.placeholder.com/300"}
+            category={course.category || "General"}
+            heading={course.title || "Untitled Course"}
+            level={course.courseLevel || "Beginner"}
+            duration={course.duration || "N/A"}
+            link={`/CourseDetails/${course._id}`}
+            />
+        ))
+        ) : (
+        <div className="col-span-full text-center">
+            <p className="text-lg text-gray-500 bg-gray-100 py-4 px-6 rounded-lg shadow">
+            🚫 No courses found. Try a different search.
+            </p>
         </div>
+        )}
+    </div>
+
+    {/* Pagination Controls */}
+    <div className="flex justify-center items-center mt-10 space-x-4">
+        {/* Previous Button (Hidden on First Page) */}
+        {currentPage > 1 && (
+        <button
+            onClick={prevPage}
+            className="px-4 py-2 rounded-lg bg-gray-600 text-white shadow-lg hover:bg-gray-700 transition-all flex items-center"
+        >
+            <span className="mr-2">«</span> Previous
+        </button>
+        )}
+
+        {/* Page Indicator */}
+        <span className="text-lg font-bold text-gray-800">
+        Page {currentPage} of {totalPages}
+        </span>
+
+        {/* Next Button (Hidden on Last Page) */}
+        {currentPage < totalPages && (
+        <button
+            onClick={nextPage}
+            className="px-4 py-2 rounded-lg bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all flex items-center"
+        >
+            Next <span className="ml-2">»</span>
+        </button>
+        )}
+    </div>
+    </div>
+
+
+
     );
 };
 
