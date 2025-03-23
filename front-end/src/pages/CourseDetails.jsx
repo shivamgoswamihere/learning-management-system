@@ -54,57 +54,64 @@ const CourseDetails = () => {
     </button>
   
     {/* Header Section */}
-    <div className="grid grid-cols-2 gap-5 p-6 bg-gradient-to-r from-indigo-900 to-blue-600 rounded-lg shadow-lg">
-      <div className="mt-4">
-        <span className="bg-blue-300 text-blue-900 font-semibold p-2 py-1 text-left text-sm rounded">
-          Category: {selectedCourse.category}
-        </span>
-        <h1 className="text-5xl font-extrabold mt-4 text-white">
-          {selectedCourse.title}
-        </h1>
-        <p className="text-gray-200 mt-2">{selectedCourse.description}</p>
-  
-        <div className="mt-4 space-y-2 text-lg">
-          <p>
-            <strong className="text-blue-300">Price:</strong>{" "}
-            {selectedCourse.price === 0 ? "Free" : `$${selectedCourse.price}`}
-          </p>
-          <p>
-            <strong className="text-blue-300">Duration:</strong>{" "}
-            {selectedCourse.duration}
-          </p>
-          {selectedCourse.prerequisites && (
-            <p>
-              <strong className="text-blue-300">Prerequisites:</strong>{" "}
-              {selectedCourse.prerequisites}
-            </p>
-          )}
-          <p>
-            <strong className="text-blue-300">Certification:</strong>{" "}
-            {selectedCourse.certificationAvailable ? "Yes" : "No"}
-          </p>
-        </div>
-  
-        <button
-          onClick={handleEnroll}
-          disabled={loading}
-          className="bg-orange-500 text-white px-5 py-2 my-6 rounded-lg hover:bg-orange-600 transition-all"
-        >
-          {loading ? "Enrolling..." : "Enroll in Course"}
-        </button>
-      </div>
-  
-      {/* Image Section */}
-      <div className="relative w-full h-80 bg-gray-300 rounded-lg overflow-hidden shadow-lg">
-        <img
-          src={
-            selectedCourse.thumbnail || "https://via.placeholder.com/800x400"
-          }
-          alt={selectedCourse.title}
-          className="w-full h-full object-cover"
-        />
-      </div>
+    <div className="grid grid-cols-1 md:grid-cols-5 gap-5 p-6 bg-white rounded-lg shadow-lg border border-gray-200 bg-gradient-to-r from-blue-100 via-indigo-200 to-blue-900
+">
+  {/* Course Information */}
+  <div className="col-span-1 md:col-span-3 mt-2 md:mt-0">
+    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+      {selectedCourse.title}
+    </h1>
+    <p className="text-gray-600 mt-2 text-sm md:text-base">
+      {selectedCourse.description}
+    </p>
+
+    {/* Additional Details */}
+    <div className="flex items-center gap-4 text-sm text-gray-500 mt-3">
+      <p>
+        <strong>Category:</strong> {selectedCourse.category}
+      </p>
+      <p>
+        <strong>Certification:</strong>{" "}
+        {selectedCourse.certificationAvailable ? "Yes" : "No"}
+      </p>
+      <p>
+        <strong>{selectedCourse.duration}</strong> total hours
+      </p>
+      <p>{selectedCourse.level || "Beginner"}</p>
     </div>
+
+    {/* Prerequisites */}
+    {selectedCourse.prerequisites && (
+      <p className="text-sm text-gray-500 mt-3">
+        <strong>Prerequisites:</strong> {selectedCourse.prerequisites}
+      </p>
+    )}
+
+    {/* Pricing and Button */}
+    <div className="mt-4">
+      <div className="text-lg font-bold text-green-700">
+        ₹{selectedCourse.price || "449"}{" "}
+      </div>
+      <button
+        onClick={handleEnroll}
+        disabled={loading}
+        className="bg-orange-500 text-white px-5 py-2 mt-2 rounded-lg hover:bg-orange-600 transition-all duration-300"
+      >
+        {loading ? "Enrolling..." : "Enroll Now"}
+      </button>
+    </div>
+  </div>
+
+  {/* Course Thumbnail on the Right Side */}
+  <div className="col-span-1 md:col-span-2 relative w-full h-52 md:h-60 bg-gray-300 rounded-lg overflow-hidden shadow-lg">
+    <img
+      src={selectedCourse.thumbnail || "https://via.placeholder.com/800x400"}
+      alt={selectedCourse.title}
+      className="w-full h-full object-cover"
+    />
+  </div>
+</div>
+
   
     {/* Show Lessons Button */}
     <div className="mt-6 mx-6">
@@ -116,27 +123,60 @@ const CourseDetails = () => {
       </button>
   
       {showLessons && (
-        <div className="mt-4 text-black">
-          <h2 className="text-2xl font-bold mb-3">Course Lessons</h2>
-          {selectedCourse.lessons.length > 0 ? (
-            selectedCourse.lessons.map((lesson) => (
-              <div
-                key={lesson._id}
-                className="border p-4 rounded-lg mt-2 bg-gray-50 shadow"
-              >
-                <h4 className="font-semibold">{lesson.title}</h4>
-                <video
-                  src={lesson.videoUrl}
-                  controls
-                  className="w-full h-40 mt-2 rounded-lg"
-                />
-              </div>
-            ))
-          ) : (
-            <p>No lessons available.</p>
-          )}
+  <div className="mt-8 text-black">
+    {/* Course Lessons Heading */}
+    <h2 className="text-2xl font-bold mb-6 text-gray-800">📚 Course Lessons</h2>
+
+    {selectedCourse?.lessons?.length > 0 ? (
+  <div className="space-y-6">
+    {selectedCourse.lessons.map((lesson, index) => (
+      <div
+        key={lesson._id}
+        className="border border-blue-200 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300"
+      >
+        {/* Lesson Header */}
+        <div className="p-4 bg-gradient-to-r from-blue-100 to-blue-900 rounded-t-lg">
+          <h4 className="text-lg font-semibold text-gray-900">
+            Lesson {index + 1}: {lesson.title}
+          </h4>
         </div>
-      )}
+
+        {/* Lesson Content in Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-4 items-center">
+          {/* Video Player on the Left Side (Larger Size) */}
+          <div className="col-span-1 md:col-span-3 flex justify-center items-center">
+            <video
+              src={lesson.videoUrl}
+              controls
+              className="w-full md:w-[95%] h-auto max-w-[800px] rounded-md shadow-md"
+            />
+          </div>
+
+          {/* Lesson Info on the Right Side */}
+          <div className="col-span-1 md:col-span-2 flex flex-col justify-center">
+            <h4 className="text-xl font-semibold text-gray-900 mb-2">
+              {lesson.title}
+            </h4>
+            {lesson.description && (
+              <p className="text-gray-600 text-base">{lesson.description}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+) : (
+  <p className="text-lg text-center text-gray-500 bg-gray-100 py-4 rounded-lg">
+    🚫 No lessons available for this course.
+  </p>
+)}
+
+
+  </div>
+)}
+
+
+
     </div>
   
     {/* Syllabus Section */}
@@ -147,7 +187,7 @@ const CourseDetails = () => {
           selectedCourse.syllabus.map((module, index) => (
             <div
               key={index}
-              className="border border-gray-300 p-5 rounded-lg bg-gray-50 hover:shadow-md transition-all duration-300"
+              className="border border-gray-300 p-5 m-5 rounded-lg bg-gray-50 hover:shadow-md transition-all duration-300"
             >
               <button
                 onClick={() => toggleSyllabus(index)}
