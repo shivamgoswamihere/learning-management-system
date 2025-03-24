@@ -83,7 +83,7 @@ const Home = () => {
   return (
     <div className="font-sans bg-white">
       {/* Hero Section with Slider */}
-      <section className="relative bg-gradient-to-r from-blue-900 to-blue-700 text-white py-20 px-10">
+      <section className="relative bg-gradient-to-r from-blue-700 to-blue-500 text-white py-20 px-10">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
           {/* Left: Text Content */}
           <div className="w-full md:w-1/2">
@@ -142,7 +142,7 @@ const Home = () => {
       </div>
 
       {/* Review Section */}
-      <section className="py-16 px-6 md:px-16 relative flex flex-col md:flex-row items-center gap-10 max-w-6xl mx-auto">
+      {/* <section className="py-16 px-6 md:px-16 relative flex flex-col md:flex-row items-center gap-10 max-w-6xl mx-auto">
         <div className="w-full md:w-1/2 relative">
           <img
             src={reviewbg}
@@ -169,53 +169,10 @@ const Home = () => {
             Read All Reviews →
           </Link>
         </div>
-      </section>
+      </section> */}
 
       {/* Featured Course */}
-      <section className="py-16 px-6 md:px-16 bg-gray-100">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10">
-          {/* Left: Course Image */}
-          <div className="w-full md:w-1/2">
-            <img
-              src={fetchbg}
-              alt="Featured Course"
-              className="w-full rounded-lg shadow-lg"
-            />
-          </div>
-
-          {/* Right: Course Details */}
-          <div className="w-full md:w-1/2 text-left">
-            <span className="text-yellow-500 font-semibold uppercase tracking-wide text-sm">
-              ● Featured Course
-            </span>
-            <h2 className="text-4xl font-bold mt-2 leading-snug">
-              Getting Started With Python 3 for Beginner
-            </h2>
-            <p className="mt-3 text-gray-600 text-lg">
-              Nibh enim nisi amet et nunc varius facilisis nulla non urna
-              pulvinar felis, faucibus id placerat.
-            </p>
-
-            {/* Course Highlights */}
-            <div className="mt-4 grid grid-cols-2 gap-3 text-gray-700">
-              <p className="flex items-center gap-2">
-                <FaCheckCircle className="text-blue-600" /> Fundamental
-              </p>
-              <p className="flex items-center gap-2">
-                <FaCheckCircle className="text-blue-600" /> Conditional
-                branching
-              </p>
-              <p className="flex items-center gap-2">
-                <FaCheckCircle className="text-blue-600" /> Input and output
-              </p>
-              <p className="flex items-center gap-2">
-                <FaCheckCircle className="text-blue-600" /> +8 more lessons
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      
       {/* Additional Courses */}
       <section className="py-16 px-6 md:px-16 max-w-6xl mx-auto">
         <h2 className="text-3xl font-bold text-center mb-6">More Courses</h2>
@@ -238,7 +195,7 @@ const Home = () => {
       {/* <CourseCategories /> */}
 
       {/* Testimonials */}
-      <section className="bg-gray-100 py-16 px-10 text-center">
+      {/* <section className="bg-gray-100 py-16 px-10 text-center">
         <h2 className="text-4xl font-bold text-gray-900">
           Trusted by Thousands of Students and Tutors
         </h2>
@@ -263,10 +220,10 @@ const Home = () => {
         <button className="mt-8 px-6 py-3 border border-blue-500 text-blue-500 rounded-full hover:bg-blue-500 hover:text-white transition">
           Start Learning
         </button>
-      </section>
+      </section> */}
 
       {/* Membership Section */}
-      <section className="py-16 px-10 text-center">
+      {/* <section className="py-16 px-10 text-center">
         <h2 className="text-3xl font-bold">All Access Membership</h2>
         <p className="mt-2 text-gray-600">
           Get unlimited access to all courses.
@@ -277,7 +234,7 @@ const Home = () => {
         >
           Subscribe & Save
         </Link>
-      </section>
+      </section> */}
     </div>
   );
 };

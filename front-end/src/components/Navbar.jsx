@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../redux/authSlice";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
-import { FaShoppingCart, FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
+import { FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
 import devdojo from "../assets/DevDojo.png";
+import { fetchCurrentUser } from "../redux/userSlice";
 
 function Navbar() {
   const [modalType, setModalType] = useState(null);
@@ -15,6 +16,11 @@ function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // ✅ Search state
+    const { currentUser, loading, error } = useSelector((state) => state.users);
+
+    useEffect(() => {
+        dispatch(fetchCurrentUser());
+      }, [dispatch]);
 
   const openLogin = () => setModalType("login");
   const openRegister = () => setModalType("register");
@@ -34,22 +40,27 @@ function Navbar() {
       setMenuOpen(false); // Close menu on mobile
     }
   };
+  
+  if (loading)
+    return <p className="text-center text-lg font-semibold text-gray-600">Loading profile...</p>;
+  if (error) return <p className="text-red-500 text-center">{error}</p>;
+  if (!currentUser) return <p className="text-center">No user profile found.</p>;
 
   return (
     <>
-      <div className="flex justify-between items-center px-6 md:px-10 py-4 bg-white text-black shadow-md">
+      <div className="fixed w-full z-10 flex justify-between items-center px-6 md:px-10 py-1 bg-white text-black shadow-lg">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <img className="w-40" src={devdojo} alt="Logo" />
+          <img className="w-20" src={devdojo} alt="Logo" />
         </Link>
 
         {/* Mobile Menu Button */}
-        <button className="md:hidden text-2xl" onClick={() => setMenuOpen(!menuOpen)}>
+        <button className="md:hidden text-xl" onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
 
         {/* Main Navigation (Desktop) */}
-        <div className="hidden md:flex items-center gap-6 text-lg font-medium">
+        <div className="hidden md:flex items-center gap-6 text-md">
           <Link to="/courses" className="hover:text-blue-600 transition-all">Courses</Link>
 
           {user && (
@@ -65,16 +76,21 @@ function Navbar() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleSearch} // 🔍 Trigger search on Enter key
-            className="hidden md:block px-4 py-2 w-80 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            className="hidden md:block px-2 py-1 w-80 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
           />
 
           {user ? (
             <div className="relative">
               <button
-                className="flex items-center gap-2 bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300 transition"
+                className="flex items-center gap-2 bg-gray-200 px-4 py-2 rounded-md text-gray hover:bg-gray-200 transition"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
-                <FaUserCircle className="text-2xl" />
+             
+            <img
+              src={currentUser.profilePicture || "/default-avatar.png"}
+              alt="Full Profile"
+              className="w-6 h-6 rounded-full object-fitg"
+            />
                 {user.name}
               </button>
 
