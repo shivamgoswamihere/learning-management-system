@@ -6,7 +6,7 @@ import Register from "../pages/Register";
 import Login from "../pages/Login";
 import { FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
 import devdojo from "../assets/DevDojo.png";
-import { fetchCurrentUser } from "../redux/userSlice";
+// import { fetchCurrentUser } from "../redux/userSlice";
 
 function Navbar() {
   const [modalType, setModalType] = useState(null);
@@ -18,9 +18,9 @@ function Navbar() {
   const [searchQuery, setSearchQuery] = useState(""); // ✅ Search state
     const { currentUser, loading, error } = useSelector((state) => state.users);
 
-    useEffect(() => {
-        dispatch(fetchCurrentUser());
-      }, [dispatch]);
+    // useEffect(() => {
+    //     dispatch(fetchCurrentUser());
+    //   }, [dispatch]);
 
   const openLogin = () => setModalType("login");
   const openRegister = () => setModalType("register");
@@ -41,10 +41,10 @@ function Navbar() {
     }
   };
   
-  if (loading)
-    return <p className="text-center text-lg font-semibold text-gray-600">Loading profile...</p>;
-  if (error) return <p className="text-red-500 text-center">{error}</p>;
-  if (!currentUser) return <p className="text-center">No user profile found.</p>;
+  // if (loading)
+  //   return <p className="text-center text-lg font-semibold text-gray-600">Loading profile...</p>;
+  // if (error) return <p className="text-red-500 text-center">{error}</p>;
+  // if (!currentUser) return <p className="text-center">No user profile found.</p>;
 
   return (
     <>
@@ -86,11 +86,11 @@ function Navbar() {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
              
-            <img
+            {/* <img
               src={currentUser.profilePicture || "/default-avatar.png"}
               alt="Full Profile"
               className="w-6 h-6 rounded-full object-fitg"
-            />
+            /> */}
                 {user.name}
               </button>
 
