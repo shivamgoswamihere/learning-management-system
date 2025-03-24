@@ -159,22 +159,26 @@ const StartExam = () => {
               Marks Obtained: <span className="text-blue-600">{calculateResults().obtainedMarks} / {exam.totalMarks}</span>
             </p>
 
-            {exam?.type === "Certification Exam" && certificateUrl ? (
-              <a
-                href={certificateUrl}
-                download
-                className="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
-              >
-                Download Certificate
-              </a>
-            ) : (
-              <button
-                onClick={handleGenerateCertificate}
-                className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
-                disabled={status === "loading"}
-              >
-                {status === "loading" ? "Generating..." : "Generate Certificate"}
-              </button>)}
+            {exam?.type === "Certification Exam" && (
+              certificateUrl ? (
+                <a
+                  href={certificateUrl}
+                  download
+                  className="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
+                >
+                  Download Certificate
+                </a>
+              ) : (
+                <button
+                  onClick={handleGenerateCertificate}
+                  className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+                  disabled={status === "loading"}
+                >
+                  {status === "loading" ? "Generating..." : "Generate Certificate"}
+                </button>
+              )
+            )}
+
 
 
             <button
