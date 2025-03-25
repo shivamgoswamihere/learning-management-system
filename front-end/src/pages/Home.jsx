@@ -81,7 +81,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="font-sans bg-white">
+    <div className="font-sans bg-gray-200">
       {/* Hero Section with Slider */}
       <section className="relative bg-gradient-to-r from-blue-700 to-blue-500 text-white py-20 px-10">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
@@ -100,14 +100,14 @@ const Home = () => {
               {featuredCourse && (
                 <Link
                   to={`/CourseDetails/${featuredCourse._id}`}
-                  className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold shadow-md"
+                  className="bg-white text-blue-600 px-6 py-3  font-semibold shadow-md"
                 >
                   Start Course
                 </Link>
               )}
               <Link
                 to="/courses"
-                className="border border-white px-6 py-3 rounded-lg font-semibold"
+                className="border border-white px-6 py-3  font-semibold"
               >
                 View All Courses →
               </Link>
@@ -119,7 +119,7 @@ const Home = () => {
             <img
               src={featuredCourse ? featuredCourse.thumbnail : "Loading..."}
               alt="Hero Course"
-              className="w-full h-[300px] object-fill rounded-lg shadow-lg"
+              className="w-[600px] h-[300px] object-fill shadow-lg"
             />
             {/* Play Button Overlay */}
             {/* <div className="absolute inset-0 flex items-center justify-center">

@@ -52,7 +52,7 @@ const CoursesList = () => {
     if (error) return <p className="text-red-500 text-center">{error}</p>;
 
     return (
-    <div className="container mx-auto p-6">
+    <div className="p-6 bg-gray-200">
     {/* Page Heading */}
     <h1 className="text-4xl font-extrabold text-center mb-8 text-gray-800">
         📚 Available Courses
@@ -67,7 +67,7 @@ const CoursesList = () => {
     )}
 
     {/* Courses Grid */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    <div className="mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {currentCourses.length > 0 ? (
         currentCourses.map((course) => (
             <CourseCard

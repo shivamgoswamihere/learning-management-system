@@ -46,27 +46,27 @@ const CourseDetails = () => {
 
   return (
     <div className="max-w-full mx-auto mt-2 text-white">
-    <button
+    {/* <button
       onClick={() => navigate(-1)}
       className="mb-2 mx-6 px-4 py-1 bg-gray-800 text-white hover:bg-gray-700 rounded transition"
     >
       ← Back
-    </button>
+    </button> */}
   
     {/* Header Section */}
-    <div className="grid grid-cols-1 md:grid-cols-5 gap-5 p-6 bg-white rounded-lg shadow-lg border border-gray-200 bg-gradient-to-r from-blue-100 via-indigo-200 to-blue-900
+    <div className="grid grid-cols-1 text-white md:grid-cols-5 gap-5 p-6 bg-white shadow-lg border border-gray-200 bg-gradient-to-r from-blue-700 to-blue-500
 ">
   {/* Course Information */}
   <div className="col-span-1 md:col-span-3 mt-2 md:mt-0">
-    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+    <h1 className="text-2xl md:text-3xl font-bold ">
       {selectedCourse.title}
     </h1>
-    <p className="text-gray-600 mt-2 text-sm md:text-base">
+    <p className="text-gray-300 mt-2 text-sm md:text-base">
       {selectedCourse.description}
     </p>
 
     {/* Additional Details */}
-    <div className="flex items-center gap-4 text-sm text-gray-500 mt-3">
+    <div className="flex items-center gap-4 text-sm mt-3">
       <p>
         <strong>Category:</strong> {selectedCourse.category}
       </p>
@@ -75,27 +75,27 @@ const CourseDetails = () => {
         {selectedCourse.certificationAvailable ? "Yes" : "No"}
       </p>
       <p>
-        <strong>{selectedCourse.duration}</strong> total hours
+        <strong>Duration: </strong>{selectedCourse.duration} Hrs
       </p>
-      <p>{selectedCourse.level || "Beginner"}</p>
+      <p> <strong>Level: </strong> {selectedCourse.level || "Beginner"}</p>
     </div>
 
     {/* Prerequisites */}
     {selectedCourse.prerequisites && (
-      <p className="text-sm text-gray-500 mt-3">
+      <p className="text-sm mt-3">
         <strong>Prerequisites:</strong> {selectedCourse.prerequisites}
       </p>
     )}
 
     {/* Pricing and Button */}
     <div className="mt-4">
-      <div className="text-lg font-bold text-green-700">
+      <div className="text-lg font-bold text-white">
         ₹{selectedCourse.price || "449"}{" "}
       </div>
       <button
         onClick={handleEnroll}
         disabled={loading}
-        className="bg-orange-500 text-white px-5 py-2 mt-2 rounded-lg hover:bg-orange-600 transition-all duration-300"
+        className="bg-white text-blue-700 px-5 py-2 mt-2 font-bold border-2 border-white hover:bg-blue-500  hover:text-white transition-all duration-300"
       >
         {loading ? "Enrolling..." : "Enroll Now"}
       </button>
@@ -117,7 +117,7 @@ const CourseDetails = () => {
     <div className="mt-6 mx-6">
       <button
         onClick={handleToggleLessons}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-all"
+        className="bg-blue-600 text-white font-bold px-4 py-2 hover:bg-blue-700 transition-all"
       >
         {showLessons ? "Hide Lessons" : "Show Lessons"}
       </button>
@@ -125,7 +125,8 @@ const CourseDetails = () => {
       {showLessons && (
   <div className="mt-8 text-black">
     {/* Course Lessons Heading */}
-    <h2 className="text-2xl font-bold mb-6 text-gray-800">📚 Course Lessons</h2>
+    
+    <h2 className="text-3xl font-bold">Lessons</h2>
 
     {selectedCourse?.lessons?.length > 0 ? (
   <div className="space-y-6">
@@ -135,22 +136,15 @@ const CourseDetails = () => {
         className="border border-blue-200 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300"
       >
         {/* Lesson Header */}
-        <div className="p-4 bg-gradient-to-r from-blue-100 to-blue-900 rounded-t-lg">
-          <h4 className="text-lg font-semibold text-gray-900">
+        <div className="p-4 bg-gradient-to-r from-blue-700 to-blue-500 ">
+          <h4 className="text-lg font-semibold text-white">
             Lesson {index + 1}: {lesson.title}
           </h4>
         </div>
 
         {/* Lesson Content in Grid */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-4 items-center">
-          {/* Video Player on the Left Side (Larger Size) */}
-          <div className="col-span-1 md:col-span-3 flex justify-center items-center">
-            <video
-              src={lesson.videoUrl}
-              controls
-              className="w-full md:w-[95%] h-auto max-w-[800px] rounded-md shadow-md"
-            />
-          </div>
+          
 
           {/* Lesson Info on the Right Side */}
           <div className="col-span-1 md:col-span-2 flex flex-col justify-center">
@@ -161,6 +155,17 @@ const CourseDetails = () => {
               <p className="text-gray-600 text-base">{lesson.description}</p>
             )}
           </div>
+        
+            {/* Video Player on the Left Side (Larger Size) */}
+          <div className="col-span-1 md:col-span-3 flex justify-center items-center">
+            <video
+              src={lesson.videoUrl}
+              controls
+              className="w-full md:w-[95%] h-auto max-w-[800px] rounded-md shadow-md"
+            />
+          </div>
+
+
         </div>
       </div>
     ))}
