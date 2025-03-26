@@ -246,7 +246,7 @@ const Profile = () => {
 {(currentUser?.role === "examinee" || currentUser?.role === "learner") && (
   <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl shadow-lg">
     {/* ✅ Results Header */}
-    <h3 className="text-2xl font-bold text-purple-800 mb-4">📊 My Submitted Results</h3>
+    <h3 className="text-2xl font-bold text-purple-800 mb-4">📊 Exam Results</h3>
 
     {/* ✅ Loading and Error States */}
     {resultsLoading && (
