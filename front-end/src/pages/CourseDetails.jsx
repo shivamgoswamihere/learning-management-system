@@ -129,12 +129,17 @@ const CourseDetails = () => {
   
     {/* Show Lessons Button */}
     <div className="mt-6 mx-6">
-      <button
-        onClick={handleToggleLessons}
-        className="bg-blue-600 text-white font-bold px-4 py-2 hover:bg-blue-700 transition-all"
-      >
-        {showLessons ? "Hide Lessons" : "Show Lessons"}
-      </button>
+      
+    {isAlreadyEnrolled ? (
+              <button
+              onClick={handleToggleLessons}
+              className="bg-blue-600 text-white font-bold px-4 py-2 hover:bg-blue-700 transition-all"
+            >
+              {showLessons ? "Hide Lessons" : "Show Lessons"}
+            </button>
+            ) : ("Enroll Now")}
+      
+      
   
       {showLessons && (
   <div className="mt-8 text-black">
