@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCourseById, enrollCourse } from "../redux/courseSlice"; 
+import { fetchCourseById, enrollCourse, getEnrolledCourses } from "../redux/courseSlice"; 
 
 const CourseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { selectedCourse, loading, enrollmentSuccess, enrollmentError, error } = useSelector(
-    (state) => state.courses
-  );
+  const { selectedCourse, loading, error, enrolledCourses } = useSelector(state => state.courses);
   const token = useSelector((state) => state.auth.token);
   const [showLessons, setShowLessons] = useState(false);
   const [expandedSyllabusIndex, setExpandedSyllabusIndex] = useState(null);
 
   useEffect(() => {
     if (id) dispatch(fetchCourseById(id));
-  }, [dispatch, id]);
+    if (token) dispatch(getEnrolledCourses());  // Fetch enrolled courses
+  }, [dispatch, id, token]);
 
   if (loading) return <p className="text-center text-lg">Loading course details...</p>;
   if (error) return <p className="text-red-500 text-center">{error}</p>;
@@ -30,19 +29,29 @@ const CourseDetails = () => {
     setExpandedSyllabusIndex(expandedSyllabusIndex === index ? null : index);
   };
 
-  const handleEnroll = async () => {
-    if (!selectedCourse || !selectedCourse._id) {
-      alert("Course ID is missing. Unable to enroll.");
-      return;
-    }
+  const isAlreadyEnrolled = enrolledCourses?.some(course => course._id === selectedCourse._id);
 
+  const handleEnroll = async () => {
     if (!token) {
       alert("Please login to enroll.");
       return;
     }
-
-    dispatch(enrollCourse(selectedCourse._id));
+  
+    if (isAlreadyEnrolled) {
+      alert("You are already enrolled in this course.");
+      return;
+    }
+  
+    try {
+      await dispatch(enrollCourse(selectedCourse._id)).unwrap();
+  
+      // ✅ Immediately update Redux state without needing a refresh
+      dispatch(getEnrolledCourses()); 
+    } catch (err) {
+      console.error("Enrollment failed:", err);
+    }
   };
+  
 
   return (
     <div className="max-w-full mx-auto mt-2 text-white">
@@ -87,20 +96,25 @@ const CourseDetails = () => {
       </p>
     )}
 
-    {/* Pricing and Button */}
-    <div className="mt-4">
-      <div className="text-lg font-bold text-white">
-        ₹{selectedCourse.price || "449"}{" "}
-      </div>
-      <button
-        onClick={handleEnroll}
-        disabled={loading}
-        className="bg-white text-blue-700 px-5 py-2 mt-2 font-bold border-2 border-white hover:bg-blue-500  hover:text-white transition-all duration-300"
-      >
-        {loading ? "Enrolling..." : "Enroll Now"}
-      </button>
-    </div>
-  </div>
+             {/* Pricing and Enrollment */}
+             <div className="mt-4">
+            <div className="text-lg font-bold text-white">₹{selectedCourse.price || "449"}</div>
+            {isAlreadyEnrolled ? (
+              <button className="bg-white text-blue-700 px-5 py-2 mt-2 font-bold border-2 border-white hover:bg-blue-500 hover:text-white cursor-not-allowed">
+                Already Enrolled
+              </button>
+            ) : (
+              <button
+                onClick={handleEnroll}
+                disabled={loading}
+                className="bg-white text-blue-700 px-5 py-2 mt-2 font-bold border-2 border-white hover:bg-blue-500 hover:text-white transition-all duration-300"
+              >
+                {loading ? "Enrolling..." : "Enroll Now"}
+              </button>
+            )}
+          </div>
+        </div>
+
 
   {/* Course Thumbnail on the Right Side */}
   <div className="col-span-1 md:col-span-2 relative w-full h-52 md:h-60 bg-gray-300 rounded-lg overflow-hidden shadow-lg">

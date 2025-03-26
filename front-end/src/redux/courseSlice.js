@@ -139,9 +139,7 @@ export const deleteCourse = createAsyncThunk(
         });
         return response.data.enrolledCourses;
       } catch (error) {
-        return rejectWithValue(
-          error.response?.data?.message || "Error fetching enrolled courses"
-        );
+        return rejectWithValue(error.response?.data?.message || "Error fetching enrolled courses");
       }
     }
   );

@@ -38,6 +38,6 @@ router.get("/submitted-results", protect(["learner", "examinee", "trainer"]), ge
 router.get("/created-exams", protect(["trainer", "admin"]), getCreatedExams);
 
 // ✅ New Route: Generate & Download Certificate (Only for Passed Students)
-router.get("/:examId/certificate", protect(["learner", "examinee"]), generateCertificate);
+router.get("/:examId/certificate", protect(["learner", "examinee","trainer","admin"]), generateCertificate);
 
 module.exports = router;
