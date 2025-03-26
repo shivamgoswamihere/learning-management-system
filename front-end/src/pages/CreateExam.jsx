@@ -250,6 +250,8 @@ const CreateExam = () => {
     { text: "", options: ["", "", "", ""], correctAnswer: "a" },
   ]);
 
+  const [alert, setAlert] = useState({ type: "", message: "" });
+
   const handleChange = (e) => {
     setExamData({ ...examData, [e.target.name]: e.target.value });
   };
@@ -285,20 +287,27 @@ const CreateExam = () => {
       // Map correct answer (a, b, c, d) to actual option text
       const updatedQuestions = questions.map((q) => ({
         ...q,
-        correctAnswer: q.options[
-          ["a", "b", "c", "d"].indexOf(q.correctAnswer)
-        ], // Get correct option text
+        correctAnswer: q.options[["a", "b", "c", "d"].indexOf(q.correctAnswer)],
       }));
-  
+
       const result = await dispatch(createExam(examData)).unwrap();
       if (result && result._id) {
-        await dispatch(addQuestions({ examId: result._id, questions: updatedQuestions }));
+        await dispatch(
+          addQuestions({ examId: result._id, questions: updatedQuestions })
+        );
+        setAlert({
+          type: "success",
+          message: "✅ Exam created and questions added successfully!",
+        });
       }
     } catch (error) {
       console.error("Error Creating Exam:", error);
+      setAlert({
+        type: "error",
+        message: "❌ Error creating exam. Please try again later.",
+      });
     }
   };
-  
 
   return (
     <div className="max-w-4xl mx-auto p-10 bg-gradient-to-br from-blue-50 to-blue-200 rounded-xl shadow-lg">
@@ -307,85 +316,131 @@ const CreateExam = () => {
         📝 Create Exam
       </h2>
 
+      {/* Alert Message */}
+      {alert.message && (
+        <div
+          className={`p-4 mb-4 text-white rounded-lg ${
+            alert.type === "success" ? "bg-green-500" : "bg-red-500"
+          }`}
+        >
+          {alert.message}
+        </div>
+      )}
+
       {/* Form Section */}
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Exam Details */}
         <div className="grid grid-cols-2 gap-6">
-          <input
-            className="input-field focus:ring-2 focus:ring-blue-500"
-            type="text"
-            name="title"
-            placeholder="Enter an engaging exam title (e.g., Java Basics Test)"
-            value={examData.title}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="input-field focus:ring-2 focus:ring-blue-500"
-            type="text"
-            name="code"
-            placeholder="Enter a unique exam code (e.g., JBT101)"
-            value={examData.code}
-            onChange={handleChange}
-            required
-          />
+          <div>
+            <label className="block text-lg font-medium text-gray-700">
+              Exam Title
+            </label>
+            <input
+              className="input-field focus:ring-2 focus:ring-blue-500 w-full"
+              type="text"
+              name="title"
+              placeholder="Enter an engaging exam title (e.g., Java Basics Test)"
+              value={examData.title}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-lg font-medium text-gray-700">
+              Exam Code
+            </label>
+            <input
+              className="input-field focus:ring-2 focus:ring-blue-500 w-full"
+              type="text"
+              name="code"
+              placeholder="Enter a unique exam code (e.g., JBT101)"
+              value={examData.code}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-6">
-          <input
-            className="input-field focus:ring-2 focus:ring-blue-500"
-            type="text"
-            name="subject"
-            placeholder="Enter the subject (e.g., Computer Science)"
-            value={examData.subject}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="input-field focus:ring-2 focus:ring-blue-500"
-            type="text"
-            name="category"
-            placeholder="Specify the category (e.g., Beginner, Intermediate)"
-            value={examData.category}
-            onChange={handleChange}
-            required
-          />
+          <div>
+            <label className="block text-lg font-medium text-gray-700">
+              Subject
+            </label>
+            <input
+              className="input-field focus:ring-2 focus:ring-blue-500 w-full"
+              type="text"
+              name="subject"
+              placeholder="Enter the subject (e.g., Computer Science)"
+              value={examData.subject}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-lg font-medium text-gray-700">
+              Category
+            </label>
+            <input
+              className="input-field focus:ring-2 focus:ring-blue-500 w-full"
+              type="text"
+              name="category"
+              placeholder="Specify the category (e.g., Beginner, Intermediate)"
+              value={examData.category}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-6">
-          <input
-            className="input-field focus:ring-2 focus:ring-blue-500"
-            type="number"
-            name="timeLimit"
-            placeholder="Set time limit in minutes (e.g., 60)"
-            value={examData.timeLimit}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="input-field focus:ring-2 focus:ring-blue-500"
-            type="number"
-            name="numQuestions"
-            placeholder="Number of questions (e.g., 20)"
-            value={examData.numQuestions}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="input-field focus:ring-2 focus:ring-blue-500"
-            type="number"
-            name="totalMarks"
-            placeholder="Total marks for the exam (e.g., 100)"
-            value={examData.totalMarks}
-            onChange={handleChange}
-            required
-          />
+          <div>
+            <label className="block text-lg font-medium text-gray-700">
+              Time Limit (in minutes)
+            </label>
+            <input
+              className="input-field focus:ring-2 focus:ring-blue-500 w-full"
+              type="number"
+              name="timeLimit"
+              placeholder="Set time limit (e.g., 60)"
+              value={examData.timeLimit}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-lg font-medium text-gray-700">
+              Number of Questions
+            </label>
+            <input
+              className="input-field focus:ring-2 focus:ring-blue-500 w-full"
+              type="number"
+              name="numQuestions"
+              placeholder="Enter number of questions (e.g., 20)"
+              value={examData.numQuestions}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-lg font-medium text-gray-700">
+              Total Marks
+            </label>
+            <input
+              className="input-field focus:ring-2 focus:ring-blue-500 w-full"
+              type="number"
+              name="totalMarks"
+              placeholder="Enter total marks (e.g., 100)"
+              value={examData.totalMarks}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
 
         {/* Exam Type Dropdown */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Select Exam Type:
+          <label className="block text-lg font-medium text-gray-700">
+            Select Exam Type
           </label>
           <select
             className="input-field focus:ring-2 focus:ring-blue-500 w-full"
@@ -406,6 +461,9 @@ const CreateExam = () => {
             key={index}
             className="bg-white p-6 rounded-lg shadow-md border border-gray-300"
           >
+            <label className="block text-lg font-medium text-gray-700">
+              Question {index + 1}
+            </label>
             <input
               className="input-field w-full focus:ring-2 focus:ring-blue-500"
               type="text"
@@ -419,26 +477,33 @@ const CreateExam = () => {
 
             <div className="grid grid-cols-2 gap-4 mt-4">
               {q.options.map((option, optIndex) => (
-                <input
-                  key={optIndex}
-                  className="input-field focus:ring-2 focus:ring-blue-500"
-                  type="text"
-                  placeholder={`Option ${optIndex + 1} (e.g., OOP Language)`}
-                  value={option}
-                  onChange={(e) =>
-                    handleQuestionChange(index, "options", {
-                      index: optIndex,
-                      text: e.target.value,
-                    })
-                  }
-                  required
-                />
+                <div key={optIndex}>
+                  <label className="block text-gray-700">
+                    Option {optIndex + 1}
+                  </label>
+                  <input
+                    className="input-field focus:ring-2 focus:ring-blue-500 w-full"
+                    type="text"
+                    placeholder={`Option ${optIndex + 1} (e.g., OOP Language)`}
+                    value={option}
+                    onChange={(e) =>
+                      handleQuestionChange(index, "options", {
+                        index: optIndex,
+                        text: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </div>
               ))}
             </div>
 
             {/* Correct Answer Dropdown */}
+            <label className="block text-lg font-medium text-gray-700 mt-4">
+              Correct Answer
+            </label>
             <select
-              className="input-field mt-4 w-full focus:ring-2 focus:ring-blue-500"
+              className="input-field mt-2 w-full focus:ring-2 focus:ring-blue-500"
               value={q.correctAnswer}
               onChange={(e) =>
                 handleQuestionChange(index, "correctAnswer", e.target.value)
@@ -459,7 +524,7 @@ const CreateExam = () => {
           onClick={addQuestionField}
           className="w-full mt-4 bg-green-500 text-white font-semibold px-4 py-3 rounded-lg hover:bg-green-600 transition-all shadow-md"
         >
-          Add Another Question
+          ➕ Add Another Question
         </button>
 
         {/* Submit Button */}
@@ -467,7 +532,7 @@ const CreateExam = () => {
           type="submit"
           className="w-full bg-blue-600 text-white font-semibold px-4 py-3 rounded-lg hover:bg-blue-700 transition-all shadow-md"
         >
-          Create Exam & Add Questions
+          🚀 Create Exam & Add Questions
         </button>
       </form>
     </div>
