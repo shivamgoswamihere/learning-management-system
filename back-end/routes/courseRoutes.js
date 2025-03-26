@@ -29,10 +29,10 @@ router.get("/all-courses", getAllCourses);
 router.get("/trainer", protect(["trainer","admin"]), getTrainerCourses);
 
 // ✅ Enroll in a Course (Learner Only)
-router.post("/enroll/:courseId", protect(["learner","trainer","admin"]), enrollCourse);
+router.post("/enroll/:courseId", protect(["learner","trainer","admin","examinee"]), enrollCourse);
 
 // ✅ Get Enrolled Courses for Learner
-router.get("/enrolled", protect(["learner","trainer","admin"]), getEnrolledCourses);
+router.get("/enrolled", protect(["learner","trainer","admin","examinee"]), getEnrolledCourses);
 
 
 // ✅ Update Course (Admin or Trainer Only)
