@@ -29,7 +29,7 @@ router.post("/enroll/:examId", protect(["learner", "examinee"]), enrollExam);
 router.get("/enrolledExam", protect(["learner", "examinee"]), getEnrolledExams);
 
 // ✅ Submit Exam Result
-router.post("/submit-result", protect(["learner", "examinee"]), submitResult);
+router.post("/submit-result", protect(["learner", "examinee","trainer","admin"]), submitResult);
 
 // ✅ Get Submitted Results for a User
 router.get("/submitted-results", protect(["learner", "examinee", "trainer"]), getSubmittedResults);
