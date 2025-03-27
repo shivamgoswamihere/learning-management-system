@@ -151,10 +151,11 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
         duration: course?.duration || "",
         prerequisites: course?.prerequisites || "",
         certificationAvailable: course?.certificationAvailable || false,
-        syllabus: course?.syllabus || [],
+        syllabus: course?.syllabus || [], // Syllabus array
+        lessons: course?.lessons || [], // Separate lessons array
     });
 
-    // Handle input changes for main course details
+    // Handle input changes for course details
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setUpdatedData((prevData) => ({
@@ -163,7 +164,7 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
         }));
     };
 
-    // Handle changes in the syllabus module
+    // Handle changes in syllabus module
     const handleSyllabusChange = (index, field, value) => {
         const updatedSyllabus = [...updatedData.syllabus];
         updatedSyllabus[index] = { ...updatedSyllabus[index], [field]: value };
@@ -173,31 +174,18 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
         }));
     };
 
-    // Handle changes in individual lessons
-    const handleLessonChange = (syllabusIndex, lessonIndex, field, value) => {
-        const updatedSyllabus = [...updatedData.syllabus];
-        updatedSyllabus[syllabusIndex].lessons[lessonIndex] = {
-            ...updatedSyllabus[syllabusIndex].lessons[lessonIndex],
-            [field]: value,
-        };
-        setUpdatedData((prevData) => ({
-            ...prevData,
-            syllabus: updatedSyllabus,
-        }));
-    };
-
-    // Add a new module (syllabus section)
+    // Add new syllabus module
     const addSyllabus = () => {
         setUpdatedData((prevData) => ({
             ...prevData,
             syllabus: [
                 ...prevData.syllabus,
-                { title: "", description: "", lessons: [] },
+                { title: "", description: "" },
             ],
         }));
     };
 
-    // Remove a module (syllabus section)
+    // Remove syllabus module
     const removeSyllabus = (index) => {
         const updatedSyllabus = updatedData.syllabus.filter((_, i) => i !== index);
         setUpdatedData((prevData) => ({
@@ -206,38 +194,47 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
         }));
     };
 
-    // Add a lesson to a syllabus section
-    const addLesson = (index) => {
-        const updatedSyllabus = [...updatedData.syllabus];
-        updatedSyllabus[index].lessons.push({
-            title: "",
-            description: "",
-            videoUrl: "",
-        });
+    // Handle lesson changes
+    const handleLessonChange = (lessonIndex, field, value) => {
+        const updatedLessons = [...updatedData.lessons];
+        updatedLessons[lessonIndex] = { ...updatedLessons[lessonIndex], [field]: value };
         setUpdatedData((prevData) => ({
             ...prevData,
-            syllabus: updatedSyllabus,
+            lessons: updatedLessons,
         }));
     };
 
-    // Remove a lesson from a syllabus section
-    const removeLesson = (syllabusIndex, lessonIndex) => {
-        const updatedSyllabus = [...updatedData.syllabus];
-        updatedSyllabus[syllabusIndex].lessons = updatedSyllabus[syllabusIndex].lessons.filter(
-            (_, i) => i !== lessonIndex
-        );
+    // Add new lesson
+    const addLesson = (syllabusIndex) => {
         setUpdatedData((prevData) => ({
             ...prevData,
-            syllabus: updatedSyllabus,
+            lessons: [
+                ...prevData.lessons,
+                {
+                    syllabusIndex,
+                    title: "",
+                    description: "",
+                    videoUrl: "",
+                },
+            ],
+        }));
+    };
+
+    // Remove lesson
+    const removeLesson = (lessonIndex) => {
+        const updatedLessons = updatedData.lessons.filter((_, i) => i !== lessonIndex);
+        setUpdatedData((prevData) => ({
+            ...prevData,
+            lessons: updatedLessons,
         }));
     };
 
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Updated Data: ", updatedData);
+        console.log("Updated Data:", updatedData);
         await dispatch(updateCourse({ courseId: course._id, updatedData }));
-        onClose(); // Close modal after update
+        onClose(); // Close modal after updating
     };
 
     if (!isOpen) return null;
@@ -270,7 +267,7 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
                             name="title"
                             value={updatedData.title}
                             onChange={handleChange}
-                            className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                            className="w-full p-2 border rounded-md"
                             required
                         />
                     </div>
@@ -281,7 +278,7 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
                             name="description"
                             value={updatedData.description}
                             onChange={handleChange}
-                            className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                            className="w-full p-2 border rounded-md"
                             required
                         />
                     </div>
@@ -294,7 +291,7 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
                                 name="price"
                                 value={updatedData.price}
                                 onChange={handleChange}
-                                className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                                className="w-full p-2 border rounded-md"
                             />
                         </div>
                         <div>
@@ -304,7 +301,7 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
                                 name="duration"
                                 value={updatedData.duration}
                                 onChange={handleChange}
-                                className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                                className="w-full p-2 border rounded-md"
                             />
                         </div>
                     </div>
@@ -316,7 +313,7 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
                             name="prerequisites"
                             value={updatedData.prerequisites}
                             onChange={handleChange}
-                            className="w-full p-2 border rounded-md bg-white/50 backdrop-blur-md"
+                            className="w-full p-2 border rounded-md"
                         />
                     </div>
 
@@ -330,8 +327,9 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
                         Certification Available
                     </label>
 
-                    {/* Syllabus and Lessons */}
-                   {/* Map through syllabus modules */}
+                    {/* Syllabus Section */}
+                
+                                {/* Syllabus Section */}
 {updatedData.syllabus.map((syllabusItem, index) => (
     <div key={index} className="mb-4 border p-3 rounded-lg">
         <div className="flex justify-between items-center">
@@ -358,7 +356,9 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
         </div>
 
         <div className="mb-2">
-            <label className="block text-sm font-medium">Module Description</label>
+            <label className="block text-sm font-medium">
+                Module Description
+            </label>
             <textarea
                 value={syllabusItem.description}
                 onChange={(e) =>
@@ -367,96 +367,85 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
                 className="w-full p-2 border rounded-md"
             />
         </div>
-
-        {/* Map through lessons */}
-        {syllabusItem.lessons?.map((lesson, lessonIndex) => (
-            <div key={lessonIndex} className="mt-2 ml-4 border-l-2 pl-2">
-                <div className="flex justify-between items-center">
-                    <h4 className="text-sm font-semibold">
-                        Lesson {lessonIndex + 1}
-                    </h4>
-                    <button
-                        type="button"
-                        onClick={() => removeLesson(index, lessonIndex)}
-                        className="text-red-500 text-xs"
-                    >
-                        Remove
-                    </button>
-                </div>
-
-                <label className="block text-sm font-medium">Lesson Title</label>
-                <input
-                    type="text"
-                    value={lesson.title}
-                    onChange={(e) =>
-                        handleLessonChange(
-                            index,
-                            lessonIndex,
-                            "title",
-                            e.target.value
-                        )
-                    }
-                    className="w-full p-2 border rounded-md mb-2"
-                />
-
-                <label className="block text-sm font-medium">Lesson Description</label>
-                <textarea
-                    value={lesson.description}
-                    onChange={(e) =>
-                        handleLessonChange(
-                            index,
-                            lessonIndex,
-                            "description",
-                            e.target.value
-                        )
-                    }
-                    className="w-full p-2 border rounded-md mb-2"
-                />
-
-                <label className="block text-sm font-medium">Video URL</label>
-                <input
-                    type="text"
-                    value={lesson.videoUrl}
-                    onChange={(e) =>
-                        handleLessonChange(
-                            index,
-                            lessonIndex,
-                            "videoUrl",
-                            e.target.value
-                        )
-                    }
-                    className="w-full p-2 border rounded-md"
-                />
-            </div>
-        ))}
-
-        {/* Add Lesson Button - placed after lessons map */}
-       
     </div>
 ))}
 
+<button
+    type="button"
+    onClick={addSyllabus}
+    className="bg-blue-500 text-white text-sm px-3 py-1 rounded-md mb-4"
+>
+    Add Module
+</button>
 
-                    <button
-                        type="button"
-                        onClick={addSyllabus}
-                        className="bg-blue-500 text-white text-sm px-3 py-1 rounded-md mb-4"
-                    >
-                        Add Module
-                    </button>
+{/* Lesson Section (Outside Syllabus) */}
+{updatedData.lessons.map((lesson, lessonIndex) => (
+    <div key={lessonIndex} className="mt-2 border p-3 rounded-lg">
+        <div className="flex justify-between items-center">
+            <h4 className="text-lg font-semibold">
+                Lesson {lessonIndex + 1}
+            </h4>
+            <button
+                type="button"
+                onClick={() => removeLesson(lessonIndex)}
+                className="text-red-500 text-sm"
+            >
+                Remove
+            </button>
+        </div>
 
+        <label className="block text-sm font-medium">Lesson Title</label>
+        <input
+            type="text"
+            value={lesson.title}
+            onChange={(e) =>
+                handleLessonChange(lessonIndex, "title", e.target.value)
+            }
+            className="w-full p-2 border rounded-md mb-2"
+        />
+
+        <label className="block text-sm font-medium">Lesson Description</label>
+        <textarea
+            value={lesson.description}
+            onChange={(e) =>
+                handleLessonChange(lessonIndex, "description", e.target.value)
+            }
+            className="w-full p-2 border rounded-md mb-2"
+        />
+
+        <label className="block text-sm font-medium">Video URL</label>
+        <input
+            type="text"
+            value={lesson.videoUrl}
+            onChange={(e) =>
+                handleLessonChange(lessonIndex, "videoUrl", e.target.value)
+            }
+            className="w-full p-2 border rounded-md"
+        />
+    </div>
+))}
+
+<button
+    type="button"
+    onClick={() => addLesson()}
+    className="bg-green-500 text-white text-sm px-3 py-1 rounded-md mt-2"
+>
+    Add Lesson
+</button>
+           
                     <div className="flex justify-end gap-2 mt-4">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="bg-gray-500 text-white px-3 py-2 rounded-md"
+                            className="px-4 py-2 bg-gray-500 text-white rounded-md"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="bg-blue-500 text-white px-3 py-2 rounded-md"
+                            className="px-4 py-2 bg-blue-600 text-white rounded-md"
                         >
-                            Update Course
+                            Save Changes
                         </button>
                     </div>
                 </form>
@@ -466,4 +455,5 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
 };
 
 export default UpdateCourseModal;
+
 
