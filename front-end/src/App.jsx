@@ -51,8 +51,8 @@ function App() {
   return (
     <Router>
       <Navbar />
+      <div className="pt-12 bg-gray-200"> 
       <Suspense fallback={<LoadingScreen />}>
-      <div className="pt-12 bg-gray-200">
         
       <Routes>
           <Route path="/" element={<Home />} />
@@ -75,9 +75,10 @@ function App() {
           <Route path="/trainer-courses" element={<TrainerCourses />} /> 
         </Routes>
       
-      </div>
       </Suspense>
       <Footer />
+      </div>
+
     </Router>
   );
 }

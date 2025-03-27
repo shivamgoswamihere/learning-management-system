@@ -87,7 +87,7 @@ const Profile = () => {
           to="/updateUser"
           className="absolute top-2 right-2 md:top-4 md:right-4 text-gray-600 hover:text-gray-800 transition"
         >
-          <label className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer">
+          <label className="bg-blue-500 text-white px-4 py-2 cursor-pointer">
             Edit Profile
           </label>
         </Link>
@@ -95,8 +95,8 @@ const Profile = () => {
 
       {/* Profile Picture Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 overflow-y-auto">
+          <div className="bg-white p-6 mt-20 rounded-lg shadow-lg w-[20%]">
             <h3 className="text-lg font-semibold mb-4">Profile Picture</h3>
 
             {/* Display the full image */}
@@ -158,11 +158,7 @@ const Profile = () => {
             <strong>Phone:</strong> {currentUser.phoneNumber}
           </p>
         )}
-        {currentUser.gender && (
-          <p>
-            <strong>Gender:</strong> {currentUser.gender}
-          </p>
-        )}
+        
         {currentUser.dateOfBirth && (
           <p>
             <strong>Date of Birth:</strong>{" "}

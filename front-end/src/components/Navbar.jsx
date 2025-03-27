@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../redux/authSlice";
@@ -7,7 +7,7 @@ import Login from "../pages/Login";
 import { FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
 import devdojo from "../assets/DevDojo.png";
 import { fetchCurrentUser } from "../redux/userSlice";
-import userImage from "/user.png"
+import userImage from "/user.png";
 
 function Navbar() {
   const [modalType, setModalType] = useState(null);
@@ -19,11 +19,12 @@ function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // ✅ Search state
-    // const { currentUser, loading, error } = useSelector((state) => state.users);
 
-    useEffect(() => {
-        dispatch(fetchCurrentUser());
-      }, [dispatch]);
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchCurrentUser());
+    }
+  }, [dispatch, user]); // Fetch current user only when 'user' changes
 
   const openLogin = () => setModalType("login");
   const openRegister = () => setModalType("register");
@@ -31,6 +32,8 @@ function Navbar() {
 
   const handleLogout = () => {
     dispatch(logoutUser());
+    // Reset the currentUser state after logout
+    dispatch({ type: 'user/resetCurrentUser' });  // You can create a reset action for user slice
     navigate("/");
     setDropdownOpen(false);
     setMenuOpen(false);
@@ -43,11 +46,6 @@ function Navbar() {
       setMenuOpen(false); // Close menu on mobile
     }
   };
-  
-  // if (loading)
-  //   return <p className="text-center text-lg font-semibold text-gray-600">Loading profile...</p>;
-  // if (error) return <p className="text-red-500 text-center">{error}</p>;
-  // if (!currentUser) return <p className="text-center">No user profile found.</p>;
 
   return (
     <>
@@ -88,12 +86,11 @@ function Navbar() {
                 className="flex items-center gap-2 bg-blue-500 px-2 py-2 text-white font-bold hover:bg-blue-400 transition"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
-             
-            <img
-              src={currentUser.profilePicture|| userImage}
-              alt="Full Profile"
-              className="w-6 h-6 rounded-full object-fitg"
-            />
+                <img
+                  src={currentUser.profilePicture || userImage}
+                  alt="Full Profile"
+                  className="w-6 h-6 rounded-full object-fitg"
+                />
                 {currentUser.username}
               </button>
 
@@ -118,8 +115,6 @@ function Navbar() {
               </button>
             </>
           )}
-
-          
         </div>
       </div>
 
@@ -165,8 +160,6 @@ function Navbar() {
               </button>
             </>
           )}
-
-          
         </div>
       )}
 
