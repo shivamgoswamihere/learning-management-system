@@ -83,7 +83,7 @@ const Home = () => {
   return (
     <div className="font-sans bg-gray-200">
       {/* Hero Section with Slider */}
-      <section className="relative bg-gradient-to-r from-blue-700 to-blue-500 text-white py-20 px-10">
+      <section className="relative bg-gradient-to-r h-[500px] from-blue-700 to-blue-500 text-white py-10 px-10">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
           {/* Left: Text Content */}
           <div className="w-full md:w-1/2">

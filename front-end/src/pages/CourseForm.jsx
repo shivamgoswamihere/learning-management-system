@@ -130,7 +130,7 @@ const CourseForm = () => {
     };
 
     return (
-        <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
+        <div className="max-w-lg mx-auto p-6 my-5 bg-white shadow-lg rounded-lg">
     
             <h2 className="text-2xl font-bold mb-6 text-gray-800">Create a Course</h2>
 
@@ -154,7 +154,7 @@ const CourseForm = () => {
                 </label>
 
                 <label className="block">
-                    Thumbnail:
+                    Thumbnail: 
                     <input type="file" name="thumbnail" accept="image/*" onChange={handleFileChange} required />
                 </label>
 

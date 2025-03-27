@@ -137,7 +137,7 @@ const CourseDetails = () => {
             >
               {showLessons ? "Hide Lessons" : "Show Lessons"}
             </button>
-            ) : ("Enroll Now")}
+            ) : ("")}
       
       
   

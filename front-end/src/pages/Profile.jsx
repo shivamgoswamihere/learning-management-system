@@ -59,7 +59,7 @@ const Profile = () => {
   if (!currentUser) return <p className="text-center">No user profile found.</p>;
 
   return (
-    <div className="max-w-5xl mx-auto p-8 bg-white shadow-lg mt-5 rounded-lg border border-gray-200">
+    <div className="max-w-5xl mx-auto p-8 bg-white shadow-lg my-5 rounded-lg border border-gray-200">
       {/* Profile Header */}
       <div className="flex flex-col md:flex-row items-center md:items-start md:space-x-6 border-b pb-6 relative">
         {/* Profile Picture Section */}
