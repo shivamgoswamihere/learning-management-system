@@ -46,7 +46,7 @@ Phase 4: Payment gateway & certification system
 Phase 5: Deployment & testing
 👥 Contributors:
 
-@TheArshadKhan (Project Owner)
+@TheArshadKhan (Project Owner) #Project Manager
 @Divyanshi2408 (Project Owner)
 @Krishna-2115 (Project Owner)
 @shivamgoswamihere (Project Owner)
