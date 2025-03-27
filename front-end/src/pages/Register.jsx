@@ -118,41 +118,10 @@ function Register({ isOpen, onClose, onLoginClick }) {
             <form onSubmit={handleSubmit}>
               {(
                 <>
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">
-                      Profile Picture
-                    </label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="w-full p-2 border rounded-md"
-                    />
-                    {imagePreview && (
-                      <img
-                        src={imagePreview}
-                        alt="Profile Preview"
-                        className="mt-2 w-24 h-24 rounded-full object-cover"
-                      />
-                    )}
-                  </div>
+                  
 
                   {/* Full Name */}
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      name="fullName"
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Enter your full name"
-                      value={formData.fullName}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-
+                  
                   {/* Username */}
                   <div className="mb-3">
                     <label className="block text-sm font-medium">
