@@ -47,7 +47,7 @@ Phase 5: Deployment & testing
 👥 Contributors:
 
 @TheArshadKhan (Project Owner)
-@Divyanshi2408 (Project Owner)
+@Divyanshi2408 (Project Owner) ##Backend
 @Krishna-2115 (Project Owner)
 @shivamgoswamihere (Project Owner)
 @YashPal7464 (Project Owner)

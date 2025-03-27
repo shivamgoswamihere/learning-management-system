@@ -17,7 +17,7 @@ const registerUser = async (req, res) => {
         } = req.body;
 
         // Required Fields Validation
-        if (!fullName || !username || !email || !password || !role) {
+        if (!username || !email || !password || !role) {
             return res.status(400).json({ error: "All required fields must be provided." });
         }
 

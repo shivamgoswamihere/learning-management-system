@@ -7,6 +7,7 @@ import Login from "../pages/Login";
 import { FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
 import devdojo from "../assets/DevDojo.png";
 import { fetchCurrentUser } from "../redux/userSlice";
+import userImage from "/user.png"
 
 function Navbar() {
   const [modalType, setModalType] = useState(null);
@@ -89,11 +90,11 @@ function Navbar() {
               >
              
             <img
-              src={currentUser.profilePicture || "/default-avatar.png"}
+              src={currentUser.profilePicture|| userImage}
               alt="Full Profile"
               className="w-6 h-6 rounded-full object-fitg"
             />
-                {user.name}
+                {currentUser.username}
               </button>
 
               {dropdownOpen && (
