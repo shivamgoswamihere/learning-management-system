@@ -239,75 +239,73 @@ const Profile = () => {
   </div>
 )}
 
-{(currentUser?.role === "examinee" || currentUser?.role === "learner") && (
-  <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl shadow-lg">
-    {/* ✅ Results Header */}
-    <h3 className="text-2xl font-bold text-purple-800 mb-4">📊 Exam Results</h3>
+{(currentUser?.role === "examinee" || currentUser?.role === "learner") &&
+  results?.length > 0 && (
+    <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl shadow-lg">
+      {/* ✅ Results Header */}
+      <h3 className="text-2xl font-bold text-purple-800 mb-4">📊 Exam Results</h3>
 
-    {/* ✅ Loading and Error States */}
-    {resultsLoading && (
-      <p className="text-purple-500 flex items-center">
-        ⏳ <span className="ml-2">Loading results...</span>
-      </p>
-    )}
-    {resultsError && (
-      <p className="text-red-500">
-        ❌ Error: {resultsError}
-      </p>
-    )}
+      {/* ✅ Loading and Error States */}
+      {resultsLoading && (
+        <p className="text-purple-500 flex items-center">
+          ⏳ <span className="ml-2">Loading results...</span>
+        </p>
+      )}
+      {/* {resultsError && (
+        <p className="text-red-500">
+          ❌ Error: {resultsError}
+        </p>
+      )} */}
 
-    {/* ✅ No Results Available */}
-    {results?.length === 0 && !resultsLoading && (
-      <p className="text-gray-500">😕 No results submitted yet.</p>
-    )}
+      {/* ✅ Results List */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {results?.map((result) => (
+          <div
+            key={result._id}
+            className="p-5 bg-white rounded-lg shadow-md hover:shadow-lg transition border border-purple-200"
+          >
+            <h4 className="text-lg font-semibold text-gray-800 mb-2">
+              🎯 {result.examTitle || "Exam Name Not Available"}
+            </h4>
 
-    {/* ✅ Results List */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {results?.map((result) => (
-        <div
-          key={result._id}
-          className="p-5 bg-white rounded-lg shadow-md hover:shadow-lg transition border border-purple-200"
-        >
-          <h4 className="text-lg font-semibold text-gray-800 mb-2">
-            🎯 {result.examTitle || "Exam Name Not Available"}
-          </h4>
+            {/* ✅ Marks and Performance Details */}
+            <div className="space-y-2 text-sm text-gray-700">
+              <p>
+                📚 <span className="font-semibold">Obtained Marks:</span> {result.obtainedMarks}
+              </p>
+              <p>
+                ✅ <span className="font-semibold">Correct Answers:</span> {result.correctAnswers}
+              </p>
+              <p>
+                ❌ <span className="font-semibold">Incorrect Answers:</span> {result.incorrectAnswers}
+              </p>
+              <p>
+                📝 <span className="font-semibold">Total Questions:</span> {result.totalQuestions}
+              </p>
+              <p>
+                📈 <span className="font-semibold">Percentage:</span> {result.percentage}%
+              </p>
+            </div>
 
-          {/* ✅ Marks and Performance Details */}
-          <div className="space-y-2 text-sm text-gray-700">
-            <p>
-              📚 <span className="font-semibold">Obtained Marks:</span> {result.obtainedMarks}
+            {/* ✅ Pass/Fail Status */}
+            <p
+              className={`text-sm font-semibold mt-3 ${
+                result.passed ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {result.passed ? "🎉 Passed" : "❗ Failed"}
             </p>
-            <p>
-              ✅ <span className="font-semibold">Correct Answers:</span> {result.correctAnswers}
-            </p>
-            <p>
-              ❌ <span className="font-semibold">Incorrect Answers:</span> {result.incorrectAnswers}
-            </p>
-            <p>
-              📝 <span className="font-semibold">Total Questions:</span> {result.totalQuestions}
-            </p>
-            <p>
-              📈 <span className="font-semibold">Percentage:</span> {result.percentage}%
+
+            {/* ✅ Submission Date */}
+            <p className="text-xs text-gray-500 mt-1">
+              ⏰ Submitted on: {new Date(result.submittedAt).toLocaleDateString()}
             </p>
           </div>
-
-          {/* ✅ Pass/Fail Status */}
-          <p
-            className={`text-sm font-semibold mt-3 ${result.passed ? "text-green-600" : "text-red-600"
-              }`}
-          >
-            {result.passed ? "🎉 Passed" : "❗ Failed"}
-          </p>
-
-          {/* ✅ Submission Date */}
-          <p className="text-xs text-gray-500 mt-1">
-            ⏰ Submitted on: {new Date(result.submittedAt).toLocaleDateString()}
-          </p>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
-  </div>
-)}
+  )}
+
 
 
       {currentUser.role === "trainer" && (
@@ -358,15 +356,7 @@ const Profile = () => {
 )}
 
 
-      {currentUser.role === "examinee" && (
-        <div className="mt-8 p-6 bg-gradient-to-r from-green-100 to-green-200 rounded-lg shadow">
-          <h3 className="text-xl font-semibold text-green-700">Examinee Details</h3>
-          <p>
-            <strong>Can Enroll in Courses:</strong>{" "}
-            {currentUser.canEnrollCourses ? "Yes" : "No"}
-          </p>
-        </div>
-      )}
+   
 
       {currentUser.role === "admin" && (
         <div className="mt-8 p-6 bg-gradient-to-r from-red-100 to-red-200 rounded-lg shadow">

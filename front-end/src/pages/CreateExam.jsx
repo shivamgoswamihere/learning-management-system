@@ -293,7 +293,7 @@ const CreateExam = () => {
           onClick={addQuestionField}
           className="w-full mt-4 bg-green-500 text-white font-semibold px-4 py-3 rounded-lg hover:bg-green-600 transition-all shadow-md"
         >
-          ➕ Add Another Question
+          Add Another Question
         </button>
 
         {/* Submit Button */}
@@ -301,7 +301,7 @@ const CreateExam = () => {
           type="submit"
           className="w-full bg-blue-600 text-white font-semibold px-4 py-3 rounded-lg hover:bg-blue-700 transition-all shadow-md"
         >
-          🚀 Create Exam & Add Questions
+          Create Exam & Add Questions
         </button>
       </form>
     </div>
