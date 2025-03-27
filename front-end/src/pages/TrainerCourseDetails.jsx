@@ -1,137 +1,7 @@
-// import React, { useEffect, useState } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
-// import { fetchCourseById, deleteCourse} from "../redux/courseSlice";
-// import UpdateCourseModal from "./UpdateCourseModal"; // Import the modal
-// import VideoPlayer from "../components/VideoPlayer";
-
-
-// const TrainerCourseDetails = () => {
-//   const { id } = useParams();
-//   const navigate = useNavigate();
-//   const dispatch = useDispatch();
-//   const { selectedCourse, loading, error } = useSelector((state) => state.courses);
-//   const [showLessons, setShowLessons] = useState(false);
-//   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-
-//   useEffect(() => {
-//     if (id) dispatch(fetchCourseById(id));
-//   }, [dispatch, id]);
-
-//   if (loading) return <p className="text-center text-lg">Loading course details...</p>;
-//   if (error) return <p className="text-red-500 text-center">{error}</p>;
-//   if (!selectedCourse) return <p className="text-center">Course not found.</p>;
-
-//   const handleDeleteCourse = () => {
-//     const confirmDelete = window.confirm("Are you sure you want to delete this course?");
-//     if (confirmDelete) {
-//       dispatch(deleteCourse(id)).then(() => {
-//         alert("Course deleted successfully!");
-//         navigate("/courses"); // Redirect to courses list after deletion
-//       });
-//     }
-//   };
-//   const handleToggleLessons = () => {
-//     setShowLessons(!showLessons);
-//   };
-
-//   return (
-//     <div className="max-w-full mx-auto mt-2 text-white">
-//       {/* ✅ Back Button */}
-//       <button onClick={() => navigate(-1)} className="mb-2 mx-6 px-4 py-1 bg-black text-white hover:bg-gray-900">
-//         ← Back
-//       </button>
-//       <div className="grid grid-cols-2 gap-5 p-6 bg-gradient-to-r from-blue-900 to-blue-700">
-//         <div className="mt-4">
-//           <span className="bg-blue-200 text-blue-900 font-bold p-3 py-1 text-left text-sm">
-//             Category : {selectedCourse.category}
-//           </span>
-//           <h1 className="text-5xl font-bold mt-4">{selectedCourse.title}</h1>
-//           <p className="text-gray-300 mt-2">{selectedCourse.description}</p>
-
-//           <div className="mt-4">
-//             <p>
-//               <strong>Price:</strong>{" "}
-//               {selectedCourse.price === 0 ? "Free" : `$${selectedCourse.price}`}
-//             </p>
-//             <p>
-//               <strong>Duration:</strong> {selectedCourse.duration}
-//             </p>
-//             {selectedCourse.prerequisites && (
-//               <p>
-//                 <strong>Prerequisites:</strong> {selectedCourse.prerequisites}
-//               </p>
-//             )}
-//             <p>
-//               <strong>Certification:</strong>{" "}
-//               {selectedCourse.certificationAvailable ? "Yes" : "No"}
-//             </p>
-//           </div>
-//         </div>
-
-//         <div className="relative w-full h-80 bg-gray-200 rounded-lg overflow-hidden">
-//           <img
-//             src={
-//               selectedCourse.thumbnail ||
-//               "https://via.placeholder.com/800x400"
-//             }
-//             alt={selectedCourse.title}
-//             className="w-full h-full object-cover"
-//           />
-//         </div>
-//       </div>
-
-
-//       {/* Toggle Lessons */}
-//       <div className="mt-6">
-//         <button onClick={() => setShowLessons(!showLessons)} className="bg-blue-600 text-white px-4 py-2 mx-6 rounded hover:bg-blue-700">
-//           {showLessons ? "Hide Lessons" : "Show Lessons"}
-//         </button>
-
-//         {showLessons && (
-//           <div className="mt-4 mx-6">
-//             <h2 className="text-2xl font-bold mb-3">Course Lessons</h2>
-
-//             {/* ✅ Display Lessons in Grid */}
-//             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-//               {selectedCourse.lessons.length > 0 ? (
-//                 selectedCourse.lessons.map((lesson) => (
-//                   <div key={lesson._id} className="bg-gray-800 p-4 rounded-lg shadow-md">
-//                     <h4 className="text-lg font-semibold text-white mb-2">{lesson.title}</h4>
-//                     <VideoPlayer src={lesson.videoUrl} title={lesson.title} /> {/* ✅ Use VideoPlayer */}
-//                   </div>
-//                 ))
-//               ) : (
-//                 <p className="text-gray-400">No lessons available.</p>
-//               )}
-//             </div>
-//           </div>
-//         )}
-//       </div>
-
-//       {/* ✅ Update Course Button */}
-//       <div className="mt-6 mx-6">
-//         <button onClick={() => setIsUpdateModalOpen(true)} className="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600">
-//           Edit Course
-//         </button>
-
-//         <button onClick={handleDeleteCourse} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
-//           Delete Course
-//         </button>
-//       </div>
-
-//       {/* ✅ Update Modal */}
-//       <UpdateCourseModal course={selectedCourse} isOpen={isUpdateModalOpen} onClose={() => setIsUpdateModalOpen(false)} />
-//     </div>
-//   );
-// };
-
-// export default TrainerCourseDetails;
-
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCourseById, enrollCourse, getEnrolledCourses,deleteCourse } from "../redux/courseSlice"; 
+import { fetchCourseById,getEnrolledCourses,deleteCourse } from "../redux/courseSlice"; 
 import UpdateCourseModal from "./UpdateCourseModal";
 
 const CourseDetails = () => {
@@ -161,28 +31,6 @@ const CourseDetails = () => {
     setExpandedSyllabusIndex(expandedSyllabusIndex === index ? null : index);
   };
 
-  const isAlreadyEnrolled = enrolledCourses?.some(course => course._id === selectedCourse._id);
-
-  const handleEnroll = async () => {
-    if (!token) {
-      alert("Please login to enroll.");
-      return;
-    }
-  
-    if (isAlreadyEnrolled) {
-      alert("You are already enrolled in this course.");
-      return;
-    }
-  
-    try {
-      await dispatch(enrollCourse(selectedCourse._id)).unwrap();
-  
-      // ✅ Immediately update Redux state without needing a refresh
-      dispatch(getEnrolledCourses()); 
-    } catch (err) {
-      console.error("Enrollment failed:", err);
-    }
-  };
   
   const handleDeleteCourse = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this course?");
@@ -195,12 +43,7 @@ const CourseDetails = () => {
   };
   return (
     <div className="max-w-full mx-auto mt-2 text-white">
-    {/* <button
-      onClick={() => navigate(-1)}
-      className="mb-2 mx-6 px-4 py-1 bg-gray-800 text-white hover:bg-gray-700 rounded transition"
-    >
-      ← Back
-    </button> */}
+
   
     {/* Header Section */}
     <div className="grid grid-cols-1 text-white md:grid-cols-5 gap-5 p-6 bg-white shadow-lg border border-gray-200 bg-gradient-to-r from-blue-700 to-blue-500
@@ -239,19 +82,7 @@ const CourseDetails = () => {
              {/* Pricing and Enrollment */}
              <div className="mt-4">
             <div className="text-lg font-bold text-white">₹{selectedCourse.price || "449"}</div>
-            {isAlreadyEnrolled ? (
-              <button className="bg-white text-blue-700 px-5 py-2 mt-2 font-bold border-2 border-white hover:bg-blue-500 hover:text-white cursor-not-allowed">
-                Already Enrolled
-              </button>
-            ) : (
-              <button
-                onClick={handleEnroll}
-                disabled={loading}
-                className="bg-white text-blue-700 px-5 py-2 mt-2 font-bold border-2 border-white hover:bg-blue-500 hover:text-white transition-all duration-300"
-              >
-                {loading ? "Enrolling..." : "Enroll Now"}
-              </button>
-            )}
+           
           </div>
         </div>
 
@@ -270,17 +101,13 @@ const CourseDetails = () => {
     {/* Show Lessons Button */}
     <div className="mt-6 mx-6">
       
-    {isAlreadyEnrolled ? (
               <button
               onClick={handleToggleLessons}
               className="bg-blue-600 text-white font-bold px-4 py-2 hover:bg-blue-700 transition-all"
             >
               {showLessons ? "Hide Lessons" : "Show Lessons"}
             </button>
-            ) : ("Enroll Now")}
-      
-      
-  
+
       {showLessons && (
   <div className="mt-8 text-black">
     {/* Course Lessons Heading */}
@@ -381,12 +208,12 @@ const CourseDetails = () => {
     </div>
 
   
-  <div className="mt-6 mx-6">
-         <button onClick={() => setIsUpdateModalOpen(true)} className="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600">
+  <div className="mt-6 mx-6 my-10">
+         <button onClick={() => setIsUpdateModalOpen(true)} className="bg-blue-700 text-white px-4 py-2  hover:bg-blue-800 mr-5">
            Edit Course
          </button>
 
-         <button onClick={handleDeleteCourse} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+         <button onClick={handleDeleteCourse} className="bg-blue-700 text-white px-4 py-2  hover:bg-blue-800 ">
            Delete Course
         </button>
        </div>
