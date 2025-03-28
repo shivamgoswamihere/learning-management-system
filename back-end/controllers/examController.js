@@ -79,6 +79,64 @@ exports.getExamQuestions = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+// ✅ Delete an Exam
+exports.deleteExam = async (req, res) => {
+  try {
+    const { examId } = req.params;
+
+    // ✅ Check if exam exists
+    const exam = await Exam.findById(examId);
+    if (!exam) {
+      return res.status(404).json({ error: "Exam not found" });
+    }
+
+    // ✅ Ensure only the trainer who created it or an admin can delete
+    if (req.user.role !== "admin" && exam.createdBy.toString() !== req.user.id) {
+      return res.status(403).json({ error: "Unauthorized to delete this exam" });
+    }
+
+    // ✅ Delete all associated questions
+    await Question.deleteMany({ exam: examId });
+
+    // ✅ Delete the exam
+    await Exam.findByIdAndDelete(examId);
+
+    res.status(200).json({ message: "Exam deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting exam:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// ✅ Delete a Question
+exports.deleteQuestion = async (req, res) => {
+  try {
+    const { questionId } = req.params;
+
+    // ✅ Check if question exists
+    const question = await Question.findById(questionId);
+    if (!question) {
+      return res.status(404).json({ error: "Question not found" });
+    }
+
+    // ✅ Find the exam to remove the question reference
+    const exam = await Exam.findById(question.exam);
+    if (exam) {
+      exam.questions = exam.questions.filter(
+        (q) => q.toString() !== questionId
+      );
+      await exam.save();
+    }
+
+    // ✅ Delete the question
+    await Question.findByIdAndDelete(questionId);
+
+    res.status(200).json({ message: "Question deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting question:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
 
 exports.updateExam = async (req, res) => {
   if (req.user.role !== "trainer") {
@@ -274,8 +332,7 @@ exports.getSubmittedResults = async (req, res) => {
 };
 exports.getCreatedExams = async (req, res) => {
   try {
-    console.log("User making request:", req.user); // Debugging log
-
+    
     // Ensure only trainers or admins can fetch their created exams
     if (!["trainer", "admin"].includes(req.user.role)) {
       return res.status(403).json({ error: "Access denied. Only trainers and admins can view created exams." });
@@ -289,7 +346,6 @@ exports.getCreatedExams = async (req, res) => {
       .populate("questions", "text options correctAnswer") // Populate questions if needed
       .sort({ createdAt: -1 }); // Show latest first
 
-    console.log("Fetched Exams:", createdExams); // Debugging log
 
     res.json(createdExams);
   } catch (error) {

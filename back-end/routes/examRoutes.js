@@ -11,7 +11,9 @@ const {
     getCreatedExams,
     generateCertificate ,
     updateExam,
-    updateQuestion
+    updateQuestion,
+    deleteExam,
+    deleteQuestion
 } = require("../controllers/examController");
 
 const protect = require("../middlewares/authMiddleware");
@@ -19,6 +21,10 @@ const router = express.Router();
 
 router.post("/create", protect(["trainer", "admin"]), createExam);
 router.post("/add-questions", protect(["trainer", "admin"]), addQuestions);
+
+router.delete("/:examId", protect(["trainer", "admin"]), deleteExam);
+router.delete("/questions/:questionId", protect(["trainer", "admin"]), deleteQuestion);
+
 // Update Exam
 router.put("/update-exam/:examId", protect(["trainer", "admin"]), updateExam);
 

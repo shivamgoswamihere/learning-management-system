@@ -85,6 +85,50 @@ export const addQuestions = createAsyncThunk(
   }
 );
 
+// ✅ Delete an Exam (Only trainers or admin can delete)
+export const deleteExam = createAsyncThunk(
+  "exam/deleteExam",
+  async (examId, { rejectWithValue }) => {
+    try {
+      const token = getToken();
+      if (!token) throw new Error("Unauthorized - No token");
+
+      const response = await axios.delete(`${API_BASE_URL}/${examId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
+
+      return { examId, message: response.data.message };
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Failed to delete exam");
+    }
+  }
+);
+
+// ✅ Delete a Question (Only trainers or admin can delete)
+export const deleteQuestion = createAsyncThunk(
+  "exam/deleteQuestion",
+  async (questionId, { rejectWithValue }) => {
+    try {
+      const token = getToken();
+      if (!token) throw new Error("Unauthorized - No token");
+
+      const response = await axios.delete(
+        `${API_BASE_URL}/questions/${questionId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }
+      );
+
+      return { questionId, message: response.data.message };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Failed to delete question"
+      );
+    }
+  }
+);
 // ✅ Fetch Questions for a Specific Exam (Trainers & Examinees)
 // ✅ Fetch a single exam's questions
 export const fetchExamQuestions = createAsyncThunk(
@@ -454,6 +498,20 @@ const examSlice = createSlice({
       .addCase(updateQuestion.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+       // ✅ Delete exam
+       .addCase(deleteExam.fulfilled, (state, action) => {
+        state.exams = state.exams.filter(
+          (exam) => exam._id !== action.payload.examId
+        );
+      })
+      // ✅ Delete question
+      .addCase(deleteQuestion.fulfilled, (state, action) => {
+        state.exams.forEach((exam) => {
+          exam.questions = exam.questions.filter(
+            (q) => q._id !== action.payload.questionId
+          );
+        });
       });
   },
 });
