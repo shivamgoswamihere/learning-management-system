@@ -9,7 +9,9 @@ const {
     submitResult,
     getSubmittedResults,
     getCreatedExams,
-    generateCertificate // ✅ Import the certificate function
+    generateCertificate ,
+    updateExam,
+    updateQuestion
 } = require("../controllers/examController");
 
 const protect = require("../middlewares/authMiddleware");
@@ -17,6 +19,12 @@ const router = express.Router();
 
 router.post("/create", protect(["trainer", "admin"]), createExam);
 router.post("/add-questions", protect(["trainer", "admin"]), addQuestions);
+// Update Exam
+router.put("/update-exam/:examId", protect(["trainer", "admin"]), updateExam);
+
+// Update Question
+router.put("/update-question/:questionId", protect(["trainer", "admin"]), updateQuestion);
+
 router.get("/all", protect(["trainer", "examinee", "admin", "learner"]), getAllExams);
 
 // ✅ Fetch questions for a specific exam

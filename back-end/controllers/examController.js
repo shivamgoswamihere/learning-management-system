@@ -82,6 +82,55 @@ exports.getExamQuestions = async (req, res) => {
   }
 };
 
+exports.updateExam = async (req, res) => {
+  if (req.user.role !== "trainer") {
+    return res.status(403).json({ error: "Only trainers can update exams" });
+  }
+
+  try {
+    const { examId } = req.params;
+    const updatedData = req.body;
+
+    const exam = await Exam.findByIdAndUpdate(examId, updatedData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!exam) {
+      return res.status(404).json({ error: "Exam not found" });
+    }
+
+    res.status(200).json({ message: "Exam updated successfully", exam });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.updateQuestion = async (req, res) => {
+  if (req.user.role !== "trainer") {
+    return res.status(403).json({ error: "Only trainers can update questions" });
+  }
+
+  try {
+    const { questionId } = req.params;
+    const updatedData = req.body;
+
+    const question = await Question.findByIdAndUpdate(questionId, updatedData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!question) {
+      return res.status(404).json({ error: "Question not found" });
+    }
+
+    res.status(200).json({ message: "Question updated successfully", question });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 exports.enrollExam = async (req, res) => {
   try {
     const { examId } = req.params;

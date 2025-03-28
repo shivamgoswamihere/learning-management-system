@@ -258,6 +258,56 @@ export const generateCertificate = createAsyncThunk(
   }
 );
 
+// ✅ Update Exam (Only trainers can access)
+export const updateExam = createAsyncThunk(
+  "exam/updateExam",
+  async ({ examId, updatedData }, { rejectWithValue }) => {
+    try {
+      const token = getToken();
+      if (!token) throw new Error("Unauthorized - No token");
+
+      const response = await axios.put(
+        `${API_BASE_URL}/update-exam/${examId}`,
+        updatedData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Failed to update exam");
+    }
+  }
+);
+
+// ✅ Update Question (Only trainers can access)
+export const updateQuestion = createAsyncThunk(
+  "exam/updateQuestion",
+  async ({ questionId, updatedData }, { rejectWithValue }) => {
+    try {
+      const token = getToken();
+      if (!token) throw new Error("Unauthorized - No token");
+
+      const response = await axios.put(
+        `${API_BASE_URL}/update-question/${questionId}`,
+        updatedData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Failed to update question"
+      );
+    }
+  }
+);
+
 
 
 // ✅ Exam Slice
@@ -380,6 +430,30 @@ const examSlice = createSlice({
       .addCase(generateCertificate.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload || "Unknown error occurred";
+      })
+      .addCase(updateExam.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateExam.fulfilled, (state, action) => {
+        state.loading = false;
+        const updatedExam = action.payload;
+        state.exams = state.exams.map((exam) =>
+          exam._id === updatedExam._id ? updatedExam : exam
+        );
+      })
+      .addCase(updateExam.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateQuestion.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateQuestion.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(updateQuestion.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
