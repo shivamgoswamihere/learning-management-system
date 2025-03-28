@@ -7,7 +7,8 @@ const {
     getTrainerCourses,
     updateCourse,
     enrollCourse, 
-    getEnrolledCourses 
+    getEnrolledCourses ,
+    deleteCourse
 } = require("../controllers/courseController");
 const protect = require("../middlewares/authMiddleware");
 const mongoose = require("mongoose");
@@ -27,6 +28,8 @@ router.get("/all-courses", getAllCourses);
 
 // ✅ Get Trainer's Courses (Trainer Only)
 router.get("/trainer", protect(["trainer","admin"]), getTrainerCourses);
+router.delete("/:courseId", protect(["trainer","admin"]), deleteCourse);
+
 
 // ✅ Enroll in a Course (Learner Only)
 router.post("/enroll/:courseId", protect(["learner","trainer","admin","examinee"]), enrollCourse);

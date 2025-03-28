@@ -12,7 +12,6 @@ exports.createExam = async (req, res) => {
 
 
   if (!req.user) {
-    console.log("Error: req.user is undefined"); // Debugging log
     return res.status(403).json({ error: "Unauthorized request" });
   }
 
@@ -23,7 +22,6 @@ exports.createExam = async (req, res) => {
   try {
     const exam = new Exam({ ...req.body, createdBy: req.user.id });
     await exam.save();
-    console.log("Exam saved:", exam); // Debugging log
     res.status(201).json(exam);
   } catch (err) {
     console.error("Database error:", err.message); // Debugging log

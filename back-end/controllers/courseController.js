@@ -155,6 +155,34 @@ const updateCourse = async (req, res) => {
         res.status(500).json({ message: "Failed to update course", error: error.message });
     }
 };
+const deleteCourse = async (req, res) => {
+    try {
+        const { courseId } = req.params;
+
+        // ✅ Find course by ID
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ success: false, message: "Course not found" });
+        }
+
+        // ✅ Ensure only the trainer who created it or an admin can delete
+        if (req.user.role !== "admin" && course.trainer.toString() !== req.user.id) {
+            return res.status(403).json({ success: false, message: "Unauthorized to delete this course" });
+        }
+
+        // ✅ Delete associated lessons first
+        await Lesson.deleteMany({ course: courseId });
+
+        // ✅ Delete the course
+        await Course.findByIdAndDelete(courseId);
+
+        return res.status(200).json({ success: true, message: "Course deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting course:", error);
+        return res.status(500).json({ success: false, message: "Failed to delete course", error: error.message });
+    }
+};
+
 
 const getTrainerCourses = async (req, res) => {
     try {
@@ -248,6 +276,7 @@ module.exports = {
     createCourse,
     getAllCourses,
     getCourse,
+    deleteCourse,
     getTrainerCourses, 
     updateCourse,
     enrollCourse, 
