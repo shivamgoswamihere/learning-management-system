@@ -29,30 +29,72 @@ exports.createExam = async (req, res) => {
   }
 };
 
+// exports.addQuestions = async (req, res) => {
+//   if (req.user.role !== "trainer") {
+//     return res.status(403).json({ error: "Only trainers can add questions" });
+//   }
+
+//   try {
+//     const { examId, questions } = req.body;
+//     const exam = await Exam.findById(examId);
+//     if (!exam) return res.status(404).json({ error: "Exam not found" });
+
+//     const questionDocs = await Question.insertMany(
+//       questions.map((q) => ({ ...q, exam: examId }))
+//     );
+
+//     // ✅ Link questions to the Exam
+//     exam.questions.push(...questionDocs.map((q) => q._id));
+//     await exam.save(); // ✅ Ensure questions are added to the exam
+
+//     res.status(201).json({ message: "Questions added successfully", questions: questionDocs });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// };
+
 exports.addQuestions = async (req, res) => {
-  if (req.user.role !== "trainer") {
+  // Check if user is valid
+  if (!req.user || req.user.role !== "trainer") {
     return res.status(403).json({ error: "Only trainers can add questions" });
   }
 
   try {
     const { examId, questions } = req.body;
+
+    // Validate data
+    if (!examId || !Array.isArray(questions) || questions.length === 0) {
+      return res.status(400).json({ error: "Invalid examId or questions data" });
+    }
+
+    // Check if exam exists
     const exam = await Exam.findById(examId);
     if (!exam) return res.status(404).json({ error: "Exam not found" });
 
+    // Add questions to the database
     const questionDocs = await Question.insertMany(
-      questions.map((q) => ({ ...q, exam: examId }))
+      questions.map((q) => {
+        const { _id, ...rest } = q; // ✅ Remove _id if it exists
+        return { ...rest, exam: examId };
+      })
     );
+    
 
-    // ✅ Link questions to the Exam
+    // Check and update exam questions
+    if (!Array.isArray(exam.questions)) {
+      exam.questions = [];
+    }
     exam.questions.push(...questionDocs.map((q) => q._id));
-    await exam.save(); // ✅ Ensure questions are added to the exam
+    await exam.save(); // Save updated exam
 
-    res.status(201).json({ message: "Questions added successfully", questions: questionDocs });
+    res
+      .status(201)
+      .json({ message: "Questions added successfully", questions: questionDocs });
   } catch (err) {
+    console.error(err); // Log for debugging
     res.status(500).json({ error: err.message });
   }
 };
-
 
 exports.getAllExams = async (req, res) => {
   try {
