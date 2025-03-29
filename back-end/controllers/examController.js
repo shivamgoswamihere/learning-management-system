@@ -24,7 +24,6 @@ exports.createExam = async (req, res) => {
     await exam.save();
     res.status(201).json(exam);
   } catch (err) {
-    console.error("Database error:", err.message); // Debugging log
     res.status(500).json({ error: err.message });
   }
 };
@@ -53,6 +52,49 @@ exports.createExam = async (req, res) => {
 //   }
 // };
 
+// exports.addQuestions = async (req, res) => {
+//   // Check if user is valid
+//   if (!req.user || req.user.role !== "trainer") {
+//     return res.status(403).json({ error: "Only trainers can add questions" });
+//   }
+
+//   try {
+//     const { examId, questions } = req.body;
+
+//     // Validate data
+//     if (!examId || !Array.isArray(questions) || questions.length === 0) {
+//       return res.status(400).json({ error: "Invalid examId or questions data" });
+//     }
+
+//     // Check if exam exists
+//     const exam = await Exam.findById(examId);
+//     if (!exam) return res.status(404).json({ error: "Exam not found" });
+
+//     // Add questions to the database
+//     const questionDocs = await Question.insertMany(
+//       questions.map((q) => {
+//         const { _id, ...rest } = q; // ✅ Remove _id if it exists
+//         return { ...rest, exam: examId };
+//       })
+//     );
+    
+
+//     // Check and update exam questions
+//     if (!Array.isArray(exam.questions)) {
+//       exam.questions = [];
+//     }
+//     exam.questions.push(...questionDocs.map((q) => q._id));
+//     await exam.save(); // Save updated exam
+
+//     res
+//       .status(201)
+//       .json({ message: "Questions added successfully", questions: questionDocs });
+//   } catch (err) {
+//     console.error(err); // Log for debugging
+//     res.status(500).json({ error: err.message });
+//   }
+// };
+
 exports.addQuestions = async (req, res) => {
   // Check if user is valid
   if (!req.user || req.user.role !== "trainer") {
@@ -71,30 +113,40 @@ exports.addQuestions = async (req, res) => {
     const exam = await Exam.findById(examId);
     if (!exam) return res.status(404).json({ error: "Exam not found" });
 
-    // Add questions to the database
-    const questionDocs = await Question.insertMany(
-      questions.map((q) => {
-        const { _id, ...rest } = q; // ✅ Remove _id if it exists
-        return { ...rest, exam: examId };
-      })
-    );
-    
+    const updatedQuestions = [];
 
-    // Check and update exam questions
-    if (!Array.isArray(exam.questions)) {
-      exam.questions = [];
+    // ✅ Loop through each question and update or insert
+    for (const q of questions) {
+      if (q._id) {
+        // ✅ If _id exists, update the question
+        const updatedQuestion = await Question.findByIdAndUpdate(
+          q._id,
+          { ...q, exam: examId }, // Keep examId associated
+          { new: true, runValidators: true }
+        );
+        updatedQuestions.push(updatedQuestion);
+      } else {
+        // ✅ If no _id, create a new question
+        const newQuestion = new Question({ ...q, exam: examId });
+        await newQuestion.save();
+        updatedQuestions.push(newQuestion);
+      }
     }
-    exam.questions.push(...questionDocs.map((q) => q._id));
-    await exam.save(); // Save updated exam
 
-    res
-      .status(201)
-      .json({ message: "Questions added successfully", questions: questionDocs });
+    // ✅ Update exam questions with updated/new question IDs
+    exam.questions = updatedQuestions.map((q) => q._id);
+    await exam.save();
+
+    res.status(201).json({
+      message: "Questions added/updated successfully",
+      questions: updatedQuestions,
+    });
   } catch (err) {
     console.error(err); // Log for debugging
     res.status(500).json({ error: err.message });
   }
 };
+
 
 exports.getAllExams = async (req, res) => {
   try {
@@ -103,7 +155,6 @@ exports.getAllExams = async (req, res) => {
       model: "Question",
     });
 
-    console.log("Fetched Exams with Questions:", exams); // Debugging
     res.json(exams);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -145,7 +196,6 @@ exports.deleteExam = async (req, res) => {
 
     res.status(200).json({ message: "Exam deleted successfully" });
   } catch (err) {
-    console.error("Error deleting exam:", err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -203,6 +253,30 @@ exports.updateExam = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// exports.updateQuestion = async (req, res) => {
+//   if (req.user.role !== "trainer") {
+//     return res.status(403).json({ error: "Only trainers can update questions" });
+//   }
+
+//   try {
+//     const { questionId } = req.params;
+//     const updatedData = req.body;
+
+//     const question = await Question.findByIdAndUpdate(questionId, updatedData, {
+//       new: true,
+//       runValidators: true,
+//     });
+
+//     if (!question) {
+//       return res.status(404).json({ error: "Question not found" });
+//     }
+
+//     res.status(200).json({ message: "Question updated successfully", question });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// };
 
 exports.updateQuestion = async (req, res) => {
   if (req.user.role !== "trainer") {
@@ -267,7 +341,6 @@ exports.enrollExam = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error enrolling in exam:", error);
     return res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -296,7 +369,7 @@ exports.getEnrolledExams = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error fetching enrolled exams:", error);
+
     return res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -322,11 +395,6 @@ exports.submitResult = async (req, res) => {
     const passingMarks = exam.totalMarks * 0.4;
     const passed = obtainedMarks >= passingMarks;
 
-    console.log("Obtained Marks:", obtainedMarks);
-    console.log("Exam Total Marks:", exam.totalMarks);
-    console.log("Passing Marks:", passingMarks);
-    console.log("Passed:", passed);
-
     // ✅ Update existing result or create a new one
     const updatedResult = await Result.findOneAndUpdate(
       { user: req.user.id, exam: examId },  // Find by user & exam
@@ -336,7 +404,7 @@ exports.submitResult = async (req, res) => {
 
     res.status(201).json({ message: "Result submitted successfully", result: updatedResult });
   } catch (error) {
-    console.error("Error submitting result:", error);
+
     res.status(500).json({ error: error.message });
   }
 };
@@ -368,7 +436,7 @@ exports.getSubmittedResults = async (req, res) => {
 
     res.status(200).json(formattedResults);
   } catch (error) {
-    console.error("Error fetching results:", error);
+  
     res.status(500).json({ error: error.message });
   }
 };
@@ -391,12 +459,10 @@ exports.getCreatedExams = async (req, res) => {
 
     res.json(createdExams);
   } catch (error) {
-    console.error("Error fetching created exams:", error);
+ 
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
-
 
 exports.generateCertificate = async (req, res) => {
   try {
