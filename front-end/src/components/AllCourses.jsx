@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllCourses } from "../redux/courseSlice";
+import { fetchAllCourses, getPendingCourses, updateCourseApproval } from "../redux/courseSlice";
 import { useNavigate } from "react-router-dom";
 import { FiUsers, FiBook, FiClipboard, FiDollarSign, FiBarChart, FiHome } from "react-icons/fi";
 import { Link } from "react-router-dom";
@@ -9,7 +9,9 @@ import CourseCard from "../components/CourseCard";
 const AllCourses = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { courses, loading, error } = useSelector((state) => state.courses);
+    
+    const { courses, pendingCourses, loading, error } = useSelector((state) => state.courses);
+    const { user } = useSelector((state) => state.auth); // Get logged-in user details
     
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredCourses, setFilteredCourses] = useState([]);
@@ -18,7 +20,10 @@ const AllCourses = () => {
 
     useEffect(() => {
         dispatch(fetchAllCourses());
-    }, [dispatch]);
+        if (user?.role === "admin") {
+            dispatch(getPendingCourses());
+        }
+    }, [dispatch, user?.role]);
 
     useEffect(() => {
         if (searchQuery.trim() === "") {
@@ -32,6 +37,22 @@ const AllCourses = () => {
         }
         setCurrentPage(1);
     }, [searchQuery, courses]);
+
+    const handleApproval = async (courseId) => {
+        await dispatch(updateCourseApproval({ courseId, status: "approved", rejectionReason: "" }));
+        dispatch(fetchAllCourses());
+        dispatch(getPendingCourses());
+    };
+    
+    const handleRejection = async (courseId) => {
+        const reason = prompt("Enter rejection reason:");
+        if (reason) {
+            await dispatch(updateCourseApproval({ courseId, status: "rejected", rejectionReason: reason }));
+            dispatch(fetchAllCourses());
+            dispatch(getPendingCourses());
+        }
+    };
+    
 
     const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -115,6 +136,40 @@ const AllCourses = () => {
                     </div>
                 ) : (
                     <p className="text-center text-gray-500 mt-4">No courses found.</p>
+                )}
+
+                {/* Pending Courses (Admin Only) */}
+                {user?.role === "admin" && pendingCourses.length > 0 && (
+                    <div className="mt-12">
+                        <h3 className="text-2xl font-bold mb-4 text-center">Pending Course Approvals</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {pendingCourses.map((course) => (
+                                <div key={course._id} className="border p-4 rounded-lg shadow-md bg-white">
+                                    <CourseCard
+                                        image={course.thumbnail || "/placeholder.png"}
+                                        category={course.category || "General"}
+                                        heading={course.title || "Untitled Course"}
+                                        level={course.courseLevel || "Beginner"}
+                                        duration={course.duration || "N/A"}
+                                    />
+                                    <div className="flex justify-between mt-3">
+                                        <button
+                                            onClick={() => handleApproval(course._id)}
+                                            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+                                        >
+                                            Approve
+                                        </button>
+                                        <button
+                                            onClick={() => handleRejection(course._id)}
+                                            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                                        >
+                                            Reject
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 )}
 
                 {/* Pagination */}

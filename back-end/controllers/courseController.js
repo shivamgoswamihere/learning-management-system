@@ -2,6 +2,7 @@ const Course = require("../models/Course");
 const Lesson = require("../models/Lesson");
 const User = require("../models/User");
 
+// ✅ Create Course (Trainers Only, Requires Admin Approval)
 const createCourse = async (req, res) => {
     try {
         const { 
@@ -31,8 +32,6 @@ const createCourse = async (req, res) => {
         let syllabus = [];
         try {
             syllabus = Array.isArray(syllabusRaw) ? syllabusRaw : JSON.parse(syllabusRaw || "[]");
-
-            // Ensure each syllabus item has a title & description
             syllabus.forEach(item => {
                 if (!item.title || !item.description) {
                     throw new Error("Each syllabus item must have a title and description.");
@@ -42,7 +41,7 @@ const createCourse = async (req, res) => {
             return res.status(400).json({ success: false, message: "Invalid syllabus format: " + err.message });
         }
 
-        // ✅ Create New Course
+        // ✅ Create Course (Pending Approval)
         const course = new Course({
             title,
             description,
@@ -54,35 +53,15 @@ const createCourse = async (req, res) => {
             prerequisites,
             courseLevel,
             certificationAvailable,
-            syllabus
+            syllabus,
+            status: "pending" // Requires admin approval
         });
 
         await course.save();
 
-        // ✅ Handle Lessons (Only if videos exist)
-        if (Array.isArray(lessons) && lessons.length > 0) {
-            const lessonPromises = lessons.map(async (lesson, index) => {
-                const videoPath = req.files["lessonVideos"]?.[index]?.path || null;
-
-                const newLesson = new Lesson({
-                    title: lesson.title,
-                    description: lesson.description,
-                    videoUrl: videoPath,
-                    course: course._id,
-                    order: lesson.order
-                });
-
-                await newLesson.save();
-                course.lessons.push(newLesson._id);
-            });
-
-            await Promise.all(lessonPromises);
-            await course.save();
-        }
-
         return res.status(201).json({
             success: true,
-            message: "Course and lessons created successfully",
+            message: "Course created successfully and is pending admin approval",
             course
         });
 
@@ -92,17 +71,58 @@ const createCourse = async (req, res) => {
     }
 };
 
+// ✅ Approve or Reject Course (Admins Only)
+const updateCourseApproval = async (req, res) => {
+    try {
+        const { courseId } = req.params;
+        const { status, rejectionReason } = req.body;
 
-// ✅ Get All Courses
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Only admins can approve or reject courses" });
+        }
+
+        if (!["approved", "rejected"].includes(status)) {
+            return res.status(400).json({ message: "Invalid status value" });
+        }
+
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ message: "Course not found" });
+        }
+
+        if (status === "rejected" && !rejectionReason) {
+            return res.status(400).json({ message: "Rejection reason is required" });
+        }
+
+        course.status = status;
+        course.approvedBy = req.user.id;
+        course.approvalDate = new Date();
+        course.rejectionReason = status === "rejected" ? rejectionReason : null;
+
+        await course.save();
+
+        return res.status(200).json({
+            success: true,
+            message: `Course ${status} successfully`,
+            course
+        });
+
+    } catch (error) {
+        console.error("Error updating course approval:", error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// ✅ Get All Approved Courses
 const getAllCourses = async (req, res) => {
     try {
-        const courses = await Course.find()
+        const courses = await Course.find({ status: "approved" })
             .populate("trainer", "name email")
             .sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
-            message: "All courses fetched successfully",
+            message: "All approved courses fetched successfully",
             courses
         });
 
@@ -112,20 +132,38 @@ const getAllCourses = async (req, res) => {
     }
 };
 
+// ✅ Get Pending Courses (Admins Only)
+const getPendingCourses = async (req, res) => {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Only admins can view pending courses" });
+        }
+
+        const courses = await Course.find({ status: "pending" }).populate("trainer", "name email");
+        return res.status(200).json({ success: true, courses });
+
+    } catch (error) {
+        console.error("Error fetching pending courses:", error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 const getCourse = async (req, res) => {
     try {
         const course = await Course.findById(req.params.id)
-            .populate("lessons") // ✅ This will bring all lessons linked to the course
-            .populate("trainer", "name email"); // ✅ This will bring trainer info
+            .populate("lessons")
+            .populate("trainer", "name email");
 
         if (!course) {
             return res.status(404).json({ success: false, message: "Course not found" });
         }
 
-        res.status(200).json({
-            success: true,
-            course
-        });
+        // Ensure only approved courses are accessible
+        if (course.status !== "approved" && req.user.role !== "admin" && req.user.id !== course.trainer.toString()) {
+            return res.status(403).json({ success: false, message: "This course is not available" });
+        }
+
+        res.status(200).json({ success: true, course });
     } catch (error) {
         console.error("Error fetching course:", error);
         res.status(500).json({ success: false, message: error.message });
@@ -193,7 +231,8 @@ const getTrainerCourses = async (req, res) => {
             return res.status(403).json({ success: false, message: "Only trainers can access their courses" });
         }
 
-        const courses = await Course.find({ trainer: trainerId }).populate("lessons");
+        const courses = await Course.find({ trainer: trainerId, status: "approved" })
+            .populate("lessons");
 
         return res.status(200).json({
             success: true,
@@ -205,6 +244,7 @@ const getTrainerCourses = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
+
 const enrollCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
@@ -280,6 +320,8 @@ module.exports = {
     getTrainerCourses, 
     updateCourse,
     enrollCourse, 
-    getEnrolledCourses, 
+    getEnrolledCourses,
+    getPendingCourses,
+    updateCourseApproval
 };
 

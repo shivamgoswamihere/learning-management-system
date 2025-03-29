@@ -8,7 +8,9 @@ const {
     updateCourse,
     enrollCourse, 
     getEnrolledCourses ,
-    deleteCourse
+    deleteCourse,
+    updateCourseApproval, 
+    getPendingCourses
 } = require("../controllers/courseController");
 const protect = require("../middlewares/authMiddleware");
 const mongoose = require("mongoose");
@@ -23,8 +25,19 @@ router.post(
     createCourse
 );
 
-// ✅ Get All Courses (Public)
-router.get("/all-courses", getAllCourses);
+//  ✅ Get All Approved Courses (Public)
+router.get("/all-approved", getAllCourses);
+
+/**
+ * ✅ Approve or Reject a Course (Admin Only)
+ */
+router.put("/approval/:courseId", protect(["admin"]), updateCourseApproval);
+
+
+/**
+ * ✅ Get Pending Courses (Admin Only)
+ */
+router.get("/pending", protect(["admin"]), getPendingCourses);
 
 // ✅ Get Trainer's Courses (Trainer Only)
 router.get("/trainer", protect(["trainer","admin"]), getTrainerCourses);
