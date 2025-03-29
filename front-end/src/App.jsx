@@ -5,6 +5,7 @@ import Footer from "./components/Footer.jsx";
 import "./App.css";
 import DevDojoLogo from "./assets/DevDojoLogo.png"; // Ensure correct path
 import EditExam from "./pages/EditExam.jsx";
+import AdminExamList from "./pages/AdminExamList.jsx";
 
 // Lazy Loading Pages
 const Home = lazy(() => import("./pages/Home.jsx"));
@@ -75,6 +76,7 @@ function App() {
           <Route path="/trainer-exams" element={<TrainerExams />} />
           <Route path="/trainer-courses" element={<TrainerCourses />} /> 
           <Route path="/exams/edit/:examId" element={<EditExam />} /> 
+          <Route path="/admin/exams" element={<AdminExamList />} /> 
         </Routes>
       
       </Suspense>

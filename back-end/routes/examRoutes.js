@@ -37,16 +37,16 @@ router.get("/all", protect(["trainer", "examinee", "admin", "learner"]), getAllE
 router.get("/:examId/questions", protect(["trainer", "examinee", "admin", "learner"]), getExamQuestions);
 
 // ✅ Enroll in an Exam (Learner or Examinee)
-router.post("/enroll/:examId", protect(["learner", "examinee"]), enrollExam);
+router.post("/enroll/:examId", protect(["learner", "examinee","admin"]), enrollExam);
 
 // ✅ Get Enrolled Exams for a Learner or Examinee
-router.get("/enrolledExam", protect(["learner", "examinee"]), getEnrolledExams);
+router.get("/enrolledExam", protect(["learner", "examinee","admin"]), getEnrolledExams);
 
 // ✅ Submit Exam Result
 router.post("/submit-result", protect(["learner", "examinee","trainer","admin"]), submitResult);
 
 // ✅ Get Submitted Results for a User
-router.get("/submitted-results", protect(["learner", "examinee", "trainer"]), getSubmittedResults);
+router.get("/submitted-results", protect(["learner", "examinee", "trainer","admin"]), getSubmittedResults);
 
 // ✅ Get Exams Created by Trainer/Admin
 router.get("/created-exams", protect(["trainer", "admin"]), getCreatedExams);

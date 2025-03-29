@@ -158,7 +158,7 @@ const Profile = () => {
             <strong>Phone:</strong> {currentUser.phoneNumber}
           </p>
         )}
-        
+
         {currentUser.dateOfBirth && (
           <p>
             <strong>Date of Birth:</strong>{" "}
@@ -175,188 +175,190 @@ const Profile = () => {
 
       {/* Role-Specific Sections */}
       {currentUser.role === "learner" && (
-  <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl shadow-lg">
-    {/* ✅ Learner Details Section */}
-    <h3 className="text-2xl font-bold text-blue-800 mb-4">Learner Dashboard</h3>
+        <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl shadow-lg">
+          {/* ✅ Learner Details Section */}
+          <h3 className="text-2xl font-bold text-blue-800 mb-4">Learner Dashboard</h3>
 
-    <div className="bg-white p-4 rounded-lg shadow-md space-y-3 mb-6">
-      {currentUser.qualification && (
-        <p className="text-gray-700">
-          🎓 <span className="font-semibold">Qualification:</span> {currentUser.qualification} (
-          {currentUser.qualificationStatus})
-        </p>
-      )}
-      {currentUser.degree && (
-        <p className="text-gray-700">
-          🎯 <span className="font-semibold">Degree:</span> {currentUser.degree}
-        </p>
-      )}
-      {currentUser.privacySettings?.showProfession && currentUser.profession && (
-        <p className="text-gray-700">
-          💼 <span className="font-semibold">Profession:</span> {currentUser.profession}
-        </p>
-      )}
-      {currentUser.organization?.name && (
-        <p className="text-gray-700">
-          🏢 <span className="font-semibold">Organization:</span> {currentUser.organization.name}
-        </p>
-      )}
-      {currentUser.interests && (
-        <p className="text-gray-700">
-          🎨 <span className="font-semibold">Interests:</span> {currentUser.interests}
-        </p>
-      )}
-    </div>
-
-    {/* ✅ Enrolled Courses Section */}
-    <div className="mt-6">
-      <h3 className="text-xl font-semibold mb-4 text-blue-700">📚 My Enrolled Courses</h3>
-
-      {loading && <p className="text-blue-500">🔄 Loading courses...</p>}
-      {error && <p className="text-red-500">❌ Error: {error}</p>}
-
-      {enrolledCourses?.length === 0 && !loading && (
-        <p className="text-gray-500">🙁 You haven't enrolled in any courses yet.</p>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {enrolledCourses?.map((course) => (
-          <div key={course._id} className="p-5 bg-white rounded-lg shadow-md hover:shadow-lg transition">
-            <h4 className="text-lg font-semibold text-gray-800">{course.title}</h4>
-            <p className="text-gray-600 text-sm mb-2">{course.description}</p>
-            <p className="text-xs text-green-500">✅ Enrolled on: {new Date(course.enrolledDate).toLocaleDateString()}</p>
-
-            <Link
-              to={`/CourseDetails/${course._id}`}
-              className="mt-3 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition"
-            >
-              📖 Go to Course
-            </Link>
+          <div className="bg-white p-4 rounded-lg shadow-md space-y-3 mb-6">
+            {currentUser.qualification && (
+              <p className="text-gray-700">
+                🎓 <span className="font-semibold">Qualification:</span> {currentUser.qualification} (
+                {currentUser.qualificationStatus})
+              </p>
+            )}
+            {currentUser.degree && (
+              <p className="text-gray-700">
+                🎯 <span className="font-semibold">Degree:</span> {currentUser.degree}
+              </p>
+            )}
+            {currentUser.privacySettings?.showProfession && currentUser.profession && (
+              <p className="text-gray-700">
+                💼 <span className="font-semibold">Profession:</span> {currentUser.profession}
+              </p>
+            )}
+            {currentUser.organization?.name && (
+              <p className="text-gray-700">
+                🏢 <span className="font-semibold">Organization:</span> {currentUser.organization.name}
+              </p>
+            )}
+            {currentUser.interests && (
+              <p className="text-gray-700">
+                🎨 <span className="font-semibold">Interests:</span> {currentUser.interests}
+              </p>
+            )}
           </div>
-        ))}
-      </div>
-    </div>
-  </div>
-)}
 
-{(currentUser?.role === "examinee" || currentUser?.role === "learner") &&
-  results?.length > 0 && (
-    <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl shadow-lg">
-      {/* ✅ Results Header */}
-      <h3 className="text-2xl font-bold text-purple-800 mb-4">📊 Exam Results</h3>
+          {/* ✅ Enrolled Courses Section */}
+          <div className="mt-6">
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">📚 My Enrolled Courses</h3>
 
-      {/* ✅ Loading and Error States */}
-      {resultsLoading && (
-        <p className="text-purple-500 flex items-center">
-          ⏳ <span className="ml-2">Loading results...</span>
-        </p>
+            {loading && <p className="text-blue-500">🔄 Loading courses...</p>}
+            {error && <p className="text-red-500">❌ Error: {error}</p>}
+
+            {enrolledCourses?.length === 0 && !loading && (
+              <p className="text-gray-500">🙁 You haven't enrolled in any courses yet.</p>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {enrolledCourses?.map((course) => (
+                <div key={course._id} className="p-5 bg-white rounded-lg shadow-md hover:shadow-lg transition">
+                  <h4 className="text-lg font-semibold text-gray-800">{course.title}</h4>
+                  <p className="text-gray-600 text-sm mb-2">{course.description}</p>
+                  <p className="text-xs text-green-500">✅ Enrolled on: {new Date(course.enrolledDate).toLocaleDateString()}</p>
+
+                  <Link
+                    to={`/CourseDetails/${course._id}`}
+                    className="mt-3 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition"
+                  >
+                    📖 Go to Course
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
-      {/* {resultsError && (
+
+      {(currentUser?.role === "examinee" || currentUser?.role === "learner") &&
+        results?.length > 0 && (
+          <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl shadow-lg">
+            {/* ✅ Results Header */}
+            <h3 className="text-2xl font-bold text-purple-800 mb-4">📊 Exam Results</h3>
+
+            {/* ✅ Loading and Error States */}
+            {resultsLoading && (
+              <p className="text-purple-500 flex items-center">
+                ⏳ <span className="ml-2">Loading results...</span>
+              </p>
+            )}
+            {/* {resultsError && (
         <p className="text-red-500">
           ❌ Error: {resultsError}
         </p>
       )} */}
 
-      {/* ✅ Results List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {results?.map((result) => (
-          <div
-            key={result._id}
-            className="p-5 bg-white rounded-lg shadow-md hover:shadow-lg transition border border-purple-200"
-          >
-            <h4 className="text-lg font-semibold text-gray-800 mb-2">
-              🎯 {result.examTitle || "Exam Name Not Available"}
-            </h4>
+            {/* ✅ Results List */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {results?.map((result) => (
+                <div
+                  key={result._id}
+                  className="p-5 bg-white rounded-lg shadow-md hover:shadow-lg transition border border-purple-200"
+                >
+                  <h4 className="text-lg font-semibold text-gray-800 mb-2">
+                    🎯 {result.examTitle || "Exam Name Not Available"}
+                  </h4>
+                  <p className="text-sm font-medium text-purple-700 mb-2">
+                    📌 Exam Type: <span className="font-semibold">{result.examType || "N/A"}</span>
+                  </p>
 
-            {/* ✅ Marks and Performance Details */}
-            <div className="space-y-2 text-sm text-gray-700">
-              <p>
-                📚 <span className="font-semibold">Obtained Marks:</span> {result.obtainedMarks}
-              </p>
-              <p>
-                ✅ <span className="font-semibold">Correct Answers:</span> {result.correctAnswers}
-              </p>
-              <p>
-                ❌ <span className="font-semibold">Incorrect Answers:</span> {result.incorrectAnswers}
-              </p>
-              <p>
-                📝 <span className="font-semibold">Total Questions:</span> {result.totalQuestions}
-              </p>
-              <p>
-                📈 <span className="font-semibold">Percentage:</span> {result.percentage}%
-              </p>
+                  {/* ✅ Marks and Performance Details */}
+                  <div className="space-y-2 text-sm text-gray-700">
+                    <p>
+                      📚 <span className="font-semibold">Obtained Marks:</span> {result.obtainedMarks}
+                    </p>
+                    <p>
+                      ✅ <span className="font-semibold">Correct Answers:</span> {result.correctAnswers}
+                    </p>
+                    <p>
+                      ❌ <span className="font-semibold">Incorrect Answers:</span> {result.incorrectAnswers}
+                    </p>
+                    <p>
+                      📝 <span className="font-semibold">Total Questions:</span> {result.totalQuestions}
+                    </p>
+                    <p>
+                      📈 <span className="font-semibold">Percentage:</span> {result.percentage}%
+                    </p>
+                  </div>
+
+                  {/* ✅ Pass/Fail Status */}
+                  <p
+                    className={`text-sm font-semibold mt-3 ${result.passed ? "text-green-600" : "text-red-600"
+                      }`}
+                  >
+                    {result.passed ? "🎉 Passed" : "❗ Failed"}
+                  </p>
+
+                  {/* ✅ Submission Date */}
+                  <p className="text-xs text-gray-500 mt-1">
+                    ⏰ Submitted on: {new Date(result.submittedAt).toLocaleDateString()}
+                  </p>
+                </div>
+              ))}
             </div>
-
-            {/* ✅ Pass/Fail Status */}
-            <p
-              className={`text-sm font-semibold mt-3 ${
-                result.passed ? "text-green-600" : "text-red-600"
-              }`}
-            >
-              {result.passed ? "🎉 Passed" : "❗ Failed"}
-            </p>
-
-            {/* ✅ Submission Date */}
-            <p className="text-xs text-gray-500 mt-1">
-              ⏰ Submitted on: {new Date(result.submittedAt).toLocaleDateString()}
-            </p>
           </div>
-        ))}
-      </div>
-    </div>
-  )}
+        )}
 
 
 
       {currentUser.role === "trainer" && (
-  <div className="mt-8 p-6 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl shadow-lg">
-    <h3 className="text-2xl font-bold text-yellow-800 mb-4">Trainer Dashboard</h3>
-    
-    <div className="bg-white p-4 rounded-lg shadow-md space-y-3 mb-6">
-      {currentUser.professionalTitle && (
-        <p className="text-gray-700">
-          <span className="font-semibold">🎓 Professional Title:</span> {currentUser.professionalTitle}
-        </p>
-      )}
-      {currentUser.totalExperience && (
-        <p className="text-gray-700">
-          <span className="font-semibold">💼 Total Experience:</span> {currentUser.totalExperience} years
-        </p>
-      )}
-      {currentUser.careerDescription && (
-        <p className="text-gray-700">
-          <span className="font-semibold">📝 Career Description:</span> {currentUser.careerDescription}
-        </p>
-      )}
-    </div>
+        <div className="mt-8 p-6 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl shadow-lg">
+          <h3 className="text-2xl font-bold text-yellow-800 mb-4">Trainer Dashboard</h3>
 
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <Link to="/courseForm">
-        <button className="flex items-center justify-center px-5 py-3 bg-black text-white rounded-lg shadow-md hover:bg-gray-900 transition">
-          ➕ Add Course
-        </button>
-      </Link>
-      <Link to="/create-exam">
-        <button className="flex items-center justify-center px-5 py-3 bg-black text-white rounded-lg shadow-md hover:bg-gray-900 transition">
-          📝 Add Exam
-        </button>
-      </Link>
-      <Link to="/trainer-courses">
-        <button className="flex items-center justify-center px-5 py-3 bg-black text-white rounded-lg shadow-md hover:bg-gray-900 transition">
-          📚 My Courses
-        </button>
-      </Link>
-      <Link to="/trainer-exams">
-        <button className="flex items-center justify-center px-5 py-3 bg-black text-white rounded-lg shadow-md hover:bg-gray-900 transition">
-          📊 View Created Exams
-        </button>
-      </Link>
-    </div>
-  </div>
-)}
+          <div className="bg-white p-4 rounded-lg shadow-md space-y-3 mb-6">
+            {currentUser.professionalTitle && (
+              <p className="text-gray-700">
+                <span className="font-semibold">🎓 Professional Title:</span> {currentUser.professionalTitle}
+              </p>
+            )}
+            {currentUser.totalExperience && (
+              <p className="text-gray-700">
+                <span className="font-semibold">💼 Total Experience:</span> {currentUser.totalExperience} years
+              </p>
+            )}
+            {currentUser.careerDescription && (
+              <p className="text-gray-700">
+                <span className="font-semibold">📝 Career Description:</span> {currentUser.careerDescription}
+              </p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Link to="/courseForm">
+              <button className="flex items-center justify-center px-5 py-3 bg-black text-white rounded-lg shadow-md hover:bg-gray-900 transition">
+                ➕ Add Course
+              </button>
+            </Link>
+            <Link to="/create-exam">
+              <button className="flex items-center justify-center px-5 py-3 bg-black text-white rounded-lg shadow-md hover:bg-gray-900 transition">
+                📝 Add Exam
+              </button>
+            </Link>
+            <Link to="/trainer-courses">
+              <button className="flex items-center justify-center px-5 py-3 bg-black text-white rounded-lg shadow-md hover:bg-gray-900 transition">
+                📚 My Courses
+              </button>
+            </Link>
+            <Link to="/trainer-exams">
+              <button className="flex items-center justify-center px-5 py-3 bg-black text-white rounded-lg shadow-md hover:bg-gray-900 transition">
+                📊 View Created Exams
+              </button>
+            </Link>
+          </div>
+        </div>
+      )}
 
 
-   
+
 
       {currentUser.role === "admin" && (
         <div className="mt-8 p-6 bg-gradient-to-r from-red-100 to-red-200 rounded-lg shadow">
