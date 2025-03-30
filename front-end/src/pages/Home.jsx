@@ -17,6 +17,8 @@ import react from "../assets/react.svg";
 import vue from "../assets/vuejs.svg";
 import angular from "../assets/angular.svg";
 import CourseCategories from "../components/CourseCategories";
+import Testimonial from "../components/Testimonial";
+import MousePointer from "../components/MousePointer";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -82,6 +84,7 @@ const Home = () => {
 
   return (
     <div className="font-sans bg-gray-200">
+      <MousePointer/>
       {/* Hero Section with Slider */}
       <section className="relative bg-gradient-to-r h-[500px] from-blue-700 to-blue-500 text-white py-10 px-10">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
@@ -191,6 +194,7 @@ const Home = () => {
         </div>
       </section>
 
+      <Testimonial/>
       {/* Course Categories */}
       {/* <CourseCategories /> */}
 
