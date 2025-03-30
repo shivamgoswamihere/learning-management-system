@@ -228,6 +228,16 @@ const Settings = () => {
             className="w-full p-2 border rounded-md"
           />
         </div>
+        <div>
+          <label className="block text-sm font-medium">Github</label>
+          <input
+            type="text"
+            name="socialLinks.github"
+            value={formData.socialLinks.github}
+            onChange={handleChange}
+            className="w-full p-2 border rounded-md"
+          />
+        </div>
 
         <button
           type="submit"

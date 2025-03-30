@@ -171,6 +171,7 @@ const Profile = () => {
             {currentUser.address.country}
           </p>
         )}
+       
       </div>
 
       {/* Role-Specific Sections */}
@@ -209,33 +210,31 @@ const Profile = () => {
           </div>
 
           {/* ✅ Enrolled Courses Section */}
-          <div className="mt-6">
-            <h3 className="text-xl font-semibold mb-4 text-blue-700">📚 My Enrolled Courses</h3>
+          {Array.isArray(enrolledCourses) && enrolledCourses.length > 0 && !loading && !error && (
+  <div className="mt-6">
+    <h3 className="text-xl font-semibold mb-4 text-blue-700">📚 My Enrolled Courses</h3>
 
-            {loading && <p className="text-blue-500">🔄 Loading courses...</p>}
-            {error && <p className="text-red-500">❌ Error: {error}</p>}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {enrolledCourses.map((course) => (
+        <div key={course._id} className="p-5 bg-white rounded-lg shadow-md hover:shadow-lg transition">
+          <h4 className="text-lg font-semibold text-gray-800">{course.title}</h4>
+          <p className="text-gray-600 text-sm mb-2">{course.description}</p>
+          <p className="text-xs text-green-500">
+            ✅ Enrolled on: {new Date(course.enrolledDate).toLocaleDateString()}
+          </p>
 
-            {enrolledCourses?.length === 0 && !loading && (
-              <p className="text-gray-500">🙁 You haven't enrolled in any courses yet.</p>
-            )}
+          <Link
+            to={`/CourseDetails/${course._id}`}
+            className="mt-3 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition"
+          >
+            📖 Go to Course
+          </Link>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {enrolledCourses?.map((course) => (
-                <div key={course._id} className="p-5 bg-white rounded-lg shadow-md hover:shadow-lg transition">
-                  <h4 className="text-lg font-semibold text-gray-800">{course.title}</h4>
-                  <p className="text-gray-600 text-sm mb-2">{course.description}</p>
-                  <p className="text-xs text-green-500">✅ Enrolled on: {new Date(course.enrolledDate).toLocaleDateString()}</p>
-
-                  <Link
-                    to={`/CourseDetails/${course._id}`}
-                    className="mt-3 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition"
-                  >
-                    📖 Go to Course
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       )}
 
@@ -313,6 +312,18 @@ const Profile = () => {
       {currentUser.role === "trainer" && (
         <div className="mt-8 p-6 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl shadow-lg">
           <h3 className="text-2xl font-bold text-yellow-800 mb-4">Trainer Dashboard</h3>
+          {currentUser.socialLinks.linkedIn && (
+          <p>
+            <strong>Linkedin:</strong> {currentUser.socialLinks.linkedIn}
+            
+          </p>
+        )}
+        {currentUser.socialLinks.github && (
+          <p>
+            <strong>Github:</strong> {currentUser.socialLinks.github}
+            
+          </p>
+        )}
 
           <div className="bg-white p-4 rounded-lg shadow-md space-y-3 mb-6">
             {currentUser.professionalTitle && (
