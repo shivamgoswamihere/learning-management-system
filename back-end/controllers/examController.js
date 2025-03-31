@@ -386,10 +386,10 @@ exports.submitResult = async (req, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // ✅ Fetch Exam Details
+    // ✅ Fetch Exam Details to Get `examType`
     const exam = await Exam.findById(examId);
-    if (!exam || exam.totalMarks === undefined) {
-      return res.status(400).json({ error: "Exam details not found or totalMarks missing" });
+    if (!exam || !exam.type || exam.totalMarks === undefined) {
+      return res.status(400).json({ error: "Exam details not found or invalid" });
     }
 
     const passingMarks = exam.totalMarks * 0.4;
@@ -398,34 +398,45 @@ exports.submitResult = async (req, res) => {
     // ✅ Update existing result or create a new one
     const updatedResult = await Result.findOneAndUpdate(
       { user: req.user.id, exam: examId },  // Find by user & exam
-      { $set: { obtainedMarks, correctAnswers: correct, incorrectAnswers: incorrect, totalQuestions, percentage: (correct / totalQuestions) * 100, passed } },
+      { 
+        $set: { 
+          examType: exam.type, // ✅ Store `examType`
+          obtainedMarks, 
+          correctAnswers: correct, 
+          incorrectAnswers: incorrect, 
+          totalQuestions, 
+          percentage: (correct / totalQuestions) * 100, 
+          passed 
+        } 
+      },
       { new: true, upsert: true } // ✅ Return updated result & create if missing
     );
 
     res.status(201).json({ message: "Result submitted successfully", result: updatedResult });
   } catch (error) {
-
     res.status(500).json({ error: error.message });
   }
 };
 
 
 
+
 exports.getSubmittedResults = async (req, res) => {
   try {
     const results = await Result.find({ user: req.user.id })
-      .populate("exam", "title code subject totalMarks")
+      .populate("exam", "title code subject totalMarks type") // ✅ Populate `examType`
       .sort({ createdAt: -1 });
 
     if (!results || results.length === 0) {
       return res.status(404).json({ message: "No results found." });
     }
 
-    // ✅ Map results to include correct fields
+    // ✅ Include `examType` in the response
     const formattedResults = results.map((result) => ({
       _id: result._id,
       examTitle: result.exam?.title || "Unknown Exam",
-      obtainedMarks: result.obtainedMarks || 0, // ✅ Include obtained marks
+      examType: result.exam?.type || "N/A", // ✅ Include examType
+      obtainedMarks: result.obtainedMarks || 0,
       correctAnswers: result.correctAnswers || 0,
       incorrectAnswers: result.incorrectAnswers || 0,
       totalQuestions: result.totalQuestions || 0,
@@ -436,33 +447,30 @@ exports.getSubmittedResults = async (req, res) => {
 
     res.status(200).json(formattedResults);
   } catch (error) {
-  
     res.status(500).json({ error: error.message });
   }
 };
+
 exports.getCreatedExams = async (req, res) => {
   try {
-    
-    // Ensure only trainers or admins can fetch their created exams
     if (!["trainer", "admin"].includes(req.user.role)) {
       return res.status(403).json({ error: "Access denied. Only trainers and admins can view created exams." });
     }
 
-    // Convert user ID to ObjectId (if needed)
     const userId = new mongoose.Types.ObjectId(req.user.id);
 
-    // Fetch exams created by the logged-in trainer/admin
+    // ✅ Include `examType` in the response
     const createdExams = await Exam.find({ createdBy: userId })
-      .populate("questions", "text options correctAnswer") // Populate questions if needed
-      .sort({ createdAt: -1 }); // Show latest first
-
+      .populate("questions", "text options correctAnswer") 
+      .select("title code subject totalMarks examType") // ✅ Select `examType`
+      .sort({ createdAt: -1 });
 
     res.json(createdExams);
   } catch (error) {
- 
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 exports.generateCertificate = async (req, res) => {
   try {
