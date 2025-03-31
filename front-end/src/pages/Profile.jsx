@@ -6,6 +6,8 @@ import TrainerCourses from "../components/TrainerCourses";
 import { fetchResults } from "../redux/examSlice";
 import { getEnrolledCourses } from "../redux/courseSlice";
 import TrainerExams from "../components/TrainerExams";
+import EnrolledCourses from "../components/EnrolledCourses";
+import ExamResults from "../components/ExamResults";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -171,7 +173,7 @@ const Profile = () => {
             {currentUser.address.country}
           </p>
         )}
-       
+
       </div>
 
       {/* Role-Specific Sections */}
@@ -210,102 +212,17 @@ const Profile = () => {
           </div>
 
           {/* ✅ Enrolled Courses Section */}
-          {Array.isArray(enrolledCourses) && enrolledCourses.length > 0 && !loading && !error && (
-  <div className="mt-6">
-    <h3 className="text-xl font-semibold mb-4 text-blue-700">📚 My Enrolled Courses</h3>
-
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {enrolledCourses.map((course) => (
-        <div key={course._id} className="p-5 bg-white rounded-lg shadow-md hover:shadow-lg transition">
-          <h4 className="text-lg font-semibold text-gray-800">{course.title}</h4>
-          <p className="text-gray-600 text-sm mb-2">{course.description}</p>
-          <p className="text-xs text-green-500">
-            ✅ Enrolled on: {new Date(course.enrolledDate).toLocaleDateString()}
-          </p>
-
-          <Link
-            to={`/CourseDetails/${course._id}`}
-            className="mt-3 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition"
-          >
-            📖 Go to Course
-          </Link>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
+          {/* ✅ Use the new component */}
+          {currentUser.role === "learner" && enrolledCourses.length > 0 && (
+            <EnrolledCourses enrolledCourses={enrolledCourses} />
+          )}
 
         </div>
       )}
 
-      {(currentUser?.role === "examinee" || currentUser?.role === "learner") &&
-        results?.length > 0 && (
-          <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl shadow-lg">
-            {/* ✅ Results Header */}
-            <h3 className="text-2xl font-bold text-purple-800 mb-4">📊 Exam Results</h3>
-
-            {/* ✅ Loading and Error States */}
-            {resultsLoading && (
-              <p className="text-purple-500 flex items-center">
-                ⏳ <span className="ml-2">Loading results...</span>
-              </p>
-            )}
-            {/* {resultsError && (
-        <p className="text-red-500">
-          ❌ Error: {resultsError}
-        </p>
-      )} */}
-
-            {/* ✅ Results List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {results?.map((result) => (
-                <div
-                  key={result._id}
-                  className="p-5 bg-white rounded-lg shadow-md hover:shadow-lg transition border border-purple-200"
-                >
-                  <h4 className="text-lg font-semibold text-gray-800 mb-2">
-                    🎯 {result.examTitle || "Exam Name Not Available"}
-                  </h4>
-                  <p className="text-sm font-medium text-purple-700 mb-2">
-                    📌 Exam Type: <span className="font-semibold">{result.examType || "N/A"}</span>
-                  </p>
-
-                  {/* ✅ Marks and Performance Details */}
-                  <div className="space-y-2 text-sm text-gray-700">
-                    <p>
-                      📚 <span className="font-semibold">Obtained Marks:</span> {result.obtainedMarks}
-                    </p>
-                    <p>
-                      ✅ <span className="font-semibold">Correct Answers:</span> {result.correctAnswers}
-                    </p>
-                    <p>
-                      ❌ <span className="font-semibold">Incorrect Answers:</span> {result.incorrectAnswers}
-                    </p>
-                    <p>
-                      📝 <span className="font-semibold">Total Questions:</span> {result.totalQuestions}
-                    </p>
-                    <p>
-                      📈 <span className="font-semibold">Percentage:</span> {result.percentage}%
-                    </p>
-                  </div>
-
-                  {/* ✅ Pass/Fail Status */}
-                  <p
-                    className={`text-sm font-semibold mt-3 ${result.passed ? "text-green-600" : "text-red-600"
-                      }`}
-                  >
-                    {result.passed ? "🎉 Passed" : "❗ Failed"}
-                  </p>
-
-                  {/* ✅ Submission Date */}
-                  <p className="text-xs text-gray-500 mt-1">
-                    ⏰ Submitted on: {new Date(result.submittedAt).toLocaleDateString()}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+      {(currentUser?.role === "examinee" || currentUser?.role === "learner") && results?.length > 0 && (
+        <ExamResults results={results} />
+      )}
 
 
 
@@ -313,17 +230,17 @@ const Profile = () => {
         <div className="mt-8 p-6 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl shadow-lg">
           <h3 className="text-2xl font-bold text-yellow-800 mb-4">Trainer Dashboard</h3>
           {currentUser.socialLinks.linkedIn && (
-          <p>
-            <strong>Linkedin:</strong> {currentUser.socialLinks.linkedIn}
-            
-          </p>
-        )}
-        {currentUser.socialLinks.github && (
-          <p>
-            <strong>Github:</strong> {currentUser.socialLinks.github}
-            
-          </p>
-        )}
+            <p>
+              <strong>Linkedin:</strong> {currentUser.socialLinks.linkedIn}
+
+            </p>
+          )}
+          {currentUser.socialLinks.github && (
+            <p>
+              <strong>Github:</strong> {currentUser.socialLinks.github}
+
+            </p>
+          )}
 
           <div className="bg-white p-4 rounded-lg shadow-md space-y-3 mb-6">
             {currentUser.professionalTitle && (

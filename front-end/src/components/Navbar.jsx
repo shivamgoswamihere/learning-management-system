@@ -80,7 +80,7 @@ function Navbar() {
             className="hidden md:block bg-white px-2 py-1 w-80 border-[1px] border-gray-300 outline-none focus:ring-1 focus:ring-blue-500"
           />
 
-          {user ? (
+          {user && currentUser ? (
             <div className="relative">
               <button
                 className="flex items-center gap-2 bg-blue-500 px-2 py-2 text-white font-bold hover:bg-blue-400 transition"
@@ -88,8 +88,8 @@ function Navbar() {
               >
                 <img
                   src={currentUser.profilePicture || userImage}
-                  alt="Full Profile"
-                  className="w-6 h-6 rounded-full object-fitg"
+                  alt="Profile"
+                  className="w-6 h-6 rounded-full object-cover"
                 />
                 {currentUser.username}
               </button>
