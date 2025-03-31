@@ -15,6 +15,13 @@ const CoursesList = () => {
     const [itemsPerPage] = useState(8);
 
 
+     // New Filters
+     const [priceFilter, setPriceFilter] = useState("");       // "free" or "paid"
+     const [typeFilter, setTypeFilter] = useState("");         // "free" or "paid"
+     const [durationFilter, setDurationFilter] = useState(""); // "short" (0-2 hours), "medium" (2-5 hours), "long" (5+ hours)
+     const [levelFilter, setLevelFilter] = useState("");       // "beginner", "intermediate", "hard"
+
+
     useEffect(() => {
         dispatch(fetchAllCourses());
     }, [dispatch]);
@@ -26,6 +33,9 @@ const CoursesList = () => {
     }, [location.search]);
 
     useEffect(() => {
+
+        let filtered = [...courses];
+
         if (searchQuery.trim() === "") {
             setFilteredCourses(courses);
         } else {
@@ -33,10 +43,58 @@ const CoursesList = () => {
                 course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 course.description.toLowerCase().includes(searchQuery.toLowerCase())
             );
-            setFilteredCourses(filtered);
+         
         }
+
+         // Apply filters
+         if (priceFilter) {
+            filtered = filtered.filter(course => {
+                const price = course.price;
+
+                switch (priceFilter) {
+                    case "<500":
+                        return price < 500;
+                    case "500-1000":
+                        return price >= 500 && price <= 1000;
+                    case "1000-1500":
+                        return price > 1000 && price <= 1500;
+                    case "1500-2000":
+                        return price > 1500 && price <= 2000;
+                    case ">2000":
+                        return price > 2000;
+                    default:
+                        return true;
+                }
+            });
+        }
+
+        if (typeFilter) {
+            filtered = filtered.filter((course) =>
+                typeFilter === "free" ? course.price === 0 : course.price > 0
+            );
+        }
+        
+
+        if (durationFilter) {
+            filtered = filtered.filter(course => {
+                const duration = course.duration;
+                if (durationFilter === "short") return duration <= 2;
+                if (durationFilter === "medium") return duration > 2 && duration <= 5;
+                if (durationFilter === "long") return duration > 5;
+                return true;
+            });
+        }
+
+        if (levelFilter) {
+            filtered = filtered.filter(course => 
+                course.courseLevel.toLowerCase() === levelFilter.toLowerCase()
+            );
+            
+        }
+
+        setFilteredCourses(filtered);
         setCurrentPage(1); // ✅ Reset to first page on search
-    }, [searchQuery, courses]);
+    }, [courses, searchQuery, priceFilter, typeFilter, durationFilter, levelFilter]);
 
      // Pagination
      const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
@@ -55,8 +113,76 @@ const CoursesList = () => {
     <div className="p-6 bg-gray-200">
     {/* Page Heading */}
     <h1 className="text-4xl font-extrabold text-center mb-8 text-gray-800">
-        📚 Available Courses
+         Available Courses
     </h1>
+
+    {/* Filters */}
+    <div className="bg-white p-4 rounded-lg shadow-lg mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                     {/* Price Filter */}
+                     <div>
+                        <label className="block font-bold mb-2">Price Range</label>
+                        <select
+                            className="w-full p-2 border rounded"
+                            value={priceFilter}
+                            onChange={(e) => setPriceFilter(e.target.value)}
+                        >
+                            <option value="">All</option>
+                            <option value="<500">Less than ₹500</option>
+                            <option value="500-1000">₹500 - ₹1000</option>
+                            <option value="1000-1500">₹1000 - ₹1500</option>
+                            <option value="1500-2000">₹1500 - ₹2000</option>
+                            <option value=">2000">More than ₹2000</option>
+                        </select>
+                    </div>
+
+
+                    {/* Type Filter */}
+                    <div>
+                        <label className="block font-bold mb-2">Type</label>
+                        <select
+                            className="w-full p-2 border rounded"
+                            value={typeFilter}
+                            onChange={(e) => setTypeFilter(e.target.value)}
+                        >
+                            <option value="">All</option>
+                            <option value="free">Free</option>
+                            <option value="paid">Paid</option>
+                        </select>
+                    </div>
+
+                    {/* Duration Filter */}
+                    <div>
+                        <label className="block font-bold mb-2">Duration</label>
+                        <select
+                            className="w-full p-2 border rounded"
+                            value={durationFilter}
+                            onChange={(e) => setDurationFilter(e.target.value)}
+                        >
+                            <option value="">All</option>
+                            <option value="short">0-2 hours</option>
+                            <option value="medium">2-5 hours</option>
+                            <option value="long">5+ hours</option>
+                        </select>
+                    </div>
+
+                    {/* Level Filter */}
+                    <div>
+                        <label className="block font-bold mb-2">Level</label>
+                        <select
+                            className="w-full p-2 border rounded"
+                            value={levelFilter}
+                            onChange={(e) => setLevelFilter(e.target.value)}
+                        >
+                            <option value="">All</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advance">Advance</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
 
     {/* Search Results Display */}
     {searchQuery && (
