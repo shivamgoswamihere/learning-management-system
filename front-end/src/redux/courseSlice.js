@@ -132,21 +132,68 @@ export const getEnrolledCourses = createAsyncThunk(
     }
 );
 
-// ✅ Update Course (Trainer/Admin)
+// ✅ Update Course (Partial Update - Trainer/Admin)
 export const updateCourse = createAsyncThunk(
     "courses/update",
     async ({ courseId, updatedData }, { rejectWithValue, getState }) => {
         try {
+            if (!courseId || !updatedData) {
+                return rejectWithValue("Course ID and updated data are required");
+            }
+
             const token = getState().auth.token;
-            const response = await axios.put(`${API_URL}/${courseId}`, updatedData, {
-                headers: { Authorization: `Bearer ${token}` },
+            let formData = new FormData();
+            let isFormDataUsed = false;
+
+            // ✅ Convert lessons & syllabus to JSON string (if present)
+            if (updatedData.lessons) {
+                formData.append("lessons", JSON.stringify(updatedData.lessons));
+                isFormDataUsed = true;
+            }
+            if (updatedData.syllabus) {
+                formData.append("syllabus", JSON.stringify(updatedData.syllabus));
+                isFormDataUsed = true;
+            }
+
+            // ✅ Append other fields dynamically
+            Object.keys(updatedData).forEach((key) => {
+                if (key !== "lessons" && key !== "syllabus" && updatedData[key] !== undefined) {
+                    formData.append(key, updatedData[key]);
+                    isFormDataUsed = true;
+                }
             });
+
+            // ✅ Append file if thumbnail is updated (Check if it's a File)
+            if (updatedData.thumbnail instanceof File) {
+                formData.append("thumbnail", updatedData.thumbnail);
+                isFormDataUsed = true;
+            }
+
+            // ✅ Choose JSON or FormData based on content
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    ...(isFormDataUsed ? { "Content-Type": "multipart/form-data" } : {}),
+                },
+            };
+
+            const response = await axios.patch(
+                `${API_URL}/${courseId}`,
+                isFormDataUsed ? formData : updatedData, // Send JSON if no files
+                config
+            );
+
             return response.data.course;
         } catch (error) {
-            return rejectWithValue(error.response?.data?.message || "Failed to update course");
+            return rejectWithValue(
+                error.response?.data?.message ||
+                error.response?.data?.errors?.join(", ") ||
+                "Failed to update course"
+            );
         }
     }
 );
+
 
 // ✅ Delete Course (Trainer/Admin)
 export const deleteCourse = createAsyncThunk(
@@ -221,7 +268,29 @@ const courseSlice = createSlice({
             })
             .addCase(deleteCourse.fulfilled, (state, action) => {
                 state.trainerCourses = state.trainerCourses.filter(course => course._id !== action.payload);
+            })
+            .addCase(updateCourse.pending, (state) => { state.loading = true; })
+            .addCase(updateCourse.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(updateCourse.fulfilled, (state, action) => {
+                state.loading = false;
+                state.error = null;
+
+                state.courses = state.courses.map(course =>
+                    course._id === action.payload._id ? action.payload : course
+                );
+                state.trainerCourses = state.trainerCourses.map(course =>
+                    course._id === action.payload._id ? action.payload : course
+                );
+
+                // ✅ Update selected course in case user is editing it
+                if (state.selectedCourse && state.selectedCourse._id === action.payload._id) {
+                    state.selectedCourse = action.payload;
+                }
             });
+
     },
 });
 

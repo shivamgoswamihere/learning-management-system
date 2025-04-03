@@ -1,6 +1,7 @@
 const Course = require("../models/Course");
 const Lesson = require("../models/Lesson");
 const User = require("../models/User");
+const cloudinary = require("../config/cloudinary");
 
 // ✅ Create Course (Trainers Only, Requires Admin Approval)
 const createCourse = async (req, res) => {
@@ -170,29 +171,143 @@ const getCourse = async (req, res) => {
     }
 };
 
+
 const updateCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
-        const updates = req.body; // Get updated course data
+        let updates = req.body;
 
-        // Ensure only the trainer who created it or an admin can update
-        const course = await Course.findById(courseId);
+        // ✅ Validate course ID
+        if (!courseId) {
+            return res.status(400).json({ message: "Course ID is required" });
+        }
+
+        // ✅ Find course
+        const course = await Course.findById(courseId).populate("lessons");
         if (!course) {
             return res.status(404).json({ message: "Course not found" });
         }
 
+        // ✅ Check user authorization (Trainer or Admin)
         if (req.user.role !== "admin" && course.trainer.toString() !== req.user.id) {
             return res.status(403).json({ message: "Unauthorized to update this course" });
         }
 
-        // Perform update
-        const updatedCourse = await Course.findByIdAndUpdate(courseId, updates, { new: true });
+        // ✅ Handle thumbnail upload if provided
+        if (req.files?.thumbnail) {
+            const file = req.files.thumbnail[0];
 
-        res.status(200).json({ message: "Course updated successfully", course: updatedCourse });
+            // Upload new thumbnail to Cloudinary
+            const uploadResponse = await cloudinary.uploader.upload(file.path, {
+                folder: "course_thumbnails"
+            });
+
+            // Delete old thumbnail if it exists
+            if (course.thumbnail) {
+                try {
+                    const oldPublicId = course.thumbnail.split("/").pop().split(".")[0];
+                    await cloudinary.uploader.destroy(`course_thumbnails/${oldPublicId}`);
+                } catch (error) {
+                    console.error("Failed to delete old thumbnail:", error);
+                }
+            }
+
+            updates.thumbnail = uploadResponse.secure_url;
+        }
+
+        // ✅ Handle syllabus update
+        if (updates.syllabus) {
+            try {
+                const parsedSyllabus = Array.isArray(updates.syllabus) 
+                    ? updates.syllabus 
+                    : JSON.parse(updates.syllabus);
+                    
+                if (!Array.isArray(parsedSyllabus)) throw new Error("Invalid syllabus format");
+                
+                parsedSyllabus.forEach(item => {
+                    if (!item.title || !item.description) {
+                        throw new Error("Each syllabus item must have a title and description.");
+                    }
+                });
+
+                updates.syllabus = parsedSyllabus;
+            } catch (err) {
+                return res.status(400).json({ success: false, message: "Invalid syllabus format" });
+            }
+        }
+
+               // ✅ Handle lesson video updates
+               if (req.files?.lessonVideos) {
+                const videoFiles = req.files.lessonVideos;
+                const lessonUpdates = JSON.parse(req.body.lessonUpdates || "[]");
+    
+                for (let i = 0; i < lessonUpdates.length; i++) {
+                    const lessonUpdate = lessonUpdates[i];
+                    const { _id, title, description } = lessonUpdate;
+                    
+                    let newVideoUrl = null;
+    
+                    // ✅ Upload new video if a new file is provided
+                    if (videoFiles[i]) {
+                        const uploadResponse = await cloudinary.uploader.upload(videoFiles[i].path, {
+                            resource_type: "video",
+                            folder: "lesson_videos"
+                        });
+    
+                        newVideoUrl = uploadResponse.secure_url;
+    
+                        // ✅ Delete old video if updating an existing lesson
+                        if (_id) {
+                            const lesson = await Lesson.findById(_id);
+                            if (lesson && lesson.videoUrl) {
+                                try {
+                                    const oldVideoPublicId = lesson.videoUrl.split("/").pop().split(".")[0];
+                                    await cloudinary.uploader.destroy(`lesson_videos/${oldVideoPublicId}`, { resource_type: "video" });
+                                } catch (error) {
+                                    console.error("Failed to delete old video:", error);
+                                }
+                            }
+                        }
+                    }
+    
+                    if (_id) {
+                        // ✅ Update existing lesson
+                        await Lesson.findByIdAndUpdate(_id, {
+                            title,
+                            description,
+                            videoUrl: newVideoUrl || lessonUpdate.videoUrl  // Keep old URL if no new video
+                        });
+                    } else {
+                        // ✅ Create new lesson
+                        const newLesson = new Lesson({
+                            course: courseId,
+                            title,
+                            description,
+                            videoUrl: newVideoUrl
+                        });
+    
+                        await newLesson.save();
+                        course.lessons.push(newLesson._id);
+                    }
+                }
+            }
+        // ✅ Apply partial updates
+        Object.assign(course, updates);
+        const updatedCourse = await course.save();
+
+        return res.status(200).json({
+            message: "Course updated successfully",
+            course: updatedCourse
+        });
+
     } catch (error) {
-        res.status(500).json({ message: "Failed to update course", error: error.message });
+        console.error("Error updating course:", error);
+        return res.status(500).json({ message: "Failed to update course", error: error.message });
     }
 };
+
+
+
 const deleteCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
