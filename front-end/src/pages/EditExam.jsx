@@ -7,6 +7,7 @@ import {
   addQuestions,
 } from "../redux/examSlice"; // Update paths if necessary
 import { useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"
 
 const EditExamPage = () => {
   const { examId } = useParams(); // Get exam ID from URL
@@ -124,10 +125,10 @@ const EditExamPage = () => {
         }
       }
 
-      alert("Exam and questions updated successfully!");
+      toast.success("Exam and questions updated successfully!");
       navigate("/exams"); // Redirect to exams list
     } catch (error) {
-      alert("Error updating exam: " + error.message);
+      toast.error("Error updating exam: " + error.message);
     }
   };
 

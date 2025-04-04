@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchExams, enrollExam } from "../redux/examSlice";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"
 
 const ExamList = () => {
   const dispatch = useDispatch();
@@ -25,11 +26,11 @@ const ExamList = () => {
       dispatch(enrollExam(examId))
         .unwrap()
         .then(() => {
-          alert("Successfully enrolled in the exam!");
+          toast.success("Successfully enrolled in the exam!");
           navigate(`/exam/start/${examId}`); // ✅ Navigate after enrollment
         })
         .catch((err) => {
-          alert(err.message || "Failed to enroll.");
+          toast.error(err.message || "Failed to enroll.");
         });
     }
   };

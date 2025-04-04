@@ -7,6 +7,9 @@ import DevDojoLogo from "./assets/DevDojoLogo.png"; // Ensure correct path
 import EditExam from "./pages/EditExam.jsx";
 import AdminExamList from "./pages/AdminExamList.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 // Lazy Loading Pages
 const Home = lazy(() => import("./pages/Home.jsx"));
@@ -54,6 +57,7 @@ function App() {
   return (
     <Router>
       <Navbar />
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="pt-12 bg-gray-200"> 
       <Suspense fallback={<LoadingScreen />}>
         

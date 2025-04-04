@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, resetAuthState } from "../redux/authSlice";
+import { toast } from "react-toastify";
 
 function Login({ isOpen, onClose, onRegisterClick }) {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -12,10 +13,10 @@ function Login({ isOpen, onClose, onRegisterClick }) {
   useEffect(() => {
     if (success) {
       if (error?.includes("banned")) {
-        alert("Your account is banned. Please contact support.");
+        toast.warning("Your account is banned. Please contact support.");
         return;
       }
-      alert("Login successful!");
+      toast.success("Login successfully!");
       onClose(); // ✅ Close modal
       dispatch(resetAuthState()); // ✅ Reset auth state
     }

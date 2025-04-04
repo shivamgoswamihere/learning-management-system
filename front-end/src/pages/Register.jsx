@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser, resetAuthState, loginUser } from "../redux/authSlice";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-toastify"
 
 function Register({ isOpen, onClose, onLoginClick }) {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ function Register({ isOpen, onClose, onLoginClick }) {
 
   useEffect(() => {
     if (success) {
-      alert("User registered successfully!");
+      toast.success("User Registered successfully!");
       // Auto-login after successful registration
       dispatch(loginUser({ email: formData.email, password: formData.password }));
       onClose();

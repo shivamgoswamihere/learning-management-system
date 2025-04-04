@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCourseById,getEnrolledCourses,deleteCourse } from "../redux/courseSlice"; 
 import UpdateCourseModal from "./UpdateCourseModal";
+import { toast } from "react-toastify"
 
 const CourseDetails = () => {
   const { id } = useParams();
@@ -36,7 +37,7 @@ const CourseDetails = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this course?");
     if (confirmDelete) {
       dispatch(deleteCourse(id)).then(() => {
-        alert("Course deleted successfully!");
+        toast.success("Course deleted successfully!");
         navigate("/courses"); // Redirect to courses list after deletion
       });
     }

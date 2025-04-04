@@ -52,16 +52,16 @@ const CoursesList = () => {
                 const price = course.price;
 
                 switch (priceFilter) {
-                    case "<500":
-                        return price < 500;
-                    case "500-1000":
-                        return price >= 500 && price <= 1000;
-                    case "1000-1500":
-                        return price > 1000 && price <= 1500;
-                    case "1500-2000":
-                        return price > 1500 && price <= 2000;
-                    case ">2000":
-                        return price > 2000;
+                    case "<5000":
+                        return price < 5000;
+                    case "5000-10000":
+                        return price >= 5000 && price <= 10000;
+                    case "10000-15000":
+                        return price > 10000 && price <= 15000;
+                    case "15000-20000":
+                        return price > 15000 && price <= 20000;
+                    case ">20000":
+                        return price > 20000;
                     default:
                         return true;
                 }
@@ -128,11 +128,11 @@ const CoursesList = () => {
                             onChange={(e) => setPriceFilter(e.target.value)}
                         >
                             <option value="">All</option>
-                            <option value="<500">Less than ₹500</option>
-                            <option value="500-1000">₹500 - ₹1000</option>
-                            <option value="1000-1500">₹1000 - ₹1500</option>
-                            <option value="1500-2000">₹1500 - ₹2000</option>
-                            <option value=">2000">More than ₹2000</option>
+                            <option value="<5000">Less than ₹5000</option>
+                            <option value="5000-10000">₹5000 - ₹10000</option>
+                            <option value="10000-15000">₹10000 - ₹15000</option>
+                            <option value="15000-20000">₹15000 - ₹20000</option>
+                            <option value=">20000">More than ₹20000</option>
                         </select>
                     </div>
 

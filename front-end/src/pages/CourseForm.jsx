@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createCourse } from "../redux/courseSlice";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"
 
 const CourseForm = () => {
     const dispatch = useDispatch();
@@ -85,7 +86,7 @@ const CourseForm = () => {
 
         // ✅ Validate syllabus before submission
         if (syllabus.some(item => !item.title.trim() || !item.description.trim())) {
-            alert("❌ Each syllabus item must have a title and description.");
+            toast.warning("Each syllabus item must have a title and description.");
             return;
         }
 
@@ -121,11 +122,11 @@ const CourseForm = () => {
         // ✅ Dispatch Course Creation
         dispatch(createCourse(courseData))
             .then(() => {
-                alert("✅ Course submitted successfully! 🚀\nYour course is now under review. Please wait for admin approval.");
+                toast.success("Course submitted successfully! 🚀\nYour course is now under review. Please wait for admin approval.");
                 navigate("/profile");
             })
             .catch((err) => {
-                alert(`❌ Error: ${err.message || "Failed to create course"}`);
+                toast.error(`❌ Error: ${err.message || "Failed to create course"}`);
             });
     };
 

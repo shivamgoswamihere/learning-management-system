@@ -123,13 +123,7 @@ const Home = () => {
               src={featuredCourse ? featuredCourse.thumbnail : "Loading..."}
               alt="Hero Course"
               className="w-[600px] h-[300px] object-fill shadow-lg"
-            />
-            {/* Play Button Overlay */}
-            {/* <div className="absolute inset-0 flex items-center justify-center">
-              <button className="bg-yellow-400 text-white p-4 rounded-full shadow-lg hover:bg-yellow-500 transition">
-                <FaPlay className="text-2xl" />
-              </button>
-            </div> */}
+            />          
           </div>
         </div>
       </section>
@@ -144,37 +138,6 @@ const Home = () => {
         ))}
       </div>
 
-      {/* Review Section */}
-      {/* <section className="py-16 px-6 md:px-16 relative flex flex-col md:flex-row items-center gap-10 max-w-6xl mx-auto">
-        <div className="w-full md:w-1/2 relative">
-          <img
-            src={reviewbg}
-            alt="Happy Student"
-            className="w-full rounded-lg "
-          />
-        </div>
-        <div className="w-full md:w-1/2 text-left">
-          <h3 className="text-sm text-gray-500 uppercase">
-            What Our Happy Students Say
-          </h3>
-          <p className="mt-3 text-2xl font-semibold text-gray-800">
-            "Mauris auctor sit consequat sed aenean purus egestas porta vel
-            fermentum, nec nisi at eget non, nisi tincidunt tempus."
-          </p>
-          <p className="mt-4 text-lg font-semibold text-gray-900">
-            Elena Miles
-          </p>
-          <p className="text-gray-500">Student</p>
-          <Link
-            to="/reviews"
-            className="mt-6 inline-block text-blue-600 font-semibold"
-          >
-            Read All Reviews →
-          </Link>
-        </div>
-      </section> */}
-
-      {/* Featured Course */}
       
       {/* Additional Courses */}
       <section className="py-16 px-6 md:px-16 max-w-6xl mx-auto">
@@ -195,50 +158,6 @@ const Home = () => {
       </section>
 
       <Testimonial/>
-      {/* Course Categories */}
-      {/* <CourseCategories /> */}
-
-      {/* Testimonials */}
-      {/* <section className="bg-gray-100 py-16 px-10 text-center">
-        <h2 className="text-4xl font-bold text-gray-900">
-          Trusted by Thousands of Students and Tutors
-        </h2>
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {testimonials.map((testimonial) => (
-            <div
-              key={testimonial.id}
-              className="p-6 bg-white rounded-lg shadow-lg flex flex-col items-start relative"
-            >
-              <img
-                src={testimonial.image}
-                alt={testimonial.name}
-                className="w-14 h-14 rounded-full absolute -top-6 left-6 border-4 border-white shadow-md"
-              />
-              <p className="text-gray-700 italic mt-10">"{testimonial.text}"</p>
-              <p className="mt-4 text-gray-900 font-semibold">
-                {testimonial.name}
-              </p>
-            </div>
-          ))}
-        </div>
-        <button className="mt-8 px-6 py-3 border border-blue-500 text-blue-500 rounded-full hover:bg-blue-500 hover:text-white transition">
-          Start Learning
-        </button>
-      </section> */}
-
-      {/* Membership Section */}
-      {/* <section className="py-16 px-10 text-center">
-        <h2 className="text-3xl font-bold">All Access Membership</h2>
-        <p className="mt-2 text-gray-600">
-          Get unlimited access to all courses.
-        </p>
-        <Link
-          to="/subscribe"
-          className="mt-6 inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold"
-        >
-          Subscribe & Save
-        </Link>
-      </section> */}
     </div>
   );
 };
