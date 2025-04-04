@@ -50,9 +50,17 @@ router.post("/enroll/:courseId", protect(["learner","trainer","admin","examinee"
 // ✅ Get Enrolled Courses for Learner
 router.get("/enrolled", protect(["learner","trainer","admin","examinee"]), getEnrolledCourses);
 
+// ✅ Partial Update Course (Trainer & Admin Only)
+router.patch("/:courseId", protect(["admin", "trainer"]), async (req, res, next) => {
+    const { courseId } = req.params;
 
-// ✅ Update Course (Admin or Trainer Only)
-router.put("/:courseId", protect(["admin", "trainer"]), updateCourse);
+    // ✅ Validate if courseId is a valid MongoDB ObjectId
+    if (!mongoose.isValidObjectId(courseId)) {
+        return res.status(400).json({ success: false, message: "Invalid course ID" });
+    }
+
+    next();
+}, uploadCourseFiles, updateCourse);
 
 // ✅ Get Single Course by ID (Logged-in Users Only)
 router.get("/:id", async (req, res, next) => {
