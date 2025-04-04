@@ -8,6 +8,7 @@ import { FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
 import devdojo from "../assets/DevDojo.png";
 import { fetchCurrentUser } from "../redux/userSlice";
 import userImage from "/user.png";
+import { toast } from "react-toastify"
 
 function Navbar() {
   const [modalType, setModalType] = useState(null);
@@ -37,6 +38,7 @@ function Navbar() {
     navigate("/");
     setDropdownOpen(false);
     setMenuOpen(false);
+    toast.success("Logged Out Successfully!")
   };
 
   const handleSearch = (e) => {
