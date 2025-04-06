@@ -5,7 +5,7 @@ import { FaClock } from "react-icons/fa";
 function CourseCard({ image, category, heading, level, duration, link }) {
   return (
     <Link to={link} className="group">
-      <div className="bg-white shadow-lg overflow-hidden transition-all group-hover:shadow-2xl border-[1px] border-gray-300 p-4 group-hover:scale-105">
+      <div className="bg-white min-h-80 shadow-lg overflow-hidden transition-all group-hover:shadow-2xl border-[1px] border-gray-300 p-4 group-hover:scale-105">
         {/* Course Image */}
         <div className="w-full overflow-hidden">
           <img
@@ -16,17 +16,17 @@ function CourseCard({ image, category, heading, level, duration, link }) {
         </div>
 
         {/* Course Info */}
-        <div className="mt-4 space-y-2">
+        <div className="mt-4 space-y-2 flex flex-col">
           {/* Category */}
           <span className="text-sm font-semibold uppercase text-blue-500">
             {category}
           </span>
 
           {/* Title */}
-          <h2 className="text-lg font-bold text-gray-900">{heading}</h2>
+          <h2 className="text-lg font-bold text-gray-900 h-16">{heading}</h2>
 
           {/* Level & Duration */}
-          <div className="flex items-center justify-between text-gray-600 text-sm">
+          <div className="flex items-center justify-between text-gray-600 text-sm justify-self-end">
             <span className="flex items-center">
               🏅 {level}
             </span>
