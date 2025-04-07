@@ -155,13 +155,13 @@ const UpdateCourseModal = ({ course, isOpen, onClose }) => {
 
     return (
         
-        <div className="inset-0 flex items-center justify-center bg-transparent backdrop-blur-md z-50 text-gray-600">
+        <div className="fixed inset-0 z-50 flex items-center text-black justify-center bg-black/30 backdrop-blur-sm">
             <motion.div
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="bg-white w-full max-w-2xl p-6 rounded-lg shadow-lg"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl p-6 shadow-2xl"
             >
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-2xl font-bold">Update Course</h2>

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchExams, enrollExam } from "../redux/examSlice";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
 const ExamList = () => {
   const dispatch = useDispatch();
@@ -40,11 +41,15 @@ const ExamList = () => {
     selectedType === "All"
       ? exams
       : exams.filter((exam) => exam.type === selectedType);
-
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-blue-500 text-lg font-semibold">Loading Exams...</p>
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <motion.div
+          className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1, rotate: 360 }}
+          transition={{ duration: 0.8, ease: "easeInOut", repeat: Infinity }}
+        />
       </div>
     );
   }
@@ -65,31 +70,28 @@ const ExamList = () => {
       <div className="mb-6 flex space-x-4">
         <button
           onClick={() => setSelectedType("All")}
-          className={`px-4 py-2 rounded-lg shadow ${
-            selectedType === "All"
+          className={`px-4 py-2 rounded-lg shadow ${selectedType === "All"
               ? "bg-blue-600 text-white"
               : "bg-gray-200 text-gray-800"
-          }`}
+            }`}
         >
           All
         </button>
         <button
           onClick={() => setSelectedType("Practice Test")}
-          className={`px-4 py-2 rounded-lg shadow ${
-            selectedType === "Practice Test"
+          className={`px-4 py-2 rounded-lg shadow ${selectedType === "Practice Test"
               ? "bg-blue-600 text-white"
               : "bg-gray-200 text-gray-800"
-          }`}
+            }`}
         >
           Practice Test
         </button>
         <button
           onClick={() => setSelectedType("Certification Exam")}
-          className={`px-4 py-2 rounded-lg shadow ${
-            selectedType === "Certification Exam"
+          className={`px-4 py-2 rounded-lg shadow ${selectedType === "Certification Exam"
               ? "bg-blue-600 text-white"
               : "bg-gray-200 text-gray-800"
-          }`}
+            }`}
         >
           Certification Exam
         </button>
@@ -100,6 +102,16 @@ const ExamList = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredExams.map((exam) => (
+              <motion.div
+              key={exam._id}
+              className="p-4 bg-white shadow rounded-lg flex flex-col justify-between"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              viewport={{ once: true }}
+            >
+              {/* exam content */}
+            
             <div
               key={exam._id}
               className="p-4 bg-white shadow rounded-lg flex flex-col justify-between"
@@ -126,9 +138,9 @@ const ExamList = () => {
               <div className="mt-4">
                 {/* Role-based Exam Actions */}
                 {user?.role === "examinee" ||
-                user?.role === "trainer" ||
-                user?.role === "learner" ||
-                user?.role === "admin" ? (
+                  user?.role === "trainer" ||
+                  user?.role === "learner" ||
+                  user?.role === "admin" ? (
                   <button
                     onClick={() => navigate(`/exam/start/${exam._id}`)}
                     className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
@@ -140,6 +152,7 @@ const ExamList = () => {
                 )}
               </div>
             </div>
+            </motion.div>
           ))}
         </div>
       )}

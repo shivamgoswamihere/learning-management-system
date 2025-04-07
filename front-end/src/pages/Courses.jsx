@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllCourses } from "../redux/courseSlice";
 import { useLocation } from "react-router-dom";
 import CourseCard from "../components/CourseCard";
+import { motion } from "framer-motion";
 
 const CoursesList = () => {
     const dispatch = useDispatch();
@@ -15,11 +16,11 @@ const CoursesList = () => {
     const [itemsPerPage] = useState(8);
 
 
-     // New Filters
-     const [priceFilter, setPriceFilter] = useState("");       // "free" or "paid"
-     const [typeFilter, setTypeFilter] = useState("");         // "free" or "paid"
-     const [durationFilter, setDurationFilter] = useState(""); // "short" (0-2 hours), "medium" (2-5 hours), "long" (5+ hours)
-     const [levelFilter, setLevelFilter] = useState("");       // "beginner", "intermediate", "hard"
+    // New Filters
+    const [priceFilter, setPriceFilter] = useState("");       // "free" or "paid"
+    const [typeFilter, setTypeFilter] = useState("");         // "free" or "paid"
+    const [durationFilter, setDurationFilter] = useState(""); // "short" (0-2 hours), "medium" (2-5 hours), "long" (5+ hours)
+    const [levelFilter, setLevelFilter] = useState("");       // "beginner", "intermediate", "hard"
 
 
     useEffect(() => {
@@ -43,11 +44,11 @@ const CoursesList = () => {
                 course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 course.description.toLowerCase().includes(searchQuery.toLowerCase())
             );
-         
+
         }
 
-         // Apply filters
-         if (priceFilter) {
+        // Apply filters
+        if (priceFilter) {
             filtered = filtered.filter(course => {
                 const price = course.price;
 
@@ -73,7 +74,7 @@ const CoursesList = () => {
                 typeFilter === "free" ? course.price === 0 : course.price > 0
             );
         }
-        
+
 
         if (durationFilter) {
             filtered = filtered.filter(course => {
@@ -86,41 +87,68 @@ const CoursesList = () => {
         }
 
         if (levelFilter) {
-            filtered = filtered.filter(course => 
+            filtered = filtered.filter(course =>
                 course.courseLevel.toLowerCase() === levelFilter.toLowerCase()
             );
-            
+
         }
 
         setFilteredCourses(filtered);
         setCurrentPage(1); // ✅ Reset to first page on search
     }, [courses, searchQuery, priceFilter, typeFilter, durationFilter, levelFilter]);
 
-     // Pagination
-     const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
-     const indexOfLastItem = currentPage * itemsPerPage;
-     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-     const currentCourses = filteredCourses.slice(indexOfFirstItem, indexOfLastItem);
- 
-     const nextPage = () => setCurrentPage(prev => (prev < totalPages ? prev + 1 : prev));
-     const prevPage = () => setCurrentPage(prev => (prev > 1 ? prev - 1 : prev));
+    // Pagination
+    const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentCourses = filteredCourses.slice(indexOfFirstItem, indexOfLastItem);
+
+    const nextPage = () => setCurrentPage(prev => (prev < totalPages ? prev + 1 : prev));
+    const prevPage = () => setCurrentPage(prev => (prev > 1 ? prev - 1 : prev));
 
 
-    if (loading) return <p className="text-center text-lg">Loading...</p>;
+    if (loading) {
+        return (
+            <div className="p-6 bg-gray-100">
+                <h1 className="text-4xl font-extrabold text-center mb-8 text-gray-800">
+                    Loading Courses...
+                </h1>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                    {[...Array(8)].map((_, idx) => (
+                        <div
+                            key={idx}
+                            className="bg-white p-4 rounded-lg shadow animate-pulse"
+                        >
+                            <div className="h-40 bg-gray-300 rounded mb-4"></div>
+                            <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                            <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                            <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
     if (error) return <p className="text-red-500 text-center">{error}</p>;
 
     return (
-    <div className="p-6 bg-gray-200">
-    {/* Page Heading */}
-    <h1 className="text-4xl font-extrabold text-center mb-8 text-gray-800">
-         Available Courses
-    </h1>
+        <div className="p-6 bg-gray-200">
+            {/* Page Heading */}
+            <h1 className="text-4xl font-extrabold text-center mb-8 text-gray-800">
+                Available Courses
+            </h1>
 
-    {/* Filters */}
-    <div className="bg-white p-4 rounded-lg shadow-lg mb-8">
+            {/* Filters */}
+            <motion.div
+                className="bg-white p-4 rounded-lg shadow-lg mb-8"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                     {/* Price Filter */}
-                     <div>
+                    {/* Price Filter */}
+                    <div>
                         <label className="block font-bold mb-2">Price Range</label>
                         <select
                             className="w-full p-2 border rounded"
@@ -181,68 +209,87 @@ const CoursesList = () => {
                         </select>
                     </div>
                 </div>
-            </div>
+        </motion.div>
 
 
-    {/* Search Results Display */}
-    {searchQuery && (
-        <p className="text-center text-lg text-gray-600 mb-4">
-        Search results for:{" "}
-        <span className="font-semibold text-blue-600">{searchQuery}</span>
-        </p>
-    )}
+            {/* Search Results Display */ }
+    {
+        searchQuery && (
+            <p className="text-center text-lg text-gray-600 mb-4">
+                Search results for:{" "}
+                <span className="font-semibold text-blue-600">{searchQuery}</span>
+            </p>
+        )
+    }
 
-    {/* Courses Grid */}
+    {/* Courses Grid */ }
     <div className="mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {currentCourses.length > 0 ? (
-        currentCourses.map((course) => (
-            <CourseCard
-            key={course._id}
-            image={course.thumbnail || "https://via.placeholder.com/300"}
-            category={course.category || "General"}
-            heading={course.title || "Untitled Course"}
-            level={course.courseLevel || "Beginner"}
-            duration={course.duration || "N/A"}
-            link={`/CourseDetails/${course._id}`}
-            />
-        ))
+            currentCourses.map((course, index) => (
+                <motion.div
+                    key={course._id}
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                >
+                    <CourseCard
+                        image={course.thumbnail || "https://via.placeholder.com/300"}
+                        category={course.category || "General"}
+                        heading={course.title || "Untitled Course"}
+                        level={course.courseLevel || "Beginner"}
+                        duration={course.duration || "N/A"}
+                        link={`/CourseDetails/${course._id}`}
+                    />
+                </motion.div>
+            ))
+
         ) : (
-        <div className="col-span-full text-center">
-            <p className="text-lg text-gray-500 bg-gray-100 py-4 px-6 rounded-lg shadow">
-            🚫 No courses found. Try a different search.
-            </p>
-        </div>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="flex flex-col items-center justify-center bg-white p-6 rounded-lg shadow-lg"
+            >
+                <img
+                    src="https://cdni.iconscout.com/illustration/premium/thumb/no-data-5302901-4448828.png"
+                    alt="No Results"
+                    className="w-48 h-48 object-contain mb-4"
+                />
+                <p className="text-lg text-gray-600">🚫 No courses found. Try a different search.</p>
+            </motion.div>
+
         )}
     </div>
 
-    {/* Pagination Controls */}
+    {/* Pagination Controls */ }
     <div className="flex justify-center items-center mt-10 space-x-4">
         {/* Previous Button (Hidden on First Page) */}
         {currentPage > 1 && (
-        <button
-            onClick={prevPage}
-            className="px-4 py-2 rounded-lg bg-gray-600 text-white shadow-lg hover:bg-gray-700 transition-all flex items-center"
-        >
-            <span className="mr-2">«</span> Previous
-        </button>
+            <button
+                onClick={prevPage}
+                className="px-4 py-2 rounded-lg bg-gray-600 text-white shadow-lg hover:bg-gray-700 transition-all flex items-center"
+            >
+                <span className="mr-2">«</span> Previous
+            </button>
         )}
 
         {/* Page Indicator */}
         <span className="text-lg font-bold text-gray-800">
-        Page {currentPage} of {totalPages}
+            Page {currentPage} of {totalPages}
         </span>
 
         {/* Next Button (Hidden on Last Page) */}
         {currentPage < totalPages && (
-        <button
-            onClick={nextPage}
-            className="px-4 py-2 rounded-lg bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all flex items-center"
-        >
-            Next <span className="ml-2">»</span>
-        </button>
+            <button
+                onClick={nextPage}
+                className="px-4 py-2 rounded-lg bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all flex items-center"
+            >
+                Next <span className="ml-2">»</span>
+            </button>
         )}
     </div>
-    </div>
+        </div >
 
 
 

@@ -19,6 +19,9 @@ import angular from "../assets/angular.svg";
 import CourseCategories from "../components/CourseCategories";
 import Testimonial from "../components/Testimonial";
 import MousePointer from "../components/MousePointer";
+import { motion } from "framer-motion";
+import ScrollToTopButton from "../components/ScrollToTopButton";
+
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -84,80 +87,116 @@ const Home = () => {
 
   return (
     <div className="font-sans bg-gray-200">
-      <MousePointer/>
+      <MousePointer />
       {/* Hero Section with Slider */}
-      <section className="relative bg-gradient-to-r h-[500px] from-blue-700 to-blue-500 text-white py-10 px-10">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
-          {/* Left: Text Content */}
-          <div className="w-full md:w-1/2">
-            <span className="text-yellow-400 font-semibold text-sm uppercase tracking-wide">
-              ● On-Demand Course
-            </span>
-            <h1 className="text-4xl md:text-5xl font-bold mt-3 leading-tight">
-              {featuredCourse ? featuredCourse.title : "Loading..."}
-            </h1>
-            <p className="text-lg text-gray-300 mt-4">
-              {featuredCourse ? featuredCourse.description : "Please wait..."}
-            </p>
-            <div className="mt-6 flex gap-4">
-              {featuredCourse && (
-                <Link
-                  to={`/CourseDetails/${featuredCourse._id}`}
-                  className="bg-white text-blue-600 px-6 py-3  font-semibold shadow-md"
-                >
-                  Start Course
-                </Link>
-              )}
-              <Link
-                to="/courses"
-                className="border border-white px-6 py-3  font-semibold"
-              >
-                View All Courses →
-              </Link>
-            </div>
-          </div>
+      <section
+  className="relative h-auto md:h-[600px] bg-cover bg-center text-white"
+  style={{ backgroundImage: `url(${herobg})` }}
+>
+  <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-blue-600/80 backdrop-blur-sm"></div>
 
-          {/* Right: Image with Play Button */}
-          <div className="w-full md:w-1/2 relative">
-            <img
-              src={featuredCourse ? featuredCourse.thumbnail : "Loading..."}
-              alt="Hero Course"
-              className="w-[600px] h-[300px] object-fill shadow-lg"
-            />          
-          </div>
-        </div>
-      </section>
-      <div className="mt-5 flex flex-wrap justify-center items-center gap-4 md:gap-8 lg:gap-10 py-6 bg-white max-w-screen-lg mx-auto">
-        {icons.map((icon, index) => (
-          <img
-            key={index}
-            src={icon.src}
-            alt={icon.alt}
-            className="w-12 sm:w-14 md:w-16 lg:w-20 h-12 filter grayscale opacity-80 transition hover:opacity-100"
-          />
-        ))}
+  <div className="relative z-10 max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10 px-4 sm:px-6 md:px-10 py-12 md:h-full">
+    <motion.div
+      className="w-full md:w-1/2 text-center md:text-left"
+      initial={{ x: -60, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.8 }}
+    >
+      <p className="text-yellow-300 text-xs sm:text-sm uppercase tracking-widest">
+        ● Featured Course
+      </p>
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-2 md:mt-3 drop-shadow-md leading-snug">
+        {featuredCourse ? featuredCourse.title : "Loading..."}
+      </h1>
+      <p className="mt-3 text-sm sm:text-base text-gray-200">
+        {featuredCourse ? featuredCourse.description : "Please wait..."}
+      </p>
+      <div className="mt-5 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+        {featuredCourse && (
+          <Link
+            to={`/CourseDetails/${featuredCourse._id}`}
+            className="bg-white text-blue-700 px-5 py-2 font-bold shadow hover:scale-105 transition text-sm sm:text-base"
+          >
+            Start Course
+          </Link>
+        )}
+        <Link
+          to="/courses"
+          className="border border-white px-5 py-2 font-semibold hover:bg-white hover:text-blue-700 transition text-sm sm:text-base"
+        >
+          View All →
+        </Link>
       </div>
+    </motion.div>
 
-      
-      {/* Additional Courses */}
-      <section className="py-16 px-6 md:px-16 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-6">More Courses</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {additionalCourses.map((course) => (
-            <CourseCard
-              key={course._id}
-              image={course.thumbnail || "https://via.placeholder.com/300"}
-              category={course.category || "General"}
-              heading={course.title || "Untitled Course"}
-              level={course.level || "Beginner"}
-              duration={course.duration || "N/A"}
-              link={`/CourseDetails/${course._id}`} // ✅ Dynamic Link
-            />
+    <motion.div
+      className="w-full md:w-1/2"
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 0.8, delay: 0.3 }}
+    >
+      <img
+        src={featuredCourse ? featuredCourse.thumbnail : "Loading..."}
+        alt="Course"
+        className="rounded-xl shadow-lg w-full max-h-[250px] sm:max-h-[320px] object-cover"
+      />
+    </motion.div>
+  </div>
+</section>
+
+
+      <section className="bg-white py-8">
+        <div className="max-w-5xl mx-auto grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 gap-6 justify-items-center">
+          {icons.map((icon, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1, duration: 0.5 }}
+              className="hover:scale-110 transition-transform"
+              title={icon.alt}
+            >
+              <img
+                src={icon.src}
+                alt={icon.alt}
+                className="w-12 md:w-14 opacity-80 hover:opacity-100 grayscale hover:grayscale-0 transition"
+              />
+            </motion.div>
           ))}
         </div>
       </section>
 
-      <Testimonial/>
+
+
+      {/* Additional Courses */}
+      <section className="py-16 px-6 md:px-16 max-w-6xl mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-10 text-gray-800">Explore More Courses</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {additionalCourses.map((course, index) => (
+            <motion.div
+              key={course._id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1, duration: 0.4 }}
+            >
+              <CourseCard
+                image={course.thumbnail}
+                category={course.category}
+                heading={course.title}
+                level={course.level}
+                duration={course.duration}
+                link={`/CourseDetails/${course._id}`}
+              />
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+
+      <Testimonial />
+      <ScrollToTopButton />  {/* 👈 Scroll to top button */}
+
     </div>
   );
 };
