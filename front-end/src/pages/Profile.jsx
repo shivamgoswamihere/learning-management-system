@@ -7,6 +7,7 @@ import { getEnrolledCourses } from "../redux/courseSlice";
 import EnrolledCourses from "../components/EnrolledCourses";
 import ExamResults from "../components/ExamResults";
 import { motion } from "framer-motion";
+import ChangePasswordModal from "./ChangePassword";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -93,10 +94,11 @@ const Profile = () => {
         </div>
 
         <Link to="/updateUser" className="ml-auto">
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+          <button className="px-4 py-2 bg-blue-600 max-sm:mr-25 text-white rounded-md hover:bg-blue-700 transition">
             Edit Profile
           </button>
         </Link>
+        <ChangePasswordModal />
       </motion.div>
 
       {/* Modal */}
@@ -193,6 +195,7 @@ const Profile = () => {
 
         {(currentUser.role === "examinee" || currentUser.role === "learner") && results?.length > 0 && (
           <ExamResults results={results} />
+          
         )}
 
         {currentUser.role === "trainer" && (

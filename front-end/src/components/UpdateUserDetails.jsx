@@ -90,7 +90,6 @@ const Settings = () => {
 
       {error && <p className="text-red-500">{error}</p>}
       {loading && <p className="text-gray-500">Loading...</p>}
-
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium">Full Name</label>

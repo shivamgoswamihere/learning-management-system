@@ -53,6 +53,25 @@ export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
 
   return null; // Reset auth state
 });
+// ✅ Change Password
+export const changePassword = createAsyncThunk(
+  "auth/changePassword",
+  async (passwordData, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token;
+
+      const response = await axios.post(`${API_URL}/change-password`, passwordData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 
 // Auth Slice
@@ -108,7 +127,19 @@ const authSlice = createSlice({
         state.user = null;
         state.token = null;
         state.success = false;
-      });
+      })
+      .addCase(changePassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });      
   },
 });
 
