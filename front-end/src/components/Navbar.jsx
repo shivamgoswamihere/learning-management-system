@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../redux/authSlice";
@@ -9,6 +9,8 @@ import devdojo from "../assets/DevDojo.png";
 import { fetchCurrentUser } from "../redux/userSlice";
 import userImage from "/user.png";
 import { toast } from "react-toastify";
+import useNetworkStatus from "../hooks/useNetworkStatus";
+
 
 function Navbar() {
   const [modalType, setModalType] = useState(null);
@@ -45,6 +47,20 @@ function Navbar() {
       setMenuOpen(false);
     }
   };
+  const isOnline = useNetworkStatus();
+  const wasOnline = useRef(isOnline);
+
+  useEffect(() => {
+    if (wasOnline.current !== isOnline) {
+      if (!isOnline) {
+        toast.error("You're offline. Some features may not work.");
+      } else {
+        toast.success("You're back online!");
+      }
+      wasOnline.current = isOnline;
+    }
+  }, [isOnline]);
+
 
   return (
     <>
@@ -179,6 +195,12 @@ function Navbar() {
             )}
           </div>
         )}
+        {!isOnline && (
+          <div className="bg-red-600 text-white text-center text-sm py-1 animate-pulse">
+            ⚠️ You are currently offline
+          </div>
+        )}
+
       </header>
 
       {/* Login & Register Modals */}
